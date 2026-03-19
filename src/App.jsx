@@ -35,6 +35,7 @@ function App() {
     min_temp: "",
     max_temp: "",
   });
+  const [selectedPlace, setSelectedPlace] = useState("المنصورة");
 
   useEffect(() => {
     if (!inputSearchCity) return;
@@ -227,6 +228,8 @@ function App() {
 
     // استخدم القيم مباشرة من value
     setCoords({ lat: value.lat, lon: value.lng });
+    const city = value.text.split(" ")[0].toString();
+    setSelectedPlace(city.at(-1) === "،" ? city.slice(0, -1) : city);
   };
 
   return (
@@ -262,7 +265,7 @@ function App() {
                     variant="h3"
                     sx={{ fontWeight: 600, color: theme.palette.text.primary }}
                   >
-                    المنصورة
+                    {selectedPlace}
                   </Typography>
                   <Typography
                     variant="subtitle2"
