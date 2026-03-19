@@ -15,16 +15,21 @@ import arLocale from "i18n-iso-countries/langs/ar.json";
 import { useTheme } from "@mui/material/styles";
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
-
+import { Reducer } from "./Reducer";
+// const apiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 // تسجيل اللغة العربية
 countries.registerLocale(arLocale);
 
 function App() {
   const theme = useTheme();
   const stackRef = useRef(null);
+  const AutoCompleteRef = useRef(null);
   const [stackHeight, setStackHeight] = useState(0);
+  const [autoCompleteVertivalPosition, setAutoCompleteVertivalPosition] =
+    useState(0);
   const [coords, setCoords] = useState({ lon: 0, lat: 0 });
-  const [city, setCity] = useState("");
+  const [inputSearchCity, setInputSearchCity] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
   const [open, setOpen] = useState(false);
   const [weather, setWeather] = useState({
     temp: "",
@@ -33,8 +38,110 @@ function App() {
   });
 
   useEffect(() => {
+    if (!inputSearchCity) return;
+
+    const timeout = setTimeout(() => {
+      (async () => {
+        try {
+          // استدعاء مكتبة Places
+          const { AutocompleteSuggestion } =
+            await window.google.maps.importLibrary("places");
+
+          const { suggestions } =
+            await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+              input: inputSearchCity,
+              includedPrimaryTypes: ["locality"], // المدن والأماكن
+              language: "ar",
+            });
+
+          // خدمة PlacesService عشان نجيب التفاصيل والإحداثيات
+          const service = new window.google.maps.places.PlacesService(
+            document.createElement("div"),
+          );
+
+          const coordsPromises = suggestions.map((s) => {
+            const placeId = s.placePrediction?.placeId;
+            if (!placeId) return null;
+
+            return new Promise((resolve) => {
+              service.getDetails(
+                { placeId, fields: ["geometry"] },
+                (place, status) => {
+                  if (
+                    status === window.google.maps.places.PlacesServiceStatus.OK
+                  ) {
+                    resolve({
+                      text: s.placePrediction?.text?.toString(),
+                      lat: place.geometry.location.lat(),
+                      lng: place.geometry.location.lng(),
+                    });
+                  } else {
+                    resolve(null);
+                  }
+                },
+              );
+            });
+          });
+
+          const results = (await Promise.all(coordsPromises)).filter(Boolean);
+          console.log(results);
+
+          // هنا بقى نستخدم setState أو dispatch
+          setSuggestions(results);
+        } catch (err) {
+          console.error(err);
+        }
+      })();
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [inputSearchCity]);
+
+  // useEffect(() => {
+  //   if (!inputSearchCity) return;
+
+  //   const timeout = setTimeout(() => {
+  //     (async () => {
+  //       try {
+  //         const { AutocompleteSuggestion } =
+  //           await window.google.maps.importLibrary("places");
+
+  //         const { suggestions } =
+  //           await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+  //             input: inputSearchCity,
+  //             includedPrimaryTypes: ["locality"],
+  //             language: "ar",
+  //           });
+
+  //         console.log(suggestions[0]);
+
+  //         const arr = suggestions
+  //           .map((s) => s.placePrediction?.text?.toString())
+  //           .filter(Boolean);
+
+  //         setSuggestions(arr);
+  //       } catch (err) {
+  //         console.error(err);
+  //       }
+  //     })();
+  //   }, 500);
+
+  //   return () => clearTimeout(timeout);
+  // }, [inputSearchCity]);
+
+  useEffect(() => {
     if (stackRef.current) {
       setStackHeight(stackRef.current.getBoundingClientRect().height);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (AutoCompleteRef.current) {
+      setAutoCompleteVertivalPosition(
+        window.innerHeight -
+          AutoCompleteRef.current.getBoundingClientRect().bottom -
+          15,
+      );
     }
   }, []);
 
@@ -68,7 +175,7 @@ function App() {
               `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&units=metric&appid=9e6125670a22f8438ce76edcc0fd68c3`,
             )
             .then((response) => {
-              console.log(response.data);
+              // console.log(response.data);
               const data = new Date().toISOString().split("T", 1).toString();
               const temps = response.data.list
                 .filter((item) => item.dt_txt.split(" ", 1)[0] === data)
@@ -86,23 +193,25 @@ function App() {
     }
   }, [coords]);
 
-  useEffect(() => {
-    if (city) {
-      axios
-        .get(
-          `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=9e6125670a22f8438ce76edcc0fd68c3`,
-        )
-        .then((response) =>
-          console.log(countries.getName(response.data[0].country, "ar")),
-        )
-        .catch((err) => console.log(err));
-    }
-  }, [city]);
+  // useEffect(() => {
+  //   if (inputSearchCity) {
+  //     axios
+  //       .get(
+  //         `https://api.openweathermap.org/geo/1.0/direct?q=${inputSearchCity}&limit=500&appid=9e6125670a22f8438ce76edcc0fd68c3`,
+  //       )
+  //       .then((response) => {
+  //         // console.log(countries.getName(response.data[0].country, "ar"));
+  //         // console.log(response.data);
+  //         setCities(response.data);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   }
+  // }, [inputSearchCity]);
 
   const handleInput = (event, value, reason) => {
     if (reason !== "input") return;
 
-    setCity(value);
+    setInputSearchCity(value);
 
     if (value) {
       setOpen(true);
@@ -112,8 +221,13 @@ function App() {
   };
 
   const handleSelect = (event, value) => {
-    setCity(value || "");
+    if (!value) return;
+
+    setInputSearchCity(value.text); // نعرض النص في الـ input
     setOpen(false);
+
+    // استخدم القيم مباشرة من value
+    setCoords({ lat: value.lat, lon: value.lng });
   };
 
   return (
@@ -256,7 +370,7 @@ function App() {
                   <Button sx={{ color: theme.palette.text.secondary }}>
                     إنجليزي
                   </Button>
-
+                  {/* AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g */}
                   <Autocomplete
                     open={open}
                     onClose={() => setOpen(false)}
@@ -265,18 +379,55 @@ function App() {
                     clearOnEscape
                     disableClearable
                     disablePortal
+                    ref={AutoCompleteRef}
                     forcePopupIcon={false}
-                    inputValue={city}
+                    inputValue={inputSearchCity}
                     onInputChange={handleInput}
                     onChange={handleSelect}
-                    options={["Profile", "My account", "Logout"]}
-                    sx={{ width: 200 }}
+                    // options={["Profile", "My account", "Logout"]}
+                    options={suggestions}
+                    getOptionLabel={
+                      (option) => option.text
+
+                      // countries.getName(option.name, "ar")
+                    }
+                    renderOption={(props, option) => (
+                      <li
+                        {...props}
+                        style={{ whiteSpace: "nowrap" }}
+                        key={`${option.lat}-${option.lng}`}
+                      >
+                        {option.text}
+                      </li>
+                    )}
+                    sx={{ width: 230 }}
                     slotProps={{
                       popper: {
                         sx: {
                           "& .MuiAutocomplete-paper": {
                             backgroundColor: theme.palette.primary.main,
                             color: theme.palette.text.secondary,
+                            boxShadow: theme.shadows[8],
+                          },
+                          "& .MuiAutocomplete-listbox": {
+                            maxHeight: `${autoCompleteVertivalPosition}px`,
+
+                            overflowY: "auto",
+                            "&::-webkit-scrollbar": {
+                              width: "8px",
+                            },
+                            "&::-webkit-scrollbar-track": {
+                              background: theme.palette.primary.light,
+                              borderRadius: "8px",
+                            },
+                            "&::-webkit-scrollbar-thumb": {
+                              background: theme.palette.primary.main,
+                              borderRadius: "8px",
+                              border: `2px solid ${theme.palette.primary.light}`,
+                            },
+                            "&::-webkit-scrollbar-thumb:hover": {
+                              background: theme.palette.primary.dark,
+                            },
                           },
                         },
                       },
