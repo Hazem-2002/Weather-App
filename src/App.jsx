@@ -36,6 +36,7 @@ function App() {
     max_temp: "",
   });
   const [selectedPlace, setSelectedPlace] = useState("المنصورة");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!inputSearchCity) return;
@@ -88,6 +89,7 @@ function App() {
 
           // هنا بقى نستخدم setState أو dispatch
           setSuggestions(results);
+          setIsLoading(false); //
         } catch (err) {
           console.error(err);
         }
@@ -143,7 +145,7 @@ function App() {
           15,
       );
     }
-  }, []);
+  }, [inputSearchCity]);
 
   // Fetch City Coordinates
   useEffect(() => {
@@ -214,6 +216,7 @@ function App() {
     setInputSearchCity(value);
 
     if (value) {
+      setIsLoading(true);
       setOpen(true);
     } else {
       setOpen(false);
@@ -367,6 +370,7 @@ function App() {
                 </Grid>
                 <Stack
                   direction="row-reverse"
+                  spacing={5}
                   sx={{ justifyContent: "space-between", p: 1 }}
                 >
                   <Button sx={{ color: theme.palette.text.secondary }}>
@@ -381,6 +385,23 @@ function App() {
                     clearOnEscape
                     disableClearable
                     disablePortal
+                    loading={isLoading}
+                    loadingText={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <CircularProgress
+                          size={24}
+                          sx={{
+                            color: theme.palette.primary.light,
+                          }}
+                        />
+                      </Box>
+                    }
                     ref={AutoCompleteRef}
                     forcePopupIcon={false}
                     inputValue={inputSearchCity}
@@ -405,6 +426,7 @@ function App() {
                     sx={{ width: 230 }}
                     slotProps={{
                       popper: {
+                        placement: "bottom",
                         sx: {
                           "& .MuiAutocomplete-paper": {
                             backgroundColor: theme.palette.primary.main,
