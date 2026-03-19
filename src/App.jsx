@@ -15,7 +15,6 @@ import arLocale from "i18n-iso-countries/langs/ar.json";
 import { useTheme } from "@mui/material/styles";
 import { useRef, useEffect, useState } from "react";
 import axios from "axios";
-import { Reducer } from "./Reducer";
 // const apiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 // تسجيل اللغة العربية
 countries.registerLocale(arLocale);
