@@ -253,13 +253,18 @@ export default function AutoCompleteComponent({ changeCoords }) {
                 >
                   <Tooltip
                     title="تحديد الموقع الجغرافي"
-                    sx={{
-                      "& .MuiTooltip-tooltip": {
-                        backgroundColor: "red !important",
-                        color: "white",
-                      },
-                      "& .MuiTooltip-arrow": {
-                        color: "red",
+                    leaveDelay={50}
+                    slotProps={{
+                      popper: {
+                        sx: {
+                          "&.MuiPopper-root .MuiTooltip-tooltip": {
+                            background: theme.palette.primary.main,
+                          },
+                          "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
+                            {
+                              color: theme.palette.primary.main,
+                            },
+                        },
                       },
                     }}
                     arrow
