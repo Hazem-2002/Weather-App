@@ -107,7 +107,7 @@ function App() {
               >
                 <Stack
                   direction="row"
-                  spacing={3}
+                  spacing={4}
                   sx={{
                     p: 2,
                     alignItems: "flex-end",
@@ -143,9 +143,9 @@ function App() {
                     />
                   )}
                   {date.dayName && date.dateString ? (
-                    <Stack direction="row" spacing={1}>
+                    <Stack>
                       <Typography
-                        variant="subtitle2"
+                        variant="subtitle1"
                         sx={{
                           fontWeight: 600,
                           color: theme.palette.text.primary,
