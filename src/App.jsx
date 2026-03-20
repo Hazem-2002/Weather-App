@@ -6,18 +6,19 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import Skeleton from "@mui/material/Skeleton";
 import CloudIcon from "@mui/icons-material/Cloud";
 import CircularProgress from "@mui/material/CircularProgress";
 import AutoCompleteComponent from "./AutoCompleteComponent";
 import { useTheme } from "@mui/material/styles";
 import { useRef, useEffect, useState, useCallback } from "react";
 import axios from "axios";
-// const apiKey = import.meta.env.VITE_GEOCODING_API_KEY;
 
 function App() {
   const theme = useTheme();
   const stackRef = useRef(null);
-  const [selectedPlace, setSelectedPlace] = useState("المنصورة");
+  const [selectedPlace, setSelectedPlace] = useState("");
+  const [date, setDate] = useState({ dayName: "", dateString: "" });
   const [stackHeight, setStackHeight] = useState(0);
   const [coords, setCoords] = useState({ lon: null, lat: null });
   const [weather, setWeather] = useState({
@@ -40,7 +41,28 @@ function App() {
           `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1`,
         )
         .then((response) => {
+          axios
+            .get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=ar&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
+            )
+            .then((response) => {
+              console.log(response.data);
+              const city = response.data.results.find((item) =>
+                item.types.includes("locality"),
+              );
+
+              setSelectedPlace(
+                city?.formatted_address.split("،")[0].split(" ", 2).join(" "),
+              );
+            })
+            .catch((err) => console.log(err));
           console.log(response.data);
+          const dateString = response.data.forecast.forecastday[0].date;
+          const currentDate = new Date(dateString);
+          const dayName = currentDate.toLocaleDateString("ar-EG", {
+            weekday: "long",
+          });
+          setDate({ dayName, dateString });
           setWeather({
             min_temp: Math.round(
               response.data.forecast.forecastday[0].day.mintemp_c,
@@ -57,10 +79,6 @@ function App() {
 
   const changeCoords = useCallback((coords) => {
     setCoords(coords);
-  }, []);
-
-  const changeCityTitle = useCallback((city) => {
-    setSelectedPlace(city);
   }, []);
 
   return (
@@ -90,20 +108,71 @@ function App() {
                 <Stack
                   direction="row"
                   spacing={3}
-                  sx={{ p: 2, alignItems: "flex-end" }}
+                  sx={{
+                    p: 2,
+                    alignItems: "flex-end",
+                    height: { xs: "74px", md: "88px" },
+                  }}
                 >
-                  <Typography
-                    variant="h3"
-                    sx={{ fontWeight: 600, color: theme.palette.text.primary }}
-                  >
-                    {selectedPlace}
-                  </Typography>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, color: theme.palette.text.primary }}
-                  >
-                    الإثنين 14/03/2026
-                  </Typography>
+                  {selectedPlace ? (
+                    <Typography
+                      variant="h3"
+                      sx={{
+                        fontWeight: 600,
+                        color: theme.palette.text.primary,
+                        fontSize: {
+                          xs:
+                            selectedPlace.split(" ").length > 1
+                              ? "26px"
+                              : "36px",
+                          md: "48px",
+                        },
+                        maxWidth: "67%",
+                      }}
+                    >
+                      {selectedPlace}
+                    </Typography>
+                  ) : (
+                    <Skeleton
+                      animation="pulse"
+                      variant="rounded"
+                      sx={{
+                        height: { xs: "42px", md: "56px" },
+                        width: { xs: "81px", md: "108px" },
+                      }}
+                    />
+                  )}
+                  {date.dayName && date.dateString ? (
+                    <Stack direction="row" spacing={1}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 600,
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {date.dayName}
+                      </Typography>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{
+                          fontWeight: 600,
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {date.dateString}
+                      </Typography>
+                    </Stack>
+                  ) : (
+                    <Skeleton
+                      animation="pulse"
+                      variant="rounded"
+                      sx={{
+                        height: "22px",
+                        width: "115px",
+                      }}
+                    />
+                  )}
                 </Stack>
                 <Grid container columns={12} sx={{ p: 2 }} alignItems="stretch">
                   <Grid size={8}>
@@ -204,10 +273,7 @@ function App() {
                   <Button sx={{ color: theme.palette.text.secondary }}>
                     إنجليزي
                   </Button>
-                  <AutoCompleteComponent
-                    changeCoords={changeCoords}
-                    changeCityTitle={changeCityTitle}
-                  />
+                  <AutoCompleteComponent changeCoords={changeCoords} />
                 </Stack>
               </Stack>
             </Box>

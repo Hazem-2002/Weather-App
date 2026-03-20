@@ -1,6 +1,7 @@
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Autocomplete from "@mui/material/Autocomplete";
+import Tooltip from "@mui/material/Tooltip";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -8,10 +9,7 @@ import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import { useRef, useEffect, useState } from "react";
 
-export default function AutoCompleteComponent({
-  changeCoords,
-  changeCityTitle,
-}) {
+export default function AutoCompleteComponent({ changeCoords }) {
   const theme = useTheme();
 
   const AutoCompleteRef = useRef(null);
@@ -153,8 +151,6 @@ export default function AutoCompleteComponent({
 
     // استخدم القيم مباشرة من value
     changeCoords({ lat: value.lat, lon: value.lng });
-    const city = value.text.split(" ")[0].toString();
-    changeCityTitle(city.at(-1) === "،" ? city.slice(0, -1) : city);
   };
 
   const handleLocation = (e) => {
@@ -255,25 +251,39 @@ export default function AutoCompleteComponent({
                     marginRight: "-5px",
                   }}
                 >
-                  <IconButton
-                    loading={locationIsLoading}
-                    loadingIndicator={
-                      <CircularProgress
+                  <Tooltip
+                    title="تحديد الموقع الجغرافي"
+                    sx={{
+                      "& .MuiTooltip-tooltip": {
+                        backgroundColor: "red !important",
+                        color: "white",
+                      },
+                      "& .MuiTooltip-arrow": {
+                        color: "red",
+                      },
+                    }}
+                    arrow
+                  >
+                    <IconButton
+                      loading={locationIsLoading}
+                      loadingIndicator={
+                        <CircularProgress
+                          sx={{
+                            color: theme.palette.primary.light,
+                          }}
+                          size={20}
+                        />
+                      }
+                      onClick={handleLocation}
+                    >
+                      <LocationOnIcon
                         sx={{
                           color: theme.palette.primary.light,
+                          visibility: locationIsLoading ? "hidden" : "visible",
                         }}
-                        size={20}
                       />
-                    }
-                    onClick={handleLocation}
-                  >
-                    <LocationOnIcon
-                      sx={{
-                        color: theme.palette.primary.light,
-                        visibility: locationIsLoading ? "hidden" : "visible",
-                      }}
-                    />
-                  </IconButton>
+                    </IconButton>
+                  </Tooltip>
                 </InputAdornment>
               ),
             },
