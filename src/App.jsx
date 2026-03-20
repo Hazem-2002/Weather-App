@@ -8,128 +8,23 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import CloudIcon from "@mui/icons-material/Cloud";
 import CircularProgress from "@mui/material/CircularProgress";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import countries from "i18n-iso-countries";
-import arLocale from "i18n-iso-countries/langs/ar.json";
+import AutoCompleteComponent from "./AutoCompleteComponent";
 import { useTheme } from "@mui/material/styles";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 // const apiKey = import.meta.env.VITE_GEOCODING_API_KEY;
-// تسجيل اللغة العربية
-countries.registerLocale(arLocale);
 
 function App() {
   const theme = useTheme();
   const stackRef = useRef(null);
-  const AutoCompleteRef = useRef(null);
+  const [selectedPlace, setSelectedPlace] = useState("المنصورة");
   const [stackHeight, setStackHeight] = useState(0);
-  const [autoCompleteVertivalPosition, setAutoCompleteVertivalPosition] =
-    useState(0);
-  const [coords, setCoords] = useState({ lon: 0, lat: 0 });
-  const [inputSearchCity, setInputSearchCity] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [coords, setCoords] = useState({ lon: null, lat: null });
   const [weather, setWeather] = useState({
     temp: "",
     min_temp: "",
     max_temp: "",
   });
-  const [selectedPlace, setSelectedPlace] = useState("المنصورة");
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!inputSearchCity) return;
-
-    const timeout = setTimeout(() => {
-      (async () => {
-        try {
-          // استدعاء مكتبة Places
-          const { AutocompleteSuggestion } =
-            await window.google.maps.importLibrary("places");
-
-          const { suggestions } =
-            await AutocompleteSuggestion.fetchAutocompleteSuggestions({
-              input: inputSearchCity,
-              includedPrimaryTypes: ["locality"], // المدن والأماكن
-              language: "ar",
-            });
-
-          // خدمة PlacesService عشان نجيب التفاصيل والإحداثيات
-          const service = new window.google.maps.places.PlacesService(
-            document.createElement("div"),
-          );
-
-          const coordsPromises = suggestions.map((s) => {
-            const placeId = s.placePrediction?.placeId;
-            if (!placeId) return null;
-
-            return new Promise((resolve) => {
-              service.getDetails(
-                { placeId, fields: ["geometry"] },
-                (place, status) => {
-                  if (
-                    status === window.google.maps.places.PlacesServiceStatus.OK
-                  ) {
-                    resolve({
-                      text: s.placePrediction?.text?.toString(),
-                      lat: place.geometry.location.lat(),
-                      lng: place.geometry.location.lng(),
-                    });
-                  } else {
-                    resolve(null);
-                  }
-                },
-              );
-            });
-          });
-
-          const results = (await Promise.all(coordsPromises)).filter(Boolean);
-          console.log(results);
-
-          // هنا بقى نستخدم setState أو dispatch
-          setSuggestions(results);
-          setIsLoading(false); //
-        } catch (err) {
-          console.error(err);
-        }
-      })();
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [inputSearchCity]);
-
-  // useEffect(() => {
-  //   if (!inputSearchCity) return;
-
-  //   const timeout = setTimeout(() => {
-  //     (async () => {
-  //       try {
-  //         const { AutocompleteSuggestion } =
-  //           await window.google.maps.importLibrary("places");
-
-  //         const { suggestions } =
-  //           await AutocompleteSuggestion.fetchAutocompleteSuggestions({
-  //             input: inputSearchCity,
-  //             includedPrimaryTypes: ["locality"],
-  //             language: "ar",
-  //           });
-
-  //         console.log(suggestions[0]);
-
-  //         const arr = suggestions
-  //           .map((s) => s.placePrediction?.text?.toString())
-  //           .filter(Boolean);
-
-  //         setSuggestions(arr);
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     })();
-  //   }, 500);
-
-  //   return () => clearTimeout(timeout);
-  // }, [inputSearchCity]);
 
   useEffect(() => {
     if (stackRef.current) {
@@ -137,103 +32,36 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (AutoCompleteRef.current) {
-      setAutoCompleteVertivalPosition(
-        window.innerHeight -
-          AutoCompleteRef.current.getBoundingClientRect().bottom -
-          15,
-      );
-    }
-  }, [inputSearchCity]);
-
-  // Fetch City Coordinates
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.openweathermap.org/data/2.5/weather?q=Mansoura,EG&appid=9e6125670a22f8438ce76edcc0fd68c3",
-      )
-      .then((response) => setCoords(response.data.coord))
-      .catch((err) => console.log(err));
-  }, []);
-
   // Fetch Current Temperature
   useEffect(() => {
-    if (coords.lon && coords.lat) {
+    if (coords.lon !== null && coords.lat !== null) {
       axios
         .get(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=9e6125670a22f8438ce76edcc0fd68c3`,
+          `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1`,
         )
         .then((response) => {
-          setWeather((prev) => ({
-            ...prev,
-            temp: Math.round(response.data.main.temp - 272.15),
-          }));
+          console.log(response.data);
+          setWeather({
+            min_temp: Math.round(
+              response.data.forecast.forecastday[0].day.mintemp_c,
+            ),
+            max_temp: Math.round(
+              response.data.forecast.forecastday[0].day.maxtemp_c,
+            ),
+            temp: Math.round(response.data.current.temp_c),
+          });
         })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          axios
-            .get(
-              `https://api.openweathermap.org/data/2.5/forecast?lat=${coords.lat}&lon=${coords.lon}&units=metric&appid=9e6125670a22f8438ce76edcc0fd68c3`,
-            )
-            .then((response) => {
-              // console.log(response.data);
-              const data = new Date().toISOString().split("T", 1).toString();
-              const temps = response.data.list
-                .filter((item) => item.dt_txt.split(" ", 1)[0] === data)
-                .map((item) => item.main.temp);
-              const minTemp = Math.min(...temps);
-              const maxTemp = Math.max(...temps);
-              setWeather((prev) => ({
-                ...prev,
-                max_temp: Math.round(maxTemp),
-                min_temp: Math.round(minTemp),
-              }));
-            })
-            .catch((err) => console.log(err));
-        });
+        .catch((err) => console.log(err));
     }
   }, [coords]);
 
-  // useEffect(() => {
-  //   if (inputSearchCity) {
-  //     axios
-  //       .get(
-  //         `https://api.openweathermap.org/geo/1.0/direct?q=${inputSearchCity}&limit=500&appid=9e6125670a22f8438ce76edcc0fd68c3`,
-  //       )
-  //       .then((response) => {
-  //         // console.log(countries.getName(response.data[0].country, "ar"));
-  //         // console.log(response.data);
-  //         setCities(response.data);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, [inputSearchCity]);
+  const changeCoords = useCallback((coords) => {
+    setCoords(coords);
+  }, []);
 
-  const handleInput = (event, value, reason) => {
-    if (reason !== "input") return;
-
-    setInputSearchCity(value);
-
-    if (value) {
-      setIsLoading(true);
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
-  };
-
-  const handleSelect = (event, value) => {
-    if (!value) return;
-
-    setInputSearchCity(value.text); // نعرض النص في الـ input
-    setOpen(false);
-
-    // استخدم القيم مباشرة من value
-    setCoords({ lat: value.lat, lon: value.lng });
-    const city = value.text.split(" ")[0].toString();
-    setSelectedPlace(city.at(-1) === "،" ? city.slice(0, -1) : city);
-  };
+  const changeCityTitle = useCallback((city) => {
+    setSelectedPlace(city);
+  }, []);
 
   return (
     <>
@@ -370,123 +198,15 @@ function App() {
                 </Grid>
                 <Stack
                   direction="row-reverse"
-                  spacing={5}
+                  spacing={3}
                   sx={{ justifyContent: "space-between", p: 1 }}
                 >
                   <Button sx={{ color: theme.palette.text.secondary }}>
                     إنجليزي
                   </Button>
-                  {/* AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g */}
-                  <Autocomplete
-                    open={open}
-                    onClose={() => setOpen(false)}
-                    autoHighlight
-                    blurOnSelect
-                    clearOnEscape
-                    disableClearable
-                    disablePortal
-                    loading={isLoading}
-                    loadingText={
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <CircularProgress
-                          size={24}
-                          sx={{
-                            color: theme.palette.primary.light,
-                          }}
-                        />
-                      </Box>
-                    }
-                    ref={AutoCompleteRef}
-                    forcePopupIcon={false}
-                    inputValue={inputSearchCity}
-                    onInputChange={handleInput}
-                    onChange={handleSelect}
-                    // options={["Profile", "My account", "Logout"]}
-                    options={suggestions}
-                    getOptionLabel={
-                      (option) => option.text
-
-                      // countries.getName(option.name, "ar")
-                    }
-                    renderOption={(props, option) => (
-                      <li
-                        {...props}
-                        style={{ whiteSpace: "nowrap" }}
-                        key={`${option.lat}-${option.lng}`}
-                      >
-                        {option.text}
-                      </li>
-                    )}
-                    sx={{ width: 230 }}
-                    slotProps={{
-                      popper: {
-                        placement: "bottom",
-                        sx: {
-                          "& .MuiAutocomplete-paper": {
-                            backgroundColor: theme.palette.primary.main,
-                            color: theme.palette.text.secondary,
-                            boxShadow: theme.shadows[8],
-                          },
-                          "& .MuiAutocomplete-listbox": {
-                            maxHeight: `${autoCompleteVertivalPosition}px`,
-
-                            overflowY: "auto",
-                            "&::-webkit-scrollbar": {
-                              width: "8px",
-                            },
-                            "&::-webkit-scrollbar-track": {
-                              background: theme.palette.primary.light,
-                              borderRadius: "8px",
-                            },
-                            "&::-webkit-scrollbar-thumb": {
-                              background: theme.palette.primary.main,
-                              borderRadius: "8px",
-                              border: `2px solid ${theme.palette.primary.light}`,
-                            },
-                            "&::-webkit-scrollbar-thumb:hover": {
-                              background: theme.palette.primary.dark,
-                            },
-                          },
-                        },
-                      },
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="filled"
-                        label="المدينة"
-                        sx={{
-                          "& .MuiFilledInput-root": {
-                            "&:before": {
-                              borderBottom: `2px solid ${theme.palette.primary.light}`,
-                            },
-                            "&:after": {
-                              borderBottom: `2px solid ${theme.palette.text.secondary}`,
-                            },
-                            "&:hover:not(.Mui-disabled, .Mui-error):before": {
-                              borderBottom: `2px solid ${theme.palette.primary.light}`,
-                            },
-                          },
-                          "& .MuiInputLabel-root": {
-                            color: theme.palette.text.secondary,
-                            transition: "all 0.17s",
-                            willChange: "transform",
-                          },
-                          "& .MuiInputLabel-root.MuiInputLabel-shrink": {
-                            color: theme.palette.text.primary,
-                            fontSize: "0.9rem",
-                            transform: "translate(10px,6px)",
-                            willChange: "transform",
-                          },
-                        }}
-                      />
-                    )}
+                  <AutoCompleteComponent
+                    changeCoords={changeCoords}
+                    changeCityTitle={changeCityTitle}
                   />
                 </Stack>
               </Stack>
