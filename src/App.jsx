@@ -12,7 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import AutoCompleteComponent from "./AutoCompleteComponent";
 import { useTheme } from "@mui/material/styles";
 import { useRef, useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import axios, { Axios } from "axios";
 
 function App() {
   const theme = useTheme();
@@ -25,6 +25,7 @@ function App() {
     temp: "",
     min_temp: "",
     max_temp: "",
+    desc: "",
   });
 
   useEffect(() => {
@@ -35,46 +36,94 @@ function App() {
 
   // Fetch Current Temperature
   useEffect(() => {
-    if (coords.lon !== null && coords.lat !== null) {
-      axios
-        .get(
-          `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1`,
-        )
-        .then((response) => {
-          axios
-            .get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=ar&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
-            )
-            .then((response) => {
-              console.log(response.data);
-              const city = response.data.results.find((item) =>
-                item.types.includes("locality"),
-              );
+    if (coords.lon == null || coords.lat == null) return;
 
-              setSelectedPlace(
-                city?.formatted_address.split("،")[0].split(" ", 2).join(" "),
-              );
-            })
-            .catch((err) => console.log(err));
-          console.log(response.data);
-          const dateString = response.data.forecast.forecastday[0].date;
-          const currentDate = new Date(dateString);
-          const dayName = currentDate.toLocaleDateString("ar-EG", {
-            weekday: "long",
-          });
-          setDate({ dayName, dateString });
-          setWeather({
-            min_temp: Math.round(
-              response.data.forecast.forecastday[0].day.mintemp_c,
-            ),
-            max_temp: Math.round(
-              response.data.forecast.forecastday[0].day.maxtemp_c,
-            ),
-            temp: Math.round(response.data.current.temp_c),
-          });
-        })
-        .catch((err) => console.log(err));
-    }
+    const controller = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const [weatherRes, geoRes] = await Promise.all([
+          axios.get(
+            `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1&lang=ar`,
+            { signal: controller.signal },
+          ),
+          axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=ar&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
+            { signal: controller.signal },
+          ),
+        ]);
+
+        console.log(weatherRes.data);
+        console.log(geoRes.data);
+
+        // استخراج المدينة
+        const getCityName = (results) => {
+          const priorityTypes = [
+            "locality",
+            "administrative_area_level_3",
+            "sublocality",
+            "administrative_area_level_2",
+          ];
+
+          for (const type of priorityTypes) {
+            const place = results.find((item) => item.types.includes(type));
+
+            if (place) {
+              return place.formatted_address
+                ?.split("،")[0]
+                ?.split(" ", 2)
+                ?.join(" ");
+            }
+          }
+
+          return "غير معروف";
+        };
+
+        // usage
+        setSelectedPlace(getCityName(geoRes.data.results));
+
+        // التاريخ
+        const dateString = weatherRes.data.forecast.forecastday[0].date;
+
+        const currentDate = new Date(dateString);
+
+        const dayName = currentDate.toLocaleDateString("ar-EG", {
+          weekday: "long",
+        });
+
+        const arabicDate = currentDate.toLocaleDateString("ar-EG", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        setDate({ dayName, dateString: arabicDate });
+
+        // الطقس
+        setWeather({
+          min_temp: Math.round(
+            weatherRes.data.forecast.forecastday[0].day.mintemp_c,
+          ).toLocaleString("ar-EG"),
+          max_temp: Math.round(
+            weatherRes.data.forecast.forecastday[0].day.maxtemp_c,
+          ).toLocaleString("ar-EG"),
+          temp: Math.round(weatherRes.data.current.temp_c).toLocaleString(
+            "ar-EG",
+          ),
+          desc: weatherRes.data.current.condition.text,
+        });
+      } catch (err) {
+        if (err.name !== "CanceledError") {
+          console.error("Error fetching data:", err);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [coords]);
 
   const changeCoords = useCallback((coords) => {
@@ -168,8 +217,8 @@ function App() {
                       animation="pulse"
                       variant="rounded"
                       sx={{
-                        height: "22px",
-                        width: "115px",
+                        height: "50px",
+                        width: "76px",
                       }}
                     />
                   )}
@@ -195,12 +244,23 @@ function App() {
                         </Typography>
                       </Stack>
 
-                      <Typography
-                        variant="subtitle1"
-                        sx={{ color: theme.palette.text.secondary }}
-                      >
-                        broken clouds
-                      </Typography>
+                      {weather.desc ? (
+                        <Typography
+                          variant="h6"
+                          sx={{ color: theme.palette.text.secondary }}
+                        >
+                          {weather.desc}
+                        </Typography>
+                      ) : (
+                        <Skeleton
+                          animation="pulse"
+                          variant="rounded"
+                          sx={{
+                            height: "28px",
+                            width: "100px",
+                          }}
+                        />
+                      )}
 
                       <Stack
                         direction="row"

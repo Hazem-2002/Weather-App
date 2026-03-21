@@ -114,8 +114,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
           };
-          console.log("My Position: ", coords);
-          changeCoords(coords); // تخزن الإحداثيات في state
+          changeCoords(coords);
           setInputSearchCity("");
           setLocationIsLoading(false);
         },
@@ -146,10 +145,8 @@ export default function AutoCompleteComponent({ changeCoords }) {
   const handleSelect = (event, value) => {
     if (!value) return;
 
-    setInputSearchCity(value.text); // نعرض النص في الـ input
+    setInputSearchCity(value.text);
     setOpen(false);
-
-    // استخدم القيم مباشرة من value
     changeCoords({ lat: value.lat, lon: value.lng });
   };
 
