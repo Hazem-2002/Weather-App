@@ -258,13 +258,18 @@ export default function AutoCompleteComponent({ changeCoords }) {
                   }}
                 >
                   <Tooltip
-                    title="تحديد الموقع الجغرافي"
+                    title={
+                      direction === "rtl"
+                        ? "تحديد الموقع الحالي"
+                        : "Use Current Location"
+                    }
                     leaveDelay={50}
                     slotProps={{
                       popper: {
                         sx: {
                           "&.MuiPopper-root .MuiTooltip-tooltip": {
                             background: theme.palette.primary.main,
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                           },
                           "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
                             {

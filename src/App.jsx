@@ -183,7 +183,7 @@ function App() {
                   direction="row"
                   sx={{
                     gap: {
-                      xs: direction === "ltr" ? "16px" : "32px",
+                      xs: "16px",
                       md: "32px",
                     },
                     p: 2,

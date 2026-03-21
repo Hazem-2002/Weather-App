@@ -30,7 +30,7 @@ export default function Wrapper() {
 
       palette: {
         primary: {
-          main: "#3f51b5",
+          main: "#0C45A8",
           light: "#9fa8da",
           dark: "#0A3F9D",
         },
