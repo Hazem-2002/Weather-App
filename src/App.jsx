@@ -11,8 +11,9 @@ import CloudIcon from "@mui/icons-material/Cloud";
 import CircularProgress from "@mui/material/CircularProgress";
 import AutoCompleteComponent from "./AutoCompleteComponent";
 import { useTheme } from "@mui/material/styles";
-import { useRef, useEffect, useState, useCallback } from "react";
-import axios, { Axios } from "axios";
+import { useRef, useEffect, useState, useCallback, useContext } from "react";
+import { DirectionContext } from "./Context/DirectionContext";
+import axios from "axios";
 
 function App() {
   const theme = useTheme();
@@ -20,13 +21,17 @@ function App() {
   const [selectedPlace, setSelectedPlace] = useState("");
   const [date, setDate] = useState({ dayName: "", dateString: "" });
   const [stackHeight, setStackHeight] = useState(0);
-  const [coords, setCoords] = useState({ lon: null, lat: null });
+  const [coords, setCoords] = useState(
+    JSON.parse(localStorage.getItem("coords")) || { lon: null, lat: null },
+  );
   const [weather, setWeather] = useState({
     temp: "",
     min_temp: "",
     max_temp: "",
     desc: "",
   });
+
+  const { direction, handleChangeDirection } = useContext(DirectionContext);
 
   useEffect(() => {
     if (stackRef.current) {
@@ -44,11 +49,11 @@ function App() {
       try {
         const [weatherRes, geoRes] = await Promise.all([
           axios.get(
-            `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1&lang=ar`,
+            `https://api.weatherapi.com/v1/forecast.json?key=a2645d096ff842ab8c0151914261903&q=${coords.lat},${coords.lon}&days=1&lang=${direction === "rtl" ? "ar" : "en"}`,
             { signal: controller.signal },
           ),
           axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=ar&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=${direction === "rtl" ? "ar" : "en"}&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
             { signal: controller.signal },
           ),
         ]);
@@ -68,11 +73,23 @@ function App() {
           for (const type of priorityTypes) {
             const place = results.find((item) => item.types.includes(type));
 
-            if (place) {
-              return place.formatted_address
-                ?.split("،")[0]
-                ?.split(" ", 2)
-                ?.join(" ");
+            if (place?.formatted_address) {
+              const address = place.formatted_address;
+
+              if (address.includes(" - ")) {
+                return address
+                  .split("-")[0]
+                  .split(" ", 2)
+                  .filter((ele) => isNaN(ele))
+                  .join(" ");
+              } else {
+                const separator = direction === "rtl" ? "،" : ",";
+                return address
+                  .split(separator)[0]
+                  .split(" ", 2)
+                  .filter((ele) => isNaN(ele))
+                  .join(" ");
+              }
             }
           }
 
@@ -87,15 +104,21 @@ function App() {
 
         const currentDate = new Date(dateString);
 
-        const dayName = currentDate.toLocaleDateString("ar-EG", {
-          weekday: "long",
-        });
+        const dayName = currentDate.toLocaleDateString(
+          `${direction === "rtl" ? "ar" : "en"}-EG`,
+          {
+            weekday: "long",
+          },
+        );
 
-        const arabicDate = currentDate.toLocaleDateString("ar-EG", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
+        const arabicDate = currentDate.toLocaleDateString(
+          `${direction === "rtl" ? "ar" : "en"}-EG`,
+          {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          },
+        );
 
         setDate({ dayName, dateString: arabicDate });
 
@@ -103,12 +126,12 @@ function App() {
         setWeather({
           min_temp: Math.round(
             weatherRes.data.forecast.forecastday[0].day.mintemp_c,
-          ).toLocaleString("ar-EG"),
+          ).toLocaleString(`${direction === "rtl" ? "ar" : "en"}-EG`),
           max_temp: Math.round(
             weatherRes.data.forecast.forecastday[0].day.maxtemp_c,
-          ).toLocaleString("ar-EG"),
+          ).toLocaleString(`${direction === "rtl" ? "ar" : "en"}-EG`),
           temp: Math.round(weatherRes.data.current.temp_c).toLocaleString(
-            "ar-EG",
+            `${direction === "rtl" ? "ar" : "en"}-EG`,
           ),
           desc: weatherRes.data.current.condition.text,
         });
@@ -124,10 +147,12 @@ function App() {
     return () => {
       controller.abort();
     };
+    // eslint-disable-next-line
   }, [coords]);
 
   const changeCoords = useCallback((coords) => {
     setCoords(coords);
+    localStorage.setItem("coords", JSON.stringify(coords));
   }, []);
 
   return (
@@ -278,7 +303,7 @@ function App() {
                           variant="subtitle2"
                           sx={{ color: theme.palette.text.secondary }}
                         >
-                          الصغري:{" "}
+                          {direction === "rtl" ? "الصغري: " : "Low: "}
                           {weather.min_temp !== "" ? (
                             <>{weather.min_temp}&deg;</>
                           ) : (
@@ -293,7 +318,7 @@ function App() {
                           variant="subtitle2"
                           sx={{ color: theme.palette.text.secondary }}
                         >
-                          الكبري:{" "}
+                          {direction === "rtl" ? "الكبري: " : "High: "}
                           {weather.max_temp !== "" ? (
                             <>{weather.max_temp}&deg;</>
                           ) : (
@@ -330,8 +355,14 @@ function App() {
                   spacing={3}
                   sx={{ justifyContent: "space-between", p: 1 }}
                 >
-                  <Button sx={{ color: theme.palette.text.secondary }}>
-                    إنجليزي
+                  <Button
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      textTransform: "capitalize",
+                    }}
+                    onClick={handleChangeDirection}
+                  >
+                    {direction === "rtl" ? "إنجليزي" : "Arabic"}
                   </Button>
                   <AutoCompleteComponent changeCoords={changeCoords} />
                 </Stack>

@@ -7,17 +7,21 @@ import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
+import { DirectionContext } from "./Context/DirectionContext";
 
 export default function AutoCompleteComponent({ changeCoords }) {
   const theme = useTheme();
+  const { direction } = useContext(DirectionContext);
 
   const AutoCompleteRef = useRef(null);
   const locationButtonRef = useRef(null);
   const AutoCompleteDropdownRef = useRef(null);
 
   const [open, setOpen] = useState(false);
-  const [inputSearchCity, setInputSearchCity] = useState("");
+  const [inputSearchCity, setInputSearchCity] = useState(
+    localStorage.getItem("inputSearchCity") || "",
+  );
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [marginTop, setMarginTop] = useState(0);
@@ -59,7 +63,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
             await AutocompleteSuggestion.fetchAutocompleteSuggestions({
               input: inputSearchCity,
               includedPrimaryTypes: ["locality"], // Cities
-              language: "ar",
+              language: `${direction === "rtl" ? "ar" : "en"}`,
             });
 
           // Get Coordinates of Cities
@@ -103,10 +107,13 @@ export default function AutoCompleteComponent({ changeCoords }) {
     }, 500);
 
     return () => clearTimeout(timeout);
+    // eslint-disable-next-line
   }, [inputSearchCity]);
 
   // Fetch Locations Coordinates
   useEffect(() => {
+    if (JSON.parse(localStorage.getItem("coords")) && !locationIsLoading)
+      return;
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -123,6 +130,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
           setLocationIsLoading(false);
         },
       );
+      localStorage.setItem("inputSearchCity", "");
     } else {
       console.log("Geolocation غير مدعوم في هذا المتصفح");
     }
@@ -146,6 +154,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
     if (!value) return;
 
     setInputSearchCity(value.text);
+    localStorage.setItem("inputSearchCity", value.text);
     setOpen(false);
     changeCoords({ lat: value.lat, lon: value.lng });
   };
@@ -234,7 +243,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
         <TextField
           {...params}
           variant="filled"
-          label="المدينة"
+          label={direction === "rtl" ? "المدينة" : "City"}
           ref={AutoCompleteRef}
           slotProps={{
             input: {
