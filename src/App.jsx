@@ -181,10 +181,14 @@ function App() {
               >
                 <Stack
                   direction="row"
-                  spacing={4}
                   sx={{
+                    gap: {
+                      xs: direction === "ltr" ? "16px" : "32px",
+                      md: "32px",
+                    },
                     p: 2,
-                    alignItems: "flex-end",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                     height: { xs: "74px", md: "88px" },
                   }}
                 >
@@ -197,8 +201,10 @@ function App() {
                         fontSize: {
                           xs:
                             selectedPlace.split(" ").length > 1
-                              ? "26px"
-                              : "36px",
+                              ? "24px"
+                              : direction === "rtl"
+                                ? "36px"
+                                : "30px",
                           md: "48px",
                         },
                         maxWidth: "67%",
@@ -223,6 +229,7 @@ function App() {
                         sx={{
                           fontWeight: 600,
                           color: theme.palette.text.primary,
+                          fontSize: { xs: "14px", md: "16px" },
                         }}
                       >
                         {date.dayName}
@@ -232,6 +239,7 @@ function App() {
                         sx={{
                           fontWeight: 600,
                           color: theme.palette.text.primary,
+                          fontSize: { xs: "12px", md: "14px" },
                         }}
                       >
                         {date.dateString}
@@ -272,7 +280,10 @@ function App() {
                       {weather.desc ? (
                         <Typography
                           variant="h6"
-                          sx={{ color: theme.palette.text.secondary }}
+                          sx={{
+                            color: theme.palette.text.secondary,
+                            fontSize: "18px",
+                          }}
                         >
                           {weather.desc}
                         </Typography>
