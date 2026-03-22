@@ -126,15 +126,19 @@ function App() {
         // الطقس
         const current = Math.round(weatherRes.data.current.temp_c);
 
-        let min_temp = Math.round(
-          weatherRes.data.forecast.forecastday[0].day.mintemp_c,
-        );
-        let max_temp = Math.round(
-          weatherRes.data.forecast.forecastday[0].day.maxtemp_c,
+        const min_temp = Math.round(
+          weatherRes.data.forecast.forecastday[0].hour.reduce(
+            (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
+            weatherRes.data.forecast.forecastday[0].hour[0].temp_c,
+          ),
         );
 
-        if (min_temp > current) min_temp = current;
-        if (max_temp < current) max_temp = current;
+        const max_temp = Math.round(
+          weatherRes.data.forecast.forecastday[0].hour.reduce(
+            (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
+            weatherRes.data.forecast.forecastday[0].hour[0].temp_c,
+          ),
+        );
 
         setWeather({
           min_temp: min_temp.toLocaleString(
@@ -232,7 +236,7 @@ function App() {
                       variant="rounded"
                       sx={{
                         height: { xs: "42px", md: "56px" },
-                        width: { xs: "81px", md: "108px" },
+                        width: { xs: "135px", md: "269px" },
                       }}
                     />
                   )}
@@ -264,8 +268,8 @@ function App() {
                       animation="pulse"
                       variant="rounded"
                       sx={{
-                        height: "50px",
-                        width: "76px",
+                        height: "44px",
+                        width: "70px",
                       }}
                     />
                   )}
