@@ -29,6 +29,7 @@ function App() {
     min_temp: "",
     max_temp: "",
     desc: "",
+    icon: "",
   });
 
   const { direction, handleChangeDirection } = useContext(DirectionContext);
@@ -123,17 +124,30 @@ function App() {
         setDate({ dayName, dateString: arabicDate });
 
         // الطقس
+        const current = Math.round(weatherRes.data.current.temp_c);
+
+        let min_temp = Math.round(
+          weatherRes.data.forecast.forecastday[0].day.mintemp_c,
+        );
+        let max_temp = Math.round(
+          weatherRes.data.forecast.forecastday[0].day.maxtemp_c,
+        );
+
+        if (min_temp > current) min_temp = current;
+        if (max_temp < current) max_temp = current;
+
         setWeather({
-          min_temp: Math.round(
-            weatherRes.data.forecast.forecastday[0].day.mintemp_c,
-          ).toLocaleString(`${direction === "rtl" ? "ar" : "en"}-EG`),
-          max_temp: Math.round(
-            weatherRes.data.forecast.forecastday[0].day.maxtemp_c,
-          ).toLocaleString(`${direction === "rtl" ? "ar" : "en"}-EG`),
-          temp: Math.round(weatherRes.data.current.temp_c).toLocaleString(
+          min_temp: min_temp.toLocaleString(
+            `${direction === "rtl" ? "ar" : "en"}-EG`,
+          ),
+          max_temp: max_temp.toLocaleString(
+            `${direction === "rtl" ? "ar" : "en"}-EG`,
+          ),
+          temp: current.toLocaleString(
             `${direction === "rtl" ? "ar" : "en"}-EG`,
           ),
           desc: weatherRes.data.current.condition.text,
+          icon: weatherRes.data.current.condition.icon,
         });
       } catch (err) {
         if (err.name !== "CanceledError") {
@@ -259,7 +273,11 @@ function App() {
                 <Grid container columns={12} sx={{ p: 2 }} alignItems="stretch">
                   <Grid size={8}>
                     <Stack spacing={1} ref={stackRef}>
-                      <Stack direction="row">
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ alignItems: "center" }}
+                      >
                         <Typography
                           variant="h2"
                           sx={{
@@ -275,6 +293,7 @@ function App() {
                             />
                           )}
                         </Typography>
+                        {weather.icon && <img src={weather.icon} />}
                       </Stack>
 
                       {weather.desc ? (
