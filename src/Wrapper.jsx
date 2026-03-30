@@ -1,5 +1,4 @@
 import { useState, useMemo, useEffect } from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
@@ -10,7 +9,7 @@ import { DirectionContext } from "./Context/DirectionContext";
 
 export default function Wrapper() {
   const [direction, setDirection] = useState(
-    localStorage.getItem("dir") || "rtl",
+    localStorage.getItem("dir") || "ltr",
   );
 
   useEffect(() => {
@@ -24,24 +23,7 @@ export default function Wrapper() {
     });
   }, [direction]);
 
-  const theme = useMemo(() => {
-    return createTheme({
-      direction,
-
-      palette: {
-        primary: {
-          main: "#0C45A8",
-          light: "#9fa8da",
-          dark: "#0A3F9D",
-        },
-        text: {
-          primary: "#eee",
-          secondary: "#dddddd",
-        },
-        divider: "#dddddd80",
-      },
-    });
-  }, [direction]);
+  
 
   useEffect(() => {
     document.documentElement.dir = direction;
@@ -57,11 +39,9 @@ export default function Wrapper() {
 
   return (
     <CacheProvider value={cache} key={direction}>
-      <ThemeProvider theme={theme} >
         <DirectionContext.Provider value={{ direction, handleChangeDirection }}>
           <App />
         </DirectionContext.Provider>
-      </ThemeProvider>
     </CacheProvider>
   );
 }
