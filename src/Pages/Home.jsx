@@ -1,8 +1,7 @@
-
 export default function Home() {
   return (
     <>
-      <h1 className="text-red-500">Hello Home Page</h1>
+      <div className="flex flex-row gap-4 text-red-500"></div>
     </>
   );
 }

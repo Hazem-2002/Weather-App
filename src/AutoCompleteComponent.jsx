@@ -1,3 +1,4 @@
+import React from "react";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -6,53 +7,27 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useTheme } from "@mui/material/styles";
-import { useRef, useEffect, useState, useContext } from "react";
-import { DirectionContext } from "./Context/DirectionContext";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { changeCoords } from "./features/City_Coords";
 
-export default function AutoCompleteComponent({ changeCoords }) {
-  const theme = useTheme();
-  const { direction } = useContext(DirectionContext);
-
-  const AutoCompleteRef = useRef(null);
-  const locationButtonRef = useRef(null);
-  const AutoCompleteDropdownRef = useRef(null);
-
+function AutoCompleteComponent() {
   const [open, setOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [locationIsLoading, setLocationIsLoading] = useState(false);
   const [inputSearchCity, setInputSearchCity] = useState(
     localStorage.getItem("inputSearchCity") || "",
   );
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [marginTop, setMarginTop] = useState(0);
-  const [locationIsLoading, setLocationIsLoading] = useState(false);
-  const [autoCompleteVertivalPosition, setAutoCompleteVertivalPosition] =
-    useState(0);
 
-  useEffect(() => {
-    if (AutoCompleteDropdownRef.current) {
-      setAutoCompleteVertivalPosition(
-        window.innerHeight -
-          AutoCompleteDropdownRef.current.getBoundingClientRect().bottom -
-          15,
-      );
-    }
-  }, [inputSearchCity]);
+  // THIS DISPATCH TO CHANGE CITIES COORDINATES
+  const coords_dispatch = useDispatch();
 
-  useEffect(() => {
-    if (AutoCompleteRef.current && locationButtonRef.current) {
-      const autoHeight = AutoCompleteRef.current.getBoundingClientRect().height;
-
-      const btnHeight =
-        locationButtonRef.current.getBoundingClientRect().height;
-
-      setMarginTop(-(autoHeight - btnHeight) / 2);
-    }
-  }, []);
-
+  // GENERATE CITIES SUGGESIONS AND GET THESE COORDINATES
   useEffect(() => {
     if (!inputSearchCity) return;
 
+    // GENERATE CITIES SUGGESIONS
     const timeout = setTimeout(() => {
       (async () => {
         try {
@@ -63,10 +38,10 @@ export default function AutoCompleteComponent({ changeCoords }) {
             await AutocompleteSuggestion.fetchAutocompleteSuggestions({
               input: inputSearchCity,
               includedPrimaryTypes: ["locality"], // Cities
-              language: `${direction === "rtl" ? "ar" : "en"}`,
+              language: "en",
             });
 
-          // Get Coordinates of Cities
+          // GET CITIES COORDINATES
           const service = new window.google.maps.places.PlacesService(
             document.createElement("div"),
           );
@@ -99,7 +74,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
           console.log(results);
 
           setSuggestions(results);
-          setIsLoading(false); //
+          setIsLoading(false);
         } catch (err) {
           console.error(err);
         }
@@ -107,10 +82,9 @@ export default function AutoCompleteComponent({ changeCoords }) {
     }, 500);
 
     return () => clearTimeout(timeout);
-    // eslint-disable-next-line
   }, [inputSearchCity]);
 
-  // Fetch Locations Coordinates
+  // GET CURRENT LOCATION COORDINATES
   useEffect(() => {
     if (JSON.parse(localStorage.getItem("coords")) && !locationIsLoading)
       return;
@@ -121,7 +95,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
           };
-          changeCoords(coords);
+          coords_dispatch(changeCoords(coords));
           setInputSearchCity("");
           setLocationIsLoading(false);
         },
@@ -156,7 +130,7 @@ export default function AutoCompleteComponent({ changeCoords }) {
     setInputSearchCity(value.text);
     localStorage.setItem("inputSearchCity", value.text);
     setOpen(false);
-    changeCoords({ lat: value.lat, lon: value.lng });
+    coords_dispatch(changeCoords({ lat: value.lat, lon: value.lng }));
   };
 
   const handleLocation = (e) => {
@@ -165,171 +139,180 @@ export default function AutoCompleteComponent({ changeCoords }) {
   };
 
   return (
-    <Autocomplete
-      open={open}
-      onClose={() => setOpen(false)}
-      autoHighlight
-      blurOnSelect
-      clearOnEscape
-      disableClearable
-      disablePortal
-      loading={isLoading}
-      loadingText={
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-        >
-          <CircularProgress
-            size={24}
+    <>
+      <Autocomplete
+        open={open}
+        onClose={() => setOpen(false)}
+        autoHighlight
+        blurOnSelect
+        clearOnEscape
+        disableClearable
+        disablePortal
+        loading={isLoading}
+        loadingText={
+          <Box
             sx={{
-              color: theme.palette.primary.light,
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
             }}
-          />
-        </Box>
-      }
-      ref={AutoCompleteDropdownRef}
-      forcePopupIcon={false}
-      inputValue={inputSearchCity}
-      onInputChange={handleInput}
-      onChange={handleSelect}
-      options={suggestions}
-      getOptionLabel={(option) => option.text}
-      renderOption={(props, option) => (
-        <li
-          {...props}
-          style={{ whiteSpace: "nowrap" }}
-          key={`${option.lat}-${option.lng}`}
-        >
-          {option.text}
-        </li>
-      )}
-      sx={{ width: 230, flexShrink: 1 }}
-      slotProps={{
-        popper: {
-          placement: "bottom",
-          sx: {
-            "& .MuiAutocomplete-paper": {
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.text.secondary,
-              boxShadow: theme.shadows[8],
-            },
-            "& .MuiAutocomplete-listbox": {
-              maxHeight: `${autoCompleteVertivalPosition}px`,
-
-              overflowY: "auto",
-              "&::-webkit-scrollbar": {
-                width: "8px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: theme.palette.primary.light,
-                borderRadius: "8px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: theme.palette.primary.main,
-                borderRadius: "8px",
-                border: `2px solid ${theme.palette.primary.light}`,
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: theme.palette.primary.dark,
+          >
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "var(--primary)",
+              }}
+            />
+          </Box>
+        }
+        forcePopupIcon={false}
+        inputValue={inputSearchCity}
+        onInputChange={handleInput}
+        onChange={handleSelect}
+        options={suggestions}
+        getOptionLabel={(option) => option.text}
+        renderOption={(props, option) => (
+          <li
+            {...props}
+            style={{ whiteSpace: "nowrap" }}
+            key={`${option.lat}-${option.lng}`}
+          >
+            <div className="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-map-pin-icon lucide-map-pin"
+              >
+                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {option.text}
+            </div>
+          </li>
+        )}
+        noOptionsText={
+          <span style={{ color: "var(--primary)" }}>No Options</span>
+        }
+        sx={{
+          width: 460,
+          flexShrink: 1,
+          border:
+            "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
+          background: "var(--muted)",
+          borderRadius: "999px",
+          overflow: "hidden",
+        }}
+        slotProps={{
+          popper: {
+            placement: "bottom",
+            sx: {
+              "& .MuiAutocomplete-paper": {
+                backgroundColor: "var(--muted)",
+                color: "var(--primary)",
+                borderRadius: "10px",
+                marginTop: "10px",
               },
             },
           },
-        },
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          variant="filled"
-          label={direction === "rtl" ? "المدينة" : "City"}
-          ref={AutoCompleteRef}
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              endAdornment: (
-                <InputAdornment
-                  position="end"
-                  ref={locationButtonRef}
-                  sx={{
-                    marginTop: `${marginTop}px`,
-                    marginRight: "-5px",
-                  }}
-                >
-                  <Tooltip
-                    title={
-                      direction === "rtl"
-                        ? "تحديد الموقع الحالي"
-                        : "Use Current Location"
-                    }
-                    leaveDelay={50}
-                    slotProps={{
-                      popper: {
-                        sx: {
-                          "&.MuiPopper-root .MuiTooltip-tooltip": {
-                            background: theme.palette.primary.main,
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                          },
-                          "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
-                            {
-                              color: theme.palette.primary.main,
-                            },
-                        },
-                      },
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            variant="filled"
+            label="City"
+            slotProps={{
+              input: {
+                sx: { color: "var(--primary)" },
+                ...params.InputProps,
+                endAdornment: (
+                  <InputAdornment
+                    position="end"
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      right: 0,
                     }}
-                    arrow
                   >
-                    <IconButton
-                      loading={locationIsLoading}
-                      loadingIndicator={
-                        <CircularProgress
-                          sx={{
-                            color: theme.palette.primary.light,
-                          }}
-                          size={20}
-                        />
-                      }
-                      onClick={handleLocation}
+                    <Tooltip
+                      title="Use Current Location"
+                      leaveDelay={50}
+                      slotProps={{
+                        popper: {
+                          sx: {
+                            "&.MuiPopper-root .MuiTooltip-tooltip": {
+                              background:
+                                "color-mix(in srgb, var(--primary) 20%, transparent)",
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                            },
+                            "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
+                              {
+                                color:
+                                  "color-mix(in srgb, var(--primary) 20%, transparent)",
+                              },
+                          },
+                        },
+                      }}
+                      arrow
                     >
-                      <LocationOnIcon
-                        sx={{
-                          color: theme.palette.primary.light,
-                          visibility: locationIsLoading ? "hidden" : "visible",
-                        }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{
-            "& .MuiFilledInput-root": {
-              "&:before": {
-                borderBottom: `2px solid ${theme.palette.primary.light}`,
+                      <IconButton
+                        loading={locationIsLoading}
+                        loadingIndicator={
+                          <CircularProgress
+                            sx={{
+                              color: "var(--primary)",
+                            }}
+                            size={20}
+                          />
+                        }
+                        onClick={handleLocation}
+                      >
+                        <LocationOnIcon
+                          sx={{
+                            color: "var(--primary)",
+                            visibility: locationIsLoading
+                              ? "hidden"
+                              : "visible",
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </InputAdornment>
+                ),
               },
-              "&:after": {
-                borderBottom: `2px solid ${theme.palette.text.secondary}`,
+            }}
+            sx={{
+              padding: "0 10px",
+              "& .MuiFilledInput-root": {
+                "&:after": {
+                  borderBottom: `2px solid color-mix(in srgb, var(--primary) 90%, transparent)`,
+                },
               },
-              "&:hover:not(.Mui-disabled, .Mui-error):before": {
-                borderBottom: `2px solid ${theme.palette.primary.light}`,
+              "& .MuiInputLabel-root": {
+                color: "var(--primary)",
+                transition: "all 0.17s",
+                willChange: "transform",
+                marginLeft: "5px",
               },
-            },
-            "& .MuiInputLabel-root": {
-              color: theme.palette.text.secondary,
-              transition: "all 0.17s",
-              willChange: "transform",
-            },
-            "& .MuiInputLabel-root.MuiInputLabel-shrink": {
-              color: theme.palette.text.primary,
-              fontSize: "0.9rem",
-              transform: "translate(10px,6px)",
-              willChange: "transform",
-            },
-          }}
-        />
-      )}
-    />
+              "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+                color: "var(--primary)",
+                fontSize: "0.9rem",
+                transform: "translate(20px,6px)",
+                willChange: "transform",
+              },
+            }}
+          />
+        )}
+      />
+    </>
   );
 }
+
+export default React.memo(AutoCompleteComponent);
