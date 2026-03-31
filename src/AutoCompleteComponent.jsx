@@ -7,13 +7,14 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { changeCoords } from "./features/City_Coords";
 
 function AutoCompleteComponent() {
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const choosenCityRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [locationIsLoading, setLocationIsLoading] = useState(false);
   const [inputSearchCity, setInputSearchCity] = useState(
@@ -129,8 +130,10 @@ function AutoCompleteComponent() {
 
     setInputSearchCity(value.text);
     localStorage.setItem("inputSearchCity", value.text);
-    setOpen(false);
+
     coords_dispatch(changeCoords({ lat: value.lat, lon: value.lng }));
+
+    choosenCityRef.current = true;
   };
 
   const handleLocation = (e) => {
@@ -138,16 +141,29 @@ function AutoCompleteComponent() {
     setLocationIsLoading(true);
   };
 
+  const handleClosePopper = () => {
+    const lastCity = localStorage.getItem("inputSearchCity");
+
+    if (!inputSearchCity || !choosenCityRef.current) {
+      setInputSearchCity(lastCity || "");
+    }
+
+    choosenCityRef.current = false;
+    setOpen(false);
+  };
+
   return (
     <>
       <Autocomplete
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClosePopper}
+        onBlur={handleClosePopper}
         autoHighlight
         blurOnSelect
         clearOnEscape
         disableClearable
         disablePortal
+        clearOnBlur
         loading={isLoading}
         loadingText={
           <Box
