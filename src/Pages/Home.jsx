@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWeather } from "../features/WeatherDetials";
 
@@ -6,6 +6,18 @@ export default function Home() {
   const coords = useSelector((state) => state.city);
   const weather = useSelector((state) => state.weather);
   const weatherDispatch = useDispatch();
+  const iconRef = useRef(null);
+
+  const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    if (iconRef.current) {
+      setIconSize({
+        width: iconRef.current.getBoundingClientRect().width,
+        height: iconRef.current.getBoundingClientRect().height,
+      });
+    }
+  }, [weather]);
 
   // Fetch Current Temperature
   useEffect(() => {
@@ -19,8 +31,10 @@ export default function Home() {
     <>
       <div className="flex flex-col gap-4 text-[var(--foreground)]">
         <div className="flex flex-row gap-12 pt-28 pb-8 pe-8 h-screen">
-          <div className="flex flex-row justify-between gap-4 flex-grow p-10 rounded-4xl bg-gradient-to-br from-gray-800 to-gray-600 animate-in fade-in zoom-in duration-600">
-            <div className="flex flex-row gap-1 justify-between flex-grow overflow-hidden">
+          <div
+            className={`flex flex-row justify-between gap-4 flex-grow p-10 overflow-hidden rounded-4xl animate-in fade-in zoom-in duration-600 ${weather.WeatherUI.bg}`}
+          >
+            <div className="flex flex-row gap-1 justify-between flex-grow">
               <div className="flex flex-col justify-center gap-6 grow max-w-[60%] overflow-hidden animate-in delay-200 slide-in-from-left duration-400">
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-row items-center gap-3 group">
@@ -34,15 +48,15 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="lucide lucide-map-pin-icon lucide-map-pin group-hover:animate-bounce text-primary/75 transition duration-100 group-hover:text-primary/90"
+                      className="lucide lucide-map-pin-icon lucide-map-pin group-hover:animate-bounce text-white/60 transition duration-100 group-hover:text-white/70"
                     >
                       <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                       <circle cx="12" cy="10" r="3" />
                     </svg>
                     <h4 className="text-5xl font-bold">{weather.city}</h4>
                   </div>
-                  <p className="text-muted-foreground font-semibold text-lg">
-                    {weather.place}
+                  <p className="text-white/60 font-semibold text-lg">
+                    {weather.placeAddress}
                   </p>
                 </div>
 
@@ -107,13 +121,23 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-4 grow max-w-[40%] overflow-hidden animate-in delay-200 slide-in-from-right duration-400">
-                <div className="flex justify-end flex-grow h-[40%]">
+              <div className="flex flex-col gap-4 grow max-w-[40%] animate-in delay-200 slide-in-from-right duration-400">
+                <div className="flex justify-end flex-grow relative group h-[40%]">
+                  <div
+                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[70px] group-hover:blur-[60px] `}
+                    style={{
+                      width: iconSize.width * 1.15,
+                      height: iconSize.height * 1.15,
+                      top: -iconSize.height * 0.075,
+                      right: -iconSize.width * 0.075,
+                    }}
+                  ></div>
                   {weather.icon && (
                     <img
                       src={weather.icon}
                       alt="Weather State"
-                      className="h-full object-cover"
+                      ref={iconRef}
+                      className="h-full object-cover transition duration-500 rotate-0 group-hover:rotate-10"
                     />
                   )}
                 </div>
@@ -124,7 +148,7 @@ export default function Home() {
                     {weather.desc}
                   </p>
                   <h2 className="text-[8rem] font-black leading-none my-2 drop-shadow-md">{`${weather.temp}°`}</h2>
-                  <p className="w-fit bg-white/10 backdrop-blur-xl px-4 py-1.5 rounded-xl border border-white/10 text-base font-semibold capitalize">
+                  <p className="w-fit bg-white/10 backdrop-blur-xl px-4 py-1.5 rounded-xl border border-white/10 text-base font-semibold capitalize hover:bg-white/15">
                     {`feels like: ${weather.feelslike}°`}
                   </p>
                 </div>
