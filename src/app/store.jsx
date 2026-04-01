@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/City_Coords";
+import coordsReducer from "../features/CityCoords";
+import weatherReducer from "../features/WeatherDetials";
 
 export default configureStore({
   reducer: {
-    city: counterReducer,
+    city: coordsReducer,
+    weather: weatherReducer,
   },
 });

@@ -12,15 +12,15 @@ export default function Layout() {
 
   return (
     <>
-      <nav className="flex flex-row justify-center bg-background p-4 w-screen fixed top-0">
+      <nav className="flex flex-row justify-center bg-background pt-7 w-screen fixed top-0">
         <AutoCompleteComponent />
       </nav>
 
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-8 bg-background">
         <div className="w-64 flex-shrink-0">
-          <aside className="flex flex-col justify-between w-64 h-screen bg-background text-foreground p-4 pt-0 fixed left-0 top-0">
+          <aside className="flex flex-col justify-between w-64 h-screen bg-background text-foreground p-4 pb-8 pt-0 fixed left-0 top-0">
             <div>
-              <div className="flex justify-center h-24 items-center gap-2">
+              <div className="flex justify-center h-28 items-center gap-2">
                 <div className="size-10 flex justify-center items-center rounded-full bg-primary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +193,7 @@ export default function Layout() {
           </aside>
         </div>
 
-        <div className="flex-grow pt-24 min-h-screen bg-background">
+        <div className="flex-grow min-h-screen bg-background">
           <Outlet />
         </div>
       </div>

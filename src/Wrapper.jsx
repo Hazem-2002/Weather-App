@@ -4,7 +4,6 @@ import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import App from "./App";
-import "./index.css";
 
 export default function Wrapper() {
   const [direction, ] = useState(

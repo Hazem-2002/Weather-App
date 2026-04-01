@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { changeCoords } from "./features/City_Coords";
+import { changeCoords } from "./features/CityCoords";
 
 function AutoCompleteComponent() {
   const [open, setOpen] = useState(false);
@@ -27,6 +27,8 @@ function AutoCompleteComponent() {
   // GENERATE CITIES SUGGESIONS AND GET THESE COORDINATES
   useEffect(() => {
     if (!inputSearchCity) return;
+
+    let isActive = true;
 
     // GENERATE CITIES SUGGESIONS
     const timeout = setTimeout(() => {
@@ -74,6 +76,8 @@ function AutoCompleteComponent() {
           const results = (await Promise.all(coordsPromises)).filter(Boolean);
           console.log(results);
 
+          if (!isActive) return;
+
           setSuggestions(results);
           setIsLoading(false);
         } catch (err) {
@@ -82,7 +86,10 @@ function AutoCompleteComponent() {
       })();
     }, 500);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      isActive = false;
+      clearTimeout(timeout);
+    };
   }, [inputSearchCity]);
 
   // GET CURRENT LOCATION COORDINATES
@@ -95,6 +102,7 @@ function AutoCompleteComponent() {
           const coords = {
             lat: position.coords.latitude,
             lon: position.coords.longitude,
+            city: "",
           };
           coords_dispatch(changeCoords(coords));
           setInputSearchCity("");
@@ -131,7 +139,13 @@ function AutoCompleteComponent() {
     setInputSearchCity(value.text);
     localStorage.setItem("inputSearchCity", value.text);
 
-    coords_dispatch(changeCoords({ lat: value.lat, lon: value.lng }));
+    coords_dispatch(
+      changeCoords({
+        lat: value.lat,
+        lon: value.lng,
+        city: value.text.split(/,\s|،\s|\s-\s/)[0],
+      }),
+    );
 
     choosenCityRef.current = true;
   };
@@ -162,7 +176,6 @@ function AutoCompleteComponent() {
         blurOnSelect
         clearOnEscape
         disableClearable
-        disablePortal
         clearOnBlur
         loading={isLoading}
         loadingText={
@@ -265,13 +278,13 @@ function AutoCompleteComponent() {
                           sx: {
                             "&.MuiPopper-root .MuiTooltip-tooltip": {
                               background:
-                                "color-mix(in srgb, var(--primary) 20%, transparent)",
+                                "color-mix(in srgb, var(--muted) 90%, transparent)",
                               boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                             },
                             "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
                               {
                                 color:
-                                  "color-mix(in srgb, var(--primary) 20%, transparent)",
+                                  "color-mix(in srgb, var(--muted) 80%, transparent)",
                               },
                           },
                         },

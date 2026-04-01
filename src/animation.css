@@ -1,0 +1,175 @@
+:root {
+  /* ---------- Animation Defaults ---------- */
+  --enter-opacity: 1;
+  --enter-scale: 1;
+  --enter-translate-x: 0;
+  --enter-translate-y: 0;
+  --enter-rotate: 0;
+
+  --exit-opacity: 1;
+  --exit-scale: 1;
+  --exit-translate-x: 0;
+  --exit-translate-y: 0;
+  --exit-rotate: 0;
+
+  --animation-duration: 0.4s;
+  --animation-ease: ease;
+}
+
+/* ================================
+   🎬 Animation Utilities
+================================ */
+
+@layer utilities {
+  /* Base Animations */
+  .animate-in {
+    animation: enter var(--animation-duration) var(--animation-ease) both;
+  }
+
+  .animate-out {
+    animation: exit var(--animation-duration) var(--animation-ease) both;
+  }
+
+  /* Delay */
+  .delay-100 {
+    animation-delay: 0.1s;
+  }
+  .delay-200 {
+    animation-delay: 0.2s;
+  }
+  .delay-300 {
+    animation-delay: 0.3s;
+  }
+  .delay-400 {
+    animation-delay: 0.4s;
+  }
+  .delay-500 {
+    animation-delay: 0.5s;
+  }
+  .delay-600 {
+    animation-delay: 0.6s;
+  }
+  .delay-700 {
+    animation-delay: 0.7s;
+  }
+  .delay-800 {
+    animation-delay: 0.8s;
+  }
+  .delay-900 {
+    animation-delay: 0.9s;
+  }
+  .delay-1000 {
+    animation-delay: 1s;
+  }
+
+  /* Direction */
+  .direction-reverse {
+    animation-direction: reverse;
+  }
+
+  /* Effects */
+  .fade-in {
+    --enter-opacity: 0;
+  }
+  .fade-out {
+    --exit-opacity: 0;
+  }
+
+  .zoom-in {
+    --enter-scale: 0.95;
+  }
+  .zoom-out {
+    --exit-scale: 0.95;
+  }
+
+  .slide-in-from-left {
+    --enter-translate-x: -100%;
+  }
+  .slide-in-from-right {
+    --enter-translate-x: 100%;
+  }
+  .slide-in-from-top {
+    --enter-translate-y: -20px;
+  }
+  .slide-in-from-bottom {
+    --enter-translate-y: 20px;
+  }
+
+  .rotate-in {
+    --enter-rotate: -10deg;
+  }
+
+  /* Duration */
+  .duration-100 {
+    --animation-duration: 0.1s;
+  }
+  .duration-200 {
+    --animation-duration: 0.2s;
+  }
+  .duration-300 {
+    --animation-duration: 0.3s;
+  }
+  .duration-400 {
+    --animation-duration: 0.4s;
+  }
+  .duration-500 {
+    --animation-duration: 0.5s;
+  }
+  .duration-600 {
+    --animation-duration: 0.6s;
+  }
+  .duration-700 {
+    --animation-duration: 0.7s;
+  }
+  .duration-800 {
+    --animation-duration: 0.8s;
+  }
+  .duration-900 {
+    --animation-duration: 0.9s;
+  }
+  .duration-1000 {
+    --animation-duration: 1s;
+  }
+
+  /* Easing */
+  .ease-in {
+    --animation-ease: ease-in;
+  }
+  .ease-out {
+    --animation-ease: ease-out;
+  }
+  .ease-in-out {
+    --animation-ease: ease-in-out;
+  }
+}
+
+/* ================================
+   🎞 Keyframes
+================================ */
+@keyframes enter {
+  from {
+    opacity: var(--enter-opacity, 1);
+    transform: translateX(var(--enter-translate-x, 0))
+      translateY(var(--enter-translate-y, 0)) scale(var(--enter-scale, 1))
+      rotate(var(--enter-rotate, 0));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1) rotate(0);
+  }
+}
+
+@keyframes exit {
+  from {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1) rotate(0);
+  }
+
+  to {
+    opacity: var(--exit-opacity);
+    transform: translateX(var(--exit-translate-x))
+      translateY(var(--exit-translate-y)) scale(var(--exit-scale))
+      rotate(var(--exit-rotate));
+  }
+}

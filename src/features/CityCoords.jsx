@@ -4,7 +4,7 @@ const storedCoords = localStorage.getItem("coords");
 
 const initialState = storedCoords
   ? JSON.parse(storedCoords)
-  : { lon: null, lat: null };
+  : { lon: null, lat: null, city: null };
 
 export const counterSlice = createSlice({
   name: "city",
@@ -15,6 +15,7 @@ export const counterSlice = createSlice({
       const newState = {
         lon: action.payload.lon,
         lat: action.payload.lat,
+        city: action.payload.city,
       };
 
       localStorage.setItem("coords", JSON.stringify(newState));

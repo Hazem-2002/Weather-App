@@ -1,39 +1,45 @@
+/* ================================
+   🌿 Tailwind Import
+================================ */
 @import "tailwindcss";
 
+/* ================================
+   🌞 LIGHT THEME (Default)
+================================ */
 :root {
-  /* Background & Text */
+  /* ---------- Background & Text ---------- */
   --background: oklch(1 0 0);
   --foreground: oklch(0.14 0 0);
 
-  /* Surface */
+  /* ---------- Surface ---------- */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.14 0 0);
 
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.14 0 0);
 
-  /* Brand */
+  /* ---------- Brand ---------- */
   --primary: oklch(0.2 0 0);
   --primary-foreground: oklch(0.98 0 0);
 
-  /* Secondary */
+  /* ---------- Secondary ---------- */
   --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.2 0 0);
 
-  /* Muted */
+  /* ---------- Muted ---------- */
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.5 0 0);
 
-  /* Accent */
+  /* ---------- Accent ---------- */
   --accent: oklch(0.96 0 0);
   --accent-foreground: oklch(0.2 0 0);
 
-  /* UI */
+  /* ---------- UI ---------- */
   --border: oklch(0.9 0 0);
   --input: oklch(0.9 0 0);
   --ring: oklch(0.6 0.15 240);
 
-  /* Status */
+  /* ---------- Status ---------- */
   --success: oklch(0.7 0.15 140);
   --success-foreground: oklch(0.98 0 0);
 
@@ -43,7 +49,7 @@
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
 
-  /* 🔥 Component Layer */
+  /* ---------- Components ---------- */
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.14 0 0);
   --sidebar-active: oklch(0.95 0 0);
@@ -51,6 +57,9 @@
   --button-hover: oklch(0.9 0 0);
 }
 
+/* ================================
+   🌙 DARK THEME
+================================ */
 .dark {
   --background: #0a0a0a;
   --foreground: #fafafa;
@@ -74,24 +83,20 @@
   --accent-foreground: #fafafa;
 
   --destructive: #ff6568;
+
   --border: #ffffff1a;
   --input: #ffffff26;
   --ring: #737373;
-  --chart-1: #90c5ff;
-  --chart-2: #3080ff;
-  --chart-3: #155dfc;
-  --chart-4: #1447e6;
-  --chart-5: #193cb8;
+
+  /* Sidebar */
   --sidebar: #171717;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #1447e6;
-  --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border: #ffffff1a;
-  --sidebar-ring: #737373;
+  --sidebar-active: #262626;
 }
 
+/* ================================
+   🎨 Tailwind Theme Mapping
+================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -132,6 +137,9 @@
   --color-sidebar-active: var(--sidebar-active);
 }
 
+/* ================================
+   ✍️ Global Styles
+================================ */
 * {
   font-family: "Inter", sans-serif;
 }
