@@ -2,21 +2,20 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const weatherKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-const storedCoords = localStorage.getItem("weather");
+const currentWeather = localStorage.getItem("weather");
 
-const initialState = storedCoords
-  ? JSON.parse(storedCoords)
+const initialState = currentWeather
+  ? JSON.parse(currentWeather)
   : {
       temp: "",
       feelslike: "",
-      min_temp: "",
-      max_temp: "",
-      desc: "",
       icon: "",
+      days_detials: [{}],
+      desc: "",
       city: "",
       placeAddress: "",
       date: "",
-      WeatherUI: "",
+      WeatherUI: {},
     };
 
 export const weatherSlice = createSlice({
@@ -52,21 +51,38 @@ export const fetchWeather = createAsyncThunk(
         locale,
       );
 
-      const hours = weatherRes.data.forecast.forecastday[0].hour;
+      let min_temp;
+      let max_temp;
+      const days_detials = [];
 
-      const min_temp = Math.round(
-        hours.reduce(
-          (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
-          hours[0].temp_c,
-        ),
-      ).toLocaleString(locale);
+      for (let day of weatherRes.data.forecast.forecastday) {
+        const hours = day.hour;
 
-      const max_temp = Math.round(
-        hours.reduce(
-          (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
-          hours[0].temp_c,
-        ),
-      ).toLocaleString(locale);
+        min_temp = Math.round(
+          hours.reduce(
+            (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
+            hours[0].temp_c,
+          ),
+        ).toLocaleString(locale);
+
+        max_temp = Math.round(
+          hours.reduce(
+            (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
+            hours[0].temp_c,
+          ),
+        ).toLocaleString(locale);
+
+        const icon = day.day.condition.icon;
+
+        const dayName = new Date(day.date).toLocaleString("en-EG", {
+          timeZone: weatherRes.data.location.tz_id,
+          weekday: "long",
+        });
+
+        days_detials.push({ min_temp, max_temp, icon, dayName });
+      }
+
+      console.log(days_detials);
 
       // City
       const city =
@@ -106,7 +122,7 @@ export const fetchWeather = createAsyncThunk(
 
       const date = getDate(weatherRes.data.location.tz_id);
 
-      // Weather State Icon
+      // Weather Icon State
       const icon = weatherRes.data.current.condition.icon;
 
       // Weather Descriptiom
@@ -121,93 +137,101 @@ export const fetchWeather = createAsyncThunk(
         const dayNight = (dayClasses, nightClasses) =>
           isDay ? dayClasses : nightClasses;
 
+        // ☀️ Clear / Sunny
         if (isMatch(["sun", "clear"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-yellow-300 via-orange-400 to-yellow-500",
-              "bg-gradient-to-br from-indigo-900 via-purple-900 to-black",
+              "bg-gradient-to-br from-amber-400 via-orange-400 to-yellow-500",
+              "bg-gradient-to-br from-slate-900 via-indigo-950 to-black",
             ),
-            glow: dayNight("bg-yellow-400", "bg-purple-500"),
+            glow: dayNight("bg-yellow-300/30", "bg-indigo-500/30"),
           };
         }
 
+        // ⛅ Partly Cloudy
         if (isMatch(["partly cloudy"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-blue-300 via-gray-200 to-yellow-200",
-              "bg-gradient-to-br from-indigo-800 via-gray-700 to-gray-900",
+              "bg-gradient-to-br from-sky-400 via-blue-400 to-yellow-300",
+              "bg-gradient-to-br from-slate-800 via-gray-800 to-slate-900",
             ),
-            glow: dayNight("bg-yellow-300", "bg-gray-400"),
+            glow: dayNight("bg-yellow-300/25", "bg-gray-400/25"),
           };
         }
 
+        // ☁️ Cloudy
         if (isMatch(["cloud", "overcast"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-gray-300 to-gray-500",
-              "bg-gradient-to-br from-gray-700 to-gray-900",
+              "bg-gradient-to-br from-gray-400 to-gray-600",
+              "bg-gradient-to-br from-gray-800 to-gray-950",
             ),
-            glow: "bg-gray-400",
+            glow: dayNight("bg-gray-300/25", "bg-gray-500/25"),
           };
         }
 
+        // 🌧 Rain
         if (isMatch(["rain", "drizzle", "shower"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-blue-400 via-blue-500 to-blue-700",
-              "bg-gradient-to-br from-blue-900 via-indigo-900 to-black",
+              "bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700",
+              "bg-gradient-to-br from-slate-900 via-blue-950 to-black",
             ),
-            glow: "bg-blue-500",
+            glow: dayNight("bg-blue-300/25", "bg-blue-500/25"),
           };
         }
 
+        // ⛈ Thunder
         if (isMatch(["thunder", "storm"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-gray-700 via-purple-800 to-black",
-              "bg-gradient-to-br from-black via-purple-900 to-black",
+              "bg-gradient-to-br from-gray-600 via-purple-700 to-gray-800",
+              "bg-gradient-to-br from-black via-purple-950 to-slate-950",
             ),
-            glow: "bg-purple-600",
+            glow: dayNight("bg-purple-400/25", "bg-purple-600/25"),
           };
         }
 
+        // ❄️ Snow
         if (isMatch(["snow", "blizzard", "ice"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-blue-100 via-white to-gray-200",
-              "bg-gradient-to-br from-gray-500 to-gray-800",
+              "bg-gradient-to-br from-slate-300 via-gray-300 to-slate-400",
+              "bg-gradient-to-br from-gray-600 to-gray-900",
             ),
-            glow: "bg-white",
+            glow: dayNight("bg-white/40", "bg-gray-400/25"),
           };
         }
 
+        // 🌫 Fog / Mist
         if (isMatch(["fog", "mist", "haze"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-gray-200 to-gray-400",
-              "bg-gradient-to-br from-gray-600 to-gray-800",
+              "bg-gradient-to-br from-gray-300 to-gray-400",
+              "bg-gradient-to-br from-gray-700 to-gray-900",
             ),
-            glow: "bg-gray-300",
+            glow: dayNight("bg-gray-200/40", "bg-gray-400/25"),
           };
         }
 
+        // 🌪 Wind / Dust
         if (isMatch(["wind", "dust", "sand"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-yellow-200 to-orange-300",
-              "bg-gradient-to-br from-gray-700 to-gray-900",
+              "bg-gradient-to-br from-amber-400 to-orange-500",
+              "bg-gradient-to-br from-slate-800 to-gray-900",
             ),
-            glow: "bg-orange-300",
+            glow: dayNight("bg-orange-300/25", "bg-orange-500/25"),
           };
         }
 
-        // DEFAULT
+        // 🌈 Default
         return {
           bg: dayNight(
-            "bg-gradient-to-br from-sky-300 via-blue-400 to-indigo-500",
-            "bg-gradient-to-br from-gray-900 via-indigo-900 to-black",
+            "bg-gradient-to-br from-sky-500 via-blue-500 to-indigo-600",
+            "bg-gradient-to-br from-slate-900 via-indigo-950 to-black",
           ),
-          glow: dayNight("bg-blue-400", "bg-indigo-500"),
+          glow: dayNight("bg-blue-300/25", "bg-indigo-500/25"),
         };
       };
 
@@ -219,10 +243,9 @@ export const fetchWeather = createAsyncThunk(
       // Feels Like Of Temperature
       const feelslike = Math.round(weatherRes.data.current.feelslike_c);
 
-      return {
+      const weather = {
         temp,
-        min_temp,
-        max_temp,
+        days_detials,
         city,
         placeAddress,
         date,
@@ -231,6 +254,8 @@ export const fetchWeather = createAsyncThunk(
         feelslike,
         WeatherUI,
       };
+      localStorage.setItem("weather", JSON.stringify(weather));
+      return weather;
     } catch (err) {
       if (err.name !== "CanceledError") {
         console.error("Error fetching data:", err);
