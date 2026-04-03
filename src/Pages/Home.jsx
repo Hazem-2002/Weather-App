@@ -65,7 +65,7 @@ export default function Home() {
 
                 <div className="relative grow">
                   <div
-                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[25px]`}
+                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[28px]`}
                     style={{
                       width: iconSize.width,
                       height: iconSize.height,
@@ -246,7 +246,7 @@ export default function Home() {
                 <div className="flex flex-col gap-4 grow max-w-[40%] animate-in delay-200 slide-in-from-right duration-400">
                   <div className="flex justify-end flex-grow relative group h-[40%]">
                     <div
-                      className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[25px] group-hover:blur-[18px] `}
+                      className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[28px] group-hover:blur-[24px] `}
                       style={{
                         width: iconSize.width * 1.15,
                         height: iconSize.height * 1.15,
@@ -259,7 +259,7 @@ export default function Home() {
                         src={`${weather.icon}`}
                         alt="Weather State"
                         ref={iconRef}
-                        className="h-full object-cover transition duration-500 rotate-0 group-hover:rotate-10"
+                        className="h-full object-cover transition duration-300 rotate-0 group-hover:rotate-10"
                       />
                     )}
                   </div>
@@ -279,7 +279,7 @@ export default function Home() {
               {/* ----------- END ----------- */}
             </div>
           </div>
-          <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[50vh] xl:h-full xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-600">
+          <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[50vh] overflow-hidden xl:h-full p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-600">
             <div
               className="w-full max-h-full flex flex-col gap-4 pb-7 px-6 rounded-4xl"
               style={{
@@ -326,7 +326,7 @@ export default function Home() {
                     className="flex flex-row justify-between items-center py-3 px-4 mb-2 shadow-sm shadow-border rounded-lg transition hover:bg-muted/50"
                   >
                     <h2 className="text-base font-semibold leading-none">
-                      {day.dayName}
+                      {day.dayName?.slice(0,3)}
                     </h2>
 
                     <img src={day.icon} alt="icon" className="h-10" />
