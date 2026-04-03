@@ -281,13 +281,19 @@ export default function Home() {
           </div>
           <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[60vh] sm:h-[80vh] overflow-hidden xl:h-full p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
             <div
-              className="w-full max-h-full flex flex-col gap-2 pb-7 px-6 rounded-4xl"
+              className="w-full max-h-full flex flex-col gap-4 pb-5 px-6 rounded-4xl overflow-hidden"
               style={{
                 boxShadow:
                   "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
               }}
             >
-              <div className="flex flex-row items-center gap-2 py-6 shadow-md shadow-border shrink-0">
+              <div
+                className="flex flex-row items-center gap-2 py-6 shadow-md shadow-border shrink-0"
+                style={{
+                  boxShadow:
+                    "0 5px 6px -4px color-mix(in srgb, var(--primary) 15%, transparent)",
+                }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -314,7 +320,7 @@ export default function Home() {
               </div>
 
               <div
-                className="flex flex-col gap-3 grow overflow-auto min-h-0 p-1 px-2"
+                className="flex flex-col gap-3 grow overflow-auto min-h-0"
                 style={{
                   scrollbarWidth: "none", // Firefox
                   msOverflowStyle: "none", // IE
@@ -323,7 +329,7 @@ export default function Home() {
                 {weather.days_detials.map((day, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-[1fr_1fr_1.7fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.7fr] justify-between items-center py-3 px-4 shadow-sm shadow-border rounded-lg transition hover:bg-muted/50"
+                    className="grid grid-cols-[1fr_1fr_1.7fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.7fr] justify-between items-center py-3 px-4 shadow-xs shadow-border rounded-3xl transition hover:bg-muted/50"
                   >
                     <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
                       {day.dayName?.slice(0, 3)}
