@@ -234,7 +234,8 @@ function AutoCompleteComponent() {
           flexShrink: 1,
           border:
             "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
-          background: "var(--muted)",
+          background: "color-mix(in srgb, var(--background) 65%, transparent)",
+          backdropFilter: "blur(3px)",
           borderRadius: "999px",
           overflow: "hidden",
         }}
@@ -243,7 +244,9 @@ function AutoCompleteComponent() {
             placement: "bottom",
             sx: {
               "& .MuiAutocomplete-paper": {
-                backgroundColor: "var(--muted)",
+                background:
+                  "color-mix(in srgb, var(--background) 80%, transparent)",
+                backdropFilter: "blur(3px)",
                 color: "var(--primary)",
                 borderRadius: "10px",
                 marginTop: "10px",
@@ -320,6 +323,8 @@ function AutoCompleteComponent() {
             sx={{
               padding: "0 10px",
               "& .MuiFilledInput-root": {
+                // background: "white",
+                // opacity: 0.5,
                 "&:after": {
                   borderBottom: `2px solid color-mix(in srgb, var(--primary) 90%, transparent)`,
                 },

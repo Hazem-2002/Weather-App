@@ -8,8 +8,10 @@ export default function Home() {
   const weatherDispatch = useDispatch();
   const iconRef = useRef(null);
   const dayForecastHeight = useRef(null);
-
+  const placeRef = useRef(null);
+  const screenRef = useRef(null);
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
+  const [showPlace, setShowPlace] = useState(false);
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
   const isXL = window.matchMedia("(min-width: 1280px)").matches;
 
@@ -44,6 +46,14 @@ export default function Home() {
     // eslint-disable-next-line
   }, [coords]);
 
+  useEffect(() => {
+    if (!screenRef.current || !placeRef.current) return;
+
+    const ratio = placeRef.current.offsetWidth / screenRef.current.offsetWidth;
+
+    setShowPlace(ratio < 0.82);
+  }, [weather]);
+
   return (
     <>
       <div className="flex flex-col gap-4 text-[var(--foreground)]">
@@ -55,7 +65,10 @@ export default function Home() {
               className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
             >
               {/* ----------- Mobile ----------- */}
-              <div className="flex sm:hidden flex-col items-center justify-center w-full overflow-hidden">
+              <div
+                className="flex sm:hidden flex-col items-center justify-center px-2 w-full overflow-hidden"
+                ref={screenRef}
+              >
                 <div className="flex flex-col items-center grow justify-center gap-1">
                   <div className="flex flex-row gap-3 items-center">
                     <svg
@@ -75,12 +88,32 @@ export default function Home() {
                     </svg>
                     <h4 className="text-3xl font-bold w-fit">{weather.city}</h4>
                   </div>
-                  <p className="text-white/60 font-semibold text-base">
-                    {weather.placeAddress}
-                  </p>
+                  {showPlace ? (
+                    <p
+                      className="text-white/60 font-semibold text-center text-base"
+                      ref={placeRef}
+                    >
+                      {weather.placeAddress}
+                    </p>
+                  ) : (
+                    <div className="flex flex-col">
+                      <p
+                        className="text-white/60 font-semibold text-center text-base"
+                        ref={placeRef}
+                      >
+                        {weather.placeAddress.split(/,\s|،\s/)[0]}
+                      </p>
+                      <p
+                        className="text-white/60 font-semibold text-center text-base"
+                        ref={placeRef}
+                      >
+                        {weather.placeAddress.split(/,\s|،\s/)[1]}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="relative grow">
+                <div className="relative grow w-fit">
                   <div
                     className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[18px]`}
                     style={{
@@ -100,8 +133,10 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="flex flex-col items-center justify-center gap-5 grow">
-                  <p className="font-bold capitalize text-2xl">
+                <div className="flex flex-col items-center justify-start gap-5 grow mt-4">
+                  <p
+                    className={`font-bold capitalize text-center ${weather.desc.split(" ").length < 3 ? "text-2xl" : weather.desc.split(" ").length < 4 ? "text-xl" : "text-base"}`}
+                  >
                     {weather.desc}
                   </p>
                   <h2 className="text-[4rem] font-black leading-none my-2 drop-shadow-md">{`${weather.temp}°`}</h2>
