@@ -6,19 +6,17 @@ export default function Home() {
   const coords = useSelector((state) => state.city);
   const weather = useSelector((state) => state.weather);
   const weatherDispatch = useDispatch();
-
-  // Layout
   const iconRef = useRef(null);
   const dayForecastHeight = useRef(null);
+
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
   const isXL = window.matchMedia("(min-width: 1280px)").matches;
-
   useEffect(() => {
     if (iconRef.current) {
       setIconSize({
-        width: iconRef.current.getBoundingClientRect().width,
-        height: iconRef.current.getBoundingClientRect().height,
+        width: iconRef.current.offsetWidth,
+        height: iconRef.current.offsetHeight,
       });
     }
   }, [weather]);
@@ -26,7 +24,7 @@ export default function Home() {
   useEffect(() => {
     if (dayForecastHeight.current) {
       setDaysForecastHeight(
-        dayForecastHeight.current.getBoundingClientRect().height * 4.82,
+        dayForecastHeight.current.offsetHeight * 3 + 32,
       );
     }
   }, [weather]);
@@ -291,14 +289,9 @@ export default function Home() {
               {/* ----------- END ----------- */}
             </div>
           </div>
-          <div
-            className="w-full xl:w-[29%] shrink-0 grow-0 overflow-hidden p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800"
-            style={
-              !isXL ? { height: `${daysForecastHeight}px` } : { height: "100%" }
-            }
-          >
+          <div className="w-full h-fit xl:h-full xl:w-[29%] shrink-0 grow-0 overflow-hidden p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
             <div
-              className="w-full max-h-full flex flex-col gap-4 pb-5 px-6 rounded-4xl overflow-hidden"
+              className="w-full max-h-full flex flex-col gap-3 pb-5 px-6 rounded-4xl overflow-hidden"
               style={{
                 boxShadow:
                   "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
@@ -338,10 +331,19 @@ export default function Home() {
 
               <div
                 className="flex flex-col gap-3 grow overflow-auto p-1 min-h-0"
-                style={{
-                  scrollbarWidth: "none", // Firefox
-                  msOverflowStyle: "none", // IE
-                }}
+                style={
+                  !isXL
+                    ? {
+                        maxHeight: `${daysForecastHeight}px`,
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                      }
+                    : {
+                        maxHeight: "100%",
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                      }
+                }
               >
                 {weather.days_detials.map((day, index) => (
                   <div
