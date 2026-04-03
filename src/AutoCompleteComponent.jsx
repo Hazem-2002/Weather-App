@@ -230,7 +230,7 @@ function AutoCompleteComponent() {
           <span style={{ color: "var(--primary)" }}>No Options</span>
         }
         sx={{
-          width: 460,
+          width: "100%",
           flexShrink: 1,
           border:
             "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
