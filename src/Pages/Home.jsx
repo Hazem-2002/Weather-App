@@ -113,7 +113,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="relative grow w-fit">
+                <div className="flex justify-center relative grow w-full">
                   <div
                     className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[18px]`}
                     style={{
