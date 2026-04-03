@@ -65,7 +65,7 @@ export default function Home() {
 
                 <div className="relative grow">
                   <div
-                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[38px]`}
+                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[18px]`}
                     style={{
                       width: iconSize.width,
                       height: iconSize.height,
@@ -246,7 +246,7 @@ export default function Home() {
                 <div className="flex flex-col gap-4 grow max-w-[40%] animate-in delay-200 slide-in-from-right duration-400">
                   <div className="flex justify-end flex-grow relative group h-[40%]">
                     <div
-                      className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[28px] group-hover:blur-[24px] `}
+                      className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[38px] group-hover:blur-[30px] `}
                       style={{
                         width: iconSize.width * 1.15,
                         height: iconSize.height * 1.15,
@@ -287,7 +287,7 @@ export default function Home() {
                   "0 0 7px color-mix(in srgb, var(--primary) 25%, transparent)",
               }}
             >
-              <div className="flex flex-row items-center gap-2 py-6 shadow-md shadow-border shrink-0">
+              <div className="flex flex-row items-center gap-2 py-6 shadow-smq shadow-border shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
