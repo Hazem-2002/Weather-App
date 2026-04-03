@@ -52,7 +52,7 @@ export default function Home() {
             className={`shrink-0 grow-0 h-screen pt-8 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
           >
             <div
-              className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-6 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
+              className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
             >
               {/* ----------- Mobile ----------- */}
               <div className="flex sm:hidden flex-col items-center justify-center w-full overflow-hidden">
