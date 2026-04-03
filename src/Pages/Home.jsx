@@ -326,7 +326,7 @@ export default function Home() {
                     className="flex flex-row justify-between items-center py-3 px-4 mb-2 shadow-sm shadow-border rounded-lg transition hover:bg-muted/50"
                   >
                     <h2 className="text-base font-semibold leading-none">
-                      {day.dayName.slice(0, 3)}
+                      {day.dayName}
                     </h2>
 
                     <img src={day.icon} alt="icon" className="h-10" />
