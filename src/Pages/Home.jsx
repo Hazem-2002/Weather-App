@@ -279,15 +279,15 @@ export default function Home() {
               {/* ----------- END ----------- */}
             </div>
           </div>
-          <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[50vh] overflow-hidden xl:h-full p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-600">
+          <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[60vh] sm:h-[80vh] overflow-hidden xl:h-full p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
             <div
-              className="w-full max-h-full flex flex-col gap-4 pb-7 px-6 rounded-4xl"
+              className="w-full max-h-full flex flex-col gap-2 pb-7 px-6 rounded-4xl"
               style={{
                 boxShadow:
-                  "0 0 7px color-mix(in srgb, var(--primary) 25%, transparent)",
+                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
               }}
             >
-              <div className="flex flex-row items-center gap-2 py-6 shadow-smq shadow-border shrink-0">
+              <div className="flex flex-row items-center gap-2 py-6 shadow-md shadow-border shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -314,7 +314,7 @@ export default function Home() {
               </div>
 
               <div
-                className="grow overflow-auto min-h-0 pr-2"
+                className="flex flex-col gap-3 grow overflow-auto min-h-0 p-1 px-2"
                 style={{
                   scrollbarWidth: "none", // Firefox
                   msOverflowStyle: "none", // IE
@@ -323,15 +323,21 @@ export default function Home() {
                 {weather.days_detials.map((day, index) => (
                   <div
                     key={index}
-                    className="flex flex-row justify-between items-center py-3 px-4 mb-2 shadow-sm shadow-border rounded-lg transition hover:bg-muted/50"
+                    className="grid grid-cols-[1fr_1fr_1.7fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.7fr] justify-between items-center py-3 px-4 shadow-sm shadow-border rounded-lg transition hover:bg-muted/50"
                   >
-                    <h2 className="text-base font-semibold leading-none">
-                      {day.dayName?.slice(0,3)}
+                    <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
+                      {day.dayName?.slice(0, 3)}
                     </h2>
 
-                    <img src={day.icon} alt="icon" className="h-10" />
+                    <h2 className="hidden sm:block xl:hidden text-base font-semibold leading-none">
+                      {day.dayName}
+                    </h2>
 
-                    <div className="flex flex-row gap-4">
+                    <div className="flex justify-center">
+                      <img src={day.icon} alt="icon" className="h-full" />
+                    </div>
+
+                    <div className="flex flex-row justify-end gap-4 sm:gap-5 xl:gap-4 text-base">
                       <h2 className="font-bold text-foreground">
                         {`${day.max_temp}°`}
                       </h2>

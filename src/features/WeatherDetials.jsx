@@ -54,20 +54,26 @@ export const fetchWeather = createAsyncThunk(
       let max_temp;
       const days_detials = [];
 
+      const normalize = (num) => (Object.is(num, -0) ? 0 : num);
+
       for (let day of weatherRes.data.forecast.forecastday) {
         const hours = day.hour;
 
-        min_temp = Math.round(
-          hours.reduce(
-            (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
-            hours[0].temp_c,
+        min_temp = normalize(
+          Math.round(
+            hours.reduce(
+              (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
+              hours[0].temp_c,
+            ),
           ),
         ).toLocaleString(locale);
 
-        max_temp = Math.round(
-          hours.reduce(
-            (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
-            hours[0].temp_c,
+        max_temp = normalize(
+          Math.round(
+            hours.reduce(
+              (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
+              hours[0].temp_c,
+            ),
           ),
         ).toLocaleString(locale);
 
@@ -195,7 +201,7 @@ export const fetchWeather = createAsyncThunk(
         if (isMatch(["snow", "blizzard", "ice"])) {
           return {
             bg: dayNight(
-              "bg-gradient-to-br from-slate-300 via-gray-300 to-slate-400",
+              "bg-gradient-to-br from-slate-400 via-gray-400 to-slate-500",
               "bg-gradient-to-br from-gray-600 to-gray-900",
             ),
             glow: dayNight("bg-white/40", "bg-gray-400/25"),
