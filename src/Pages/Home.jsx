@@ -320,7 +320,7 @@ export default function Home() {
               </div>
 
               <div
-                className="flex flex-col gap-3 grow overflow-auto min-h-0"
+                className="flex flex-col gap-3 grow overflow-auto p-1 min-h-0"
                 style={{
                   scrollbarWidth: "none", // Firefox
                   msOverflowStyle: "none", // IE
