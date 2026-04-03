@@ -196,7 +196,7 @@ export default function Layout() {
           </aside>
         </div>
 
-        <div className="flex-grow min-h-screen bg-background pb-22 md:pb-0 max-w-screen overflow-hidden">
+        <div className="flex-grow min-h-screen bg-background pb-15 md:pb-0 max-w-screen overflow-hidden">
           <Outlet />
         </div>
       </div>

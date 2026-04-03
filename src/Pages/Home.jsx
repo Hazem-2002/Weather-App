@@ -6,9 +6,13 @@ export default function Home() {
   const coords = useSelector((state) => state.city);
   const weather = useSelector((state) => state.weather);
   const weatherDispatch = useDispatch();
-  const iconRef = useRef(null);
 
+  // Layout
+  const iconRef = useRef(null);
+  const dayForecastHeight = useRef(null);
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
+  const [daysForecastHeight, setDaysForecastHeight] = useState(0);
+  const isXL = window.matchMedia("(min-width: 1280px)").matches;
 
   useEffect(() => {
     if (iconRef.current) {
@@ -16,6 +20,14 @@ export default function Home() {
         width: iconRef.current.getBoundingClientRect().width,
         height: iconRef.current.getBoundingClientRect().height,
       });
+    }
+  }, [weather]);
+
+  useEffect(() => {
+    if (dayForecastHeight.current) {
+      setDaysForecastHeight(
+        dayForecastHeight.current.getBoundingClientRect().height * 4.82,
+      );
     }
   }, [weather]);
 
@@ -279,7 +291,12 @@ export default function Home() {
               {/* ----------- END ----------- */}
             </div>
           </div>
-          <div className="w-full xl:w-[29%] shrink-0 grow-0 h-[60vh] sm:h-[80vh] overflow-hidden xl:h-full p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
+          <div
+            className="w-full xl:w-[29%] shrink-0 grow-0 overflow-hidden p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800"
+            style={
+              !isXL ? { height: `${daysForecastHeight}px` } : { height: "100%" }
+            }
+          >
             <div
               className="w-full max-h-full flex flex-col gap-4 pb-5 px-6 rounded-4xl overflow-hidden"
               style={{
@@ -288,7 +305,7 @@ export default function Home() {
               }}
             >
               <div
-                className="flex flex-row items-center gap-2 py-6 shadow-md shadow-border shrink-0"
+                className="flex flex-row items-center gap-2 px-3 py-6 shadow-md shadow-border shrink-0"
                 style={{
                   boxShadow:
                     "0 5px 6px -4px color-mix(in srgb, var(--primary) 15%, transparent)",
@@ -329,6 +346,7 @@ export default function Home() {
                 {weather.days_detials.map((day, index) => (
                   <div
                     key={index}
+                    ref={dayForecastHeight}
                     className="grid grid-cols-[1fr_1fr_1.7fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.7fr] justify-between items-center py-3 px-4 shadow-xs shadow-border rounded-3xl transition hover:bg-muted/50"
                   >
                     <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
