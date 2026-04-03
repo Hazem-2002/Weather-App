@@ -12,6 +12,7 @@ export default function Home() {
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
   const isXL = window.matchMedia("(min-width: 1280px)").matches;
+
   useEffect(() => {
     if (iconRef.current) {
       setIconSize({
@@ -23,9 +24,15 @@ export default function Home() {
 
   useEffect(() => {
     if (dayForecastHeight.current) {
-      setDaysForecastHeight(
-        dayForecastHeight.current.offsetHeight * 3 + 32,
-      );
+      const dayHeight = dayForecastHeight.current.offsetHeight;
+      const numberOfDays = 3;
+      const vertiacalPadding = 1;
+      const gapSpace = 3;
+      const height =
+        dayHeight * numberOfDays +
+        (numberOfDays - 1) * (gapSpace * 4) +
+        2 * (vertiacalPadding * 4);
+      setDaysForecastHeight(height);
     }
   }, [weather]);
 
@@ -40,12 +47,12 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-col gap-4 text-[var(--foreground)]">
-        <div className="flex flex-col xl:flex-row gap-y-6 pb-6 xl:pb-0 justify-between pe-8 min-h-screen xl:h-screen">
+        <div className="flex flex-col xl:flex-row justify-between gap-y-6 pb-6 xl:pb-0 pe-4 sm:pe-8 min-h-screen xl:h-screen">
           <div
-            className={`shrink-0 grow-0 h-screen pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
+            className={`shrink-0 grow-0 h-screen pt-8 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
           >
             <div
-              className={`flex flex-row justify-between gap-4 w-full h-full p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
+              className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-6 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
             >
               {/* ----------- Mobile ----------- */}
               <div className="flex sm:hidden flex-col items-center justify-center w-full overflow-hidden">

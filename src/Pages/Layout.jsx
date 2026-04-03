@@ -13,7 +13,7 @@ export default function Layout() {
   return (
     <>
       <nav className="w-screen fixed top-0 z-50">
-        <div className="flex flex-row justify-center w-full h-full relative pt-7 pb-6">
+        <div className="flex flex-row justify-center w-full h-full relative pt-4 sm:pt-7">
           <div className="flex justify-center items-center gap-2 absolute top-1/2 -translate-y-1/2 left-6 lg:left-8">
             <div className="size-10 flex justify-center items-center rounded-full bg-primary invisible md:visible">
               <svg
@@ -47,7 +47,7 @@ export default function Layout() {
         </div>
       </nav>
 
-      <div className="flex flex-row gap-8 bg-background">
+      <div className="flex flex-row gap-4 sm:gap-8 bg-background">
         <div className="w-0 md:w-22 lg:w-64 h-0 md:h-full lg:w-64 flex-shrink-0">
           <aside className="flex flex-col justify-between md:h-screen w-[55%] sm:w-[70%] md:w-22 lg:w-64 bg-background/40 border border-primary/20 md:border-0 text-foreground p-2 md:p-4 md:pt-28 md:pb-8 rounded-full md:rounded-none fixed z-40 bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-0 md:top-0">
             <nav className="flex flex-row md:flex-col gap-5 justify-around md:justify-start">
