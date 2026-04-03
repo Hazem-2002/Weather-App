@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-const weatherKey = import.meta.env.VITE_WEATHER_API_KEY;
 
 const currentWeather = localStorage.getItem("weather");
 
@@ -40,7 +39,7 @@ export const fetchWeather = createAsyncThunk(
 
     try {
       const weatherRes = await axios.get(
-        `https://api.weatherapi.com/v1/forecast.json?key=${weatherKey}&q=${coords.lat},${coords.lon}&days=7&lang=${lang}`,
+        `https://api.weatherapi.com/v1/forecast.json?key=94add4e12f5d432fa03145025260204&q=${coords.lat},${coords.lon}&days=7&lang=${lang}`,
         { signal },
       );
 
