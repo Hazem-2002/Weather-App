@@ -65,7 +65,7 @@ export default function Home() {
 
                 <div className="relative grow">
                   <div
-                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[28px]`}
+                    className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[38px]`}
                     style={{
                       width: iconSize.width,
                       height: iconSize.height,

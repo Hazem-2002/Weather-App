@@ -49,7 +49,7 @@ export default function Layout() {
 
       <div className="flex flex-row gap-8 bg-background">
         <div className="w-0 md:w-22 lg:w-64 h-0 md:h-full lg:w-64 flex-shrink-0">
-          <aside className="flex flex-col justify-between md:h-screen w-[50%] sm:w-[70%] md:w-22 lg:w-64 bg-background/40 border border-primary/20 md:border-0 text-foreground p-2 md:p-4 md:pt-28 md:pb-8 rounded-full md:rounded-none fixed z-40 bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-0 md:top-0">
+          <aside className="flex flex-col justify-between md:h-screen w-[55%] sm:w-[70%] md:w-22 lg:w-64 bg-background/40 border border-primary/20 md:border-0 text-foreground p-2 md:p-4 md:pt-28 md:pb-8 rounded-full md:rounded-none fixed z-40 bottom-4 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-0 md:top-0">
             <nav className="flex flex-row md:flex-col gap-5 justify-around md:justify-start">
               <NavLink to="/" className={navLinkStyle}>
                 <div className="flex flex-row gap-2">
