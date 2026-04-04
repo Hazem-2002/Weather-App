@@ -223,7 +223,7 @@ function AutoCompleteComponent() {
               key={`${option.lat}-${option.lng}`}
               className="whitespace-nowrap"
             >
-              <div className="flex items-center gap-2 px-4 py-2 hover:bg-[color-mix(in_srgb,_var(--muted)_50%,_transparent)]">
+              <div className="flex items-center gap-2 px-4 hover:bg-[color-mix(in_srgb,_var(--muted)_50%,_transparent)]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -280,7 +280,7 @@ function AutoCompleteComponent() {
                 backdropFilter: "blur(3px)",
                 color: "var(--primary)",
                 borderRadius: "10px",
-                marginTop: "10px",
+                marginTop: "5px",
               },
             },
           },
