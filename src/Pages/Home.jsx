@@ -16,6 +16,7 @@ export default function Home() {
   const [maxHeight, setMaxHeight] = useState(0);
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
   const isXL = window.matchMedia("(min-width: 1280px)").matches;
+  const isSm = window.matchMedia("(max-width: 640px)").matches;
   const isShortScreen = window.matchMedia("(max-height: 700px)").matches;
 
   useEffect(() => {
@@ -125,7 +126,7 @@ export default function Home() {
       <div className="flex flex-col gap-4 text-[var(--foreground)]">
         <div className="flex flex-col xl:flex-row justify-between gap-y-6 pb-6 xl:pb-0 pe-4 sm:pe-8 min-h-screen xl:h-screen">
           <div
-            className={`shrink-0 grow-0 ${isShortScreen && !isXL ? "h-[650px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
+            className={`shrink-0 grow-0 ${isShortScreen && isSm ? "h-[650px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
           >
             <div
               className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
