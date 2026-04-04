@@ -10,8 +10,10 @@ export default function Home() {
   const dayForecastHeight = useRef(null);
   const placeRef = useRef(null);
   const screenRef = useRef(null);
+  const layoutRef = useRef(null);
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
   const [showPlace, setShowPlace] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(0);
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
   const isXL = window.matchMedia("(min-width: 1280px)").matches;
   const isShortScreen = window.matchMedia("(max-height: 700px)").matches;
@@ -25,19 +27,82 @@ export default function Home() {
     }
   }, [weather]);
 
+  const GAP = 12; // gap-3
+  const PADDING = 8; // p-1 (4px => top + 4px => bottom)
+
+  const calcHeightByItems = (itemHeight, numberOfItems) => {
+    if (!itemHeight || numberOfItems <= 0) return 0;
+
+    return numberOfItems * itemHeight + (numberOfItems - 1) * GAP + PADDING;
+  };
+
+  const calcHeight = (numberOfItems) => {
+    const el = layoutRef.current;
+    if (!el || !dayForecastHeight.current) return 0;
+
+    // temporarily unlock maxHeight
+    const prevMaxHeight = el.style.maxHeight;
+    el.style.maxHeight = "none";
+
+    const itemHeight = dayForecastHeight.current.clientHeight;
+
+    const finalHeight = calcHeightByItems(itemHeight, numberOfItems);
+
+    // Return the old value
+    el.style.maxHeight = prevMaxHeight;
+
+    return finalHeight;
+  };
+
   useEffect(() => {
-    if (dayForecastHeight.current) {
-      const dayHeight = dayForecastHeight.current.offsetHeight;
-      const numberOfDays = 3;
-      const vertiacalPadding = 1;
-      const gapSpace = 3;
-      const height =
-        dayHeight * numberOfDays +
-        (numberOfDays - 1) * (gapSpace * 4) +
-        2 * (vertiacalPadding * 4);
-      setDaysForecastHeight(height);
-    }
-  }, [weather]);
+    const handleResize = () => {
+      const value = calcHeight(3);
+      if (value) setDaysForecastHeight(value);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line
+  }, []);
+
+  const calcDynamicHeight = () => {
+    const el = layoutRef.current;
+    if (!el || !dayForecastHeight.current) return 0;
+
+    // temporarily unlock maxHeight
+    const prevMaxHeight = el.style.maxHeight;
+    el.style.maxHeight = "none";
+
+    const containerHeight = el.clientHeight;
+    const itemHeight = dayForecastHeight.current.clientHeight;
+
+    const availableHeight = containerHeight - PADDING;
+    const itemFullHeight = itemHeight + GAP;
+
+    const numberOfItems = Math.floor((availableHeight + GAP) / itemFullHeight);
+
+    const finalHeight = calcHeightByItems(itemHeight, numberOfItems);
+
+    // Return the old value
+    el.style.maxHeight = prevMaxHeight;
+
+    return finalHeight;
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const value = calcDynamicHeight();
+      if (value) setMaxHeight(value);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line
+  }, []);
 
   // Fetch Current Temperature
   useEffect(() => {
@@ -114,7 +179,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="flex justify-center relative grow w-full">
+                <div className="flex justify-center relative grow w-full mt-1 mb-4">
                   <div
                     className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[18px]`}
                     style={{
@@ -134,7 +199,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="flex flex-col items-center justify-start gap-5 grow mt-4">
+                <div className="flex flex-col items-center justify-start gap-5 grow">
                   <p
                     className={`font-bold capitalize text-center ${weather.desc.split(" ").length < 3 ? "text-2xl" : weather.desc.split(" ").length < 4 ? "text-xl" : "text-base"}`}
                   >
@@ -334,7 +399,7 @@ export default function Home() {
           </div>
           <div className="w-full h-fit xl:h-full xl:w-[29%] shrink-0 grow-0 overflow-hidden p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
             <div
-              className="w-full max-h-full flex flex-col gap-3 pb-5 px-6 rounded-4xl overflow-hidden"
+              className="w-full max-h-full flex flex-col gap-3 pb-4 px-6 rounded-4xl overflow-hidden"
               style={{
                 boxShadow:
                   "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
@@ -374,15 +439,12 @@ export default function Home() {
 
               <div
                 className="flex flex-col gap-3 grow hide-scrollbar overflow-auto p-1 min-h-0"
-                style={
-                  !isXL
-                    ? {
-                        maxHeight: `${daysForecastHeight}px`,
-                      }
-                    : {
-                        maxHeight: "100%",
-                      }
-                }
+                ref={layoutRef}
+                style={{
+                  maxHeight: !isXL
+                    ? `${daysForecastHeight}px`
+                    : `${maxHeight}px`,
+                }}
               >
                 {weather.days_detials.map((day, index) => (
                   <div

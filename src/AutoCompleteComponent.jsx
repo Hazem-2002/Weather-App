@@ -223,7 +223,7 @@ function AutoCompleteComponent() {
               key={`${option.lat}-${option.lng}`}
               className="whitespace-nowrap"
             >
-              <div className="flex items-center gap-2 px-4 hover:bg-[color-mix(in_srgb,_var(--muted)_50%,_transparent)]">
+              <div className="flex items-center gap-2 px-4 hover:bg-[color-mix(in_srgb,_var(--primary)_10%,_transparent)]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -239,7 +239,7 @@ function AutoCompleteComponent() {
                   <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                <div className="flex flex-col leading-tight w-full px-2 overflow-hidden">
+                <div className="flex flex-col justify-center leading-tight h-10 w-full px-2 overflow-hidden">
                   <p className="text-sm">{mainText}</p>
                   <p className="text-xs truncate text-white/50">{subText}</p>
                 </div>
@@ -269,6 +269,7 @@ function AutoCompleteComponent() {
               gap: "10px",
               padding: "10px 0",
               overflowX: "hidden",
+              maxHeight: 300,
             },
           },
           popper: {
