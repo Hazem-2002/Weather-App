@@ -60,7 +60,7 @@ export default function Home() {
       <div className="flex flex-col gap-4 text-[var(--foreground)]">
         <div className="flex flex-col xl:flex-row justify-between gap-y-6 pb-6 xl:pb-0 pe-4 sm:pe-8 min-h-screen xl:h-screen">
           <div
-            className={`shrink-0 grow-0 ${isShortScreen ? "h-[630px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
+            className={`shrink-0 grow-0 ${isShortScreen && !isXL ? "h-[650px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in duration-600`}
           >
             <div
               className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg}`}
@@ -373,18 +373,14 @@ export default function Home() {
               </div>
 
               <div
-                className="flex flex-col gap-3 grow overflow-auto p-1 min-h-0"
+                className="flex flex-col gap-3 grow hide-scrollbar overflow-auto p-1 min-h-0"
                 style={
                   !isXL
                     ? {
                         maxHeight: `${daysForecastHeight}px`,
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
                       }
                     : {
                         maxHeight: "100%",
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
                       }
                 }
               >

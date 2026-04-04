@@ -200,46 +200,74 @@ function AutoCompleteComponent() {
         onChange={handleSelect}
         options={suggestions}
         getOptionLabel={(option) => option.text}
-        renderOption={(props, option) => (
-          <li
-            {...props}
-            style={{ whiteSpace: "nowrap" }}
-            key={`${option.lat}-${option.lng}`}
-          >
-            <div className="flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="lucide lucide-map-pin-icon lucide-map-pin"
-              >
-                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              {option.text}
-            </div>
-          </li>
-        )}
+        renderOption={(props, option) => {
+          const parts = option.text.split(/,\s|،\s|\s-\s/);
+
+          const mainText =
+            parts.length > 2
+              ? parts.slice(0, -2).join(", ")
+              : parts.length > 1
+                ? parts.slice(0, -1).join(", ")
+                : parts[0];
+
+          const subText =
+            parts.length > 2
+              ? parts.slice(-2).reverse().join(", ")
+              : parts.length > 1
+                ? parts.slice(-1).join(", ")
+                : "";
+
+          return (
+            <li
+              {...props}
+              key={`${option.lat}-${option.lng}`}
+              className="whitespace-nowrap"
+            >
+              <div className="flex items-center gap-2 px-4 py-2 hover:bg-[color-mix(in_srgb,_var(--muted)_50%,_transparent)]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-map-pin shrink-0"
+                >
+                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <div className="flex flex-col leading-tight w-full px-2 overflow-hidden">
+                  <p className="text-sm">{mainText}</p>
+                  <p className="text-xs truncate text-white/50">{subText}</p>
+                </div>
+              </div>
+            </li>
+          );
+        }}
         noOptionsText={
           <span style={{ color: "var(--primary)" }}>No Options</span>
         }
         sx={{
           width: "100%",
-          flexShrink: 1,
           border:
             "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
           background: "color-mix(in srgb, var(--background) 65%, transparent)",
           backdropFilter: "blur(3px)",
           borderRadius: "999px",
-          overflow: "hidden",
         }}
         slotProps={{
+          listbox: {
+            className: "hide-scrollbar",
+            sx: {
+              display: "flex",
+              flexDirection: "column",
+              gap: "10px",
+              padding: "10px 0",
+            },
+          },
           popper: {
             placement: "bottom",
             sx: {
@@ -264,58 +292,59 @@ function AutoCompleteComponent() {
                 sx: { color: "var(--primary)" },
                 ...params.InputProps,
                 endAdornment: (
-                  <InputAdornment
-                    position="end"
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      right: 0,
-                    }}
-                  >
-                    <Tooltip
-                      title="Use Current Location"
-                      leaveDelay={50}
-                      slotProps={{
-                        popper: {
-                          sx: {
-                            "&.MuiPopper-root .MuiTooltip-tooltip": {
-                              background:
-                                "color-mix(in srgb, var(--muted) 90%, transparent)",
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                            },
-                            "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
-                              {
-                                color:
-                                  "color-mix(in srgb, var(--muted) 80%, transparent)",
-                              },
-                          },
-                        },
+                  <InputAdornment position="end" sx={{ width: "12px" }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        right: 0,
                       }}
-                      arrow
                     >
-                      <IconButton
-                        loading={locationIsLoading}
-                        loadingIndicator={
-                          <CircularProgress
+                      <Tooltip
+                        title="Use Current Location"
+                        leaveDelay={50}
+                        slotProps={{
+                          popper: {
+                            sx: {
+                              "&.MuiPopper-root .MuiTooltip-tooltip": {
+                                background:
+                                  "color-mix(in srgb, var(--muted) 90%, transparent)",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                              },
+                              "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
+                                {
+                                  color:
+                                    "color-mix(in srgb, var(--muted) 80%, transparent)",
+                                },
+                            },
+                          },
+                        }}
+                        arrow
+                      >
+                        <IconButton
+                          loading={locationIsLoading}
+                          loadingIndicator={
+                            <CircularProgress
+                              sx={{
+                                color: "var(--primary)",
+                              }}
+                              size={20}
+                            />
+                          }
+                          onClick={handleLocation}
+                        >
+                          <LocationOnIcon
                             sx={{
                               color: "var(--primary)",
+                              visibility: locationIsLoading
+                                ? "hidden"
+                                : "visible",
                             }}
-                            size={20}
                           />
-                        }
-                        onClick={handleLocation}
-                      >
-                        <LocationOnIcon
-                          sx={{
-                            color: "var(--primary)",
-                            visibility: locationIsLoading
-                              ? "hidden"
-                              : "visible",
-                          }}
-                        />
-                      </IconButton>
-                    </Tooltip>
+                        </IconButton>
+                      </Tooltip>
+                    </div>
                   </InputAdornment>
                 ),
               },
@@ -323,8 +352,6 @@ function AutoCompleteComponent() {
             sx={{
               padding: "0 10px",
               "& .MuiFilledInput-root": {
-                // background: "white",
-                // opacity: 0.5,
                 "&:after": {
                   borderBottom: `2px solid color-mix(in srgb, var(--primary) 90%, transparent)`,
                 },

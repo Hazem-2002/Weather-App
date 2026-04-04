@@ -143,3 +143,13 @@
 * {
   font-family: "Inter", sans-serif;
 }
+
+/* hide scrollbar but keep scroll */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE و Edge القديم */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome / Safari */
+}
