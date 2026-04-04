@@ -252,11 +252,13 @@ function AutoCompleteComponent() {
         }
         sx={{
           width: "100%",
+          flexShrink: 1,
           border:
             "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
           background: "color-mix(in srgb, var(--background) 65%, transparent)",
           backdropFilter: "blur(3px)",
           borderRadius: "999px",
+          overflow: "hidden",
         }}
         slotProps={{
           listbox: {
@@ -266,6 +268,7 @@ function AutoCompleteComponent() {
               flexDirection: "column",
               gap: "10px",
               padding: "10px 0",
+              overflowX: "hidden",
             },
           },
           popper: {
