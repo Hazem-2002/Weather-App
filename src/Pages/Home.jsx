@@ -45,7 +45,7 @@ export default function Home() {
     const prevMaxHeight = el.style.maxHeight;
     el.style.maxHeight = "none";
 
-    const itemHeight = dayForecastHeight.current.clientHeight;
+    const itemHeight = dayForecastHeight.current.offsetHeight;
 
     const finalHeight = calcHeightByItems(itemHeight, numberOfItems);
 
@@ -76,8 +76,8 @@ export default function Home() {
     const prevMaxHeight = el.style.maxHeight;
     el.style.maxHeight = "none";
 
-    const containerHeight = el.clientHeight;
-    const itemHeight = dayForecastHeight.current.clientHeight;
+    const containerHeight = el.offsetHeight;
+    const itemHeight = dayForecastHeight.current.offsetHeight;
 
     const availableHeight = containerHeight - PADDING;
     const itemFullHeight = itemHeight + GAP;
@@ -400,7 +400,7 @@ export default function Home() {
           </div>
           <div className="w-full h-fit xl:h-full xl:w-[29%] shrink-0 grow-0 overflow-hidden p-2 xl:pt-28 xl:pb-8 animate-in delay-200 animate-in fade-in zoom-in duration-800">
             <div
-              className="w-full max-h-full flex flex-col gap-3 pb-4 px-6 rounded-4xl overflow-hidden"
+              className="w-full max-h-full flex flex-col gap-3 pb-3 px-6 rounded-4xl overflow-hidden"
               style={{
                 boxShadow:
                   "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
