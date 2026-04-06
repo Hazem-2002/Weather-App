@@ -4,11 +4,10 @@ import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import App from "./App";
+import { StrictMode } from "react";
 
 export default function Wrapper() {
-  const [direction, ] = useState(
-    localStorage.getItem("dir") || "ltr",
-  );
+  const [direction] = useState(localStorage.getItem("dir") || "ltr");
 
   useEffect(() => {
     localStorage.setItem("dir", direction);
@@ -27,7 +26,9 @@ export default function Wrapper() {
 
   return (
     <CacheProvider value={cache} key={direction}>
-      <App />
+      <StrictMode>
+        <App />
+      </StrictMode>
     </CacheProvider>
   );
 }

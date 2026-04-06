@@ -142,6 +142,7 @@
 ================================ */
 * {
   font-family: "Inter", sans-serif;
+  box-sizing: border-box;
 }
 
 /* hide scrollbar but keep scroll */

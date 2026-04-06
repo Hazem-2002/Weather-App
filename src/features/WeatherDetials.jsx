@@ -46,9 +46,9 @@ export const fetchWeather = createAsyncThunk(
       console.log(weatherRes.data);
 
       // Weather
-      const temp = Math.round(weatherRes.data.current.temp_c).toLocaleString(
+      const temp = `${Math.round(weatherRes.data.current.temp_c).toLocaleString(
         locale,
-      );
+      )}°`;
 
       let min_temp;
       let max_temp;
@@ -84,7 +84,12 @@ export const fetchWeather = createAsyncThunk(
           weekday: "long",
         });
 
-        days_detials.push({ min_temp, max_temp, icon, dayName });
+        days_detials.push({
+          min_temp: `${min_temp}°`,
+          max_temp: `${max_temp}°`,
+          icon,
+          dayName,
+        });
       }
 
       console.log(days_detials);
@@ -246,7 +251,7 @@ export const fetchWeather = createAsyncThunk(
       );
 
       // Feels Like Of Temperature
-      const feelslike = Math.round(weatherRes.data.current.feelslike_c);
+      const feelslike = `${Math.round(weatherRes.data.current.feelslike_c)}°`;
 
       const weather = {
         temp,

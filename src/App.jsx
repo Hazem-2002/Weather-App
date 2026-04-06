@@ -1,9 +1,9 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import Home from "./Pages/Home";
-import History from "./Pages/History";
+import Home from "./Pages/Home/Home";
+import History from "./Pages/History/History";
 import Layout from "./Pages/Layout";
-import Settings from "./Pages/Settings";
+import Settings from "./Pages/Settings/Settings";
 
 function App() {
   return (

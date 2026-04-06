@@ -31,34 +31,34 @@
   }
 
   /* Delay */
-  .delay-100 {
+  .animate-delay-100 {
     animation-delay: 0.1s;
   }
-  .delay-200 {
+  .animate-delay-200 {
     animation-delay: 0.2s;
   }
-  .delay-300 {
+  .animate-delay-300 {
     animation-delay: 0.3s;
   }
-  .delay-400 {
+  .animate-delay-400 {
     animation-delay: 0.4s;
   }
-  .delay-500 {
+  .animate-delay-500 {
     animation-delay: 0.5s;
   }
-  .delay-600 {
+  .animate-delay-600 {
     animation-delay: 0.6s;
   }
-  .delay-700 {
+  .animate-delay-700 {
     animation-delay: 0.7s;
   }
-  .delay-800 {
+  .animate-delay-800 {
     animation-delay: 0.8s;
   }
-  .delay-900 {
+  .animate-delay-900 {
     animation-delay: 0.9s;
   }
-  .delay-1000 {
+  .animate-delay-1000 {
     animation-delay: 1s;
   }
 
@@ -89,10 +89,10 @@
     --enter-translate-x: 100%;
   }
   .slide-in-from-top {
-    --enter-translate-y: -20px;
+    --enter-translate-y: -100%;
   }
   .slide-in-from-bottom {
-    --enter-translate-y: 20px;
+    --enter-translate-y: 100%;
   }
 
   .rotate-in {
@@ -100,34 +100,34 @@
   }
 
   /* Duration */
-  .duration-100 {
+  .animate-duration-100 {
     --animation-duration: 0.1s;
   }
-  .duration-200 {
+  .animate-duration-200 {
     --animation-duration: 0.2s;
   }
-  .duration-300 {
+  .animate-duration-300 {
     --animation-duration: 0.3s;
   }
-  .duration-400 {
+  .animate-duration-400 {
     --animation-duration: 0.4s;
   }
-  .duration-500 {
+  .animate-duration-500 {
     --animation-duration: 0.5s;
   }
-  .duration-600 {
+  .animate-duration-600 {
     --animation-duration: 0.6s;
   }
-  .duration-700 {
+  .animate-duration-700 {
     --animation-duration: 0.7s;
   }
-  .duration-800 {
+  .animate-duration-800 {
     --animation-duration: 0.8s;
   }
-  .duration-900 {
+  .animate-duration-900 {
     --animation-duration: 0.9s;
   }
-  .duration-1000 {
+  .animate-duration-1000 {
     --animation-duration: 1s;
   }
 
