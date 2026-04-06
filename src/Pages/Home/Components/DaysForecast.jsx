@@ -9,33 +9,34 @@ export default function DaysForecast() {
   const [maxHeight, setMaxHeight] = useState(0);
   const [daysForecastHeight, setDaysForecastHeight] = useState(0);
 
-  const GAP = 12; // gap-3
-  const PADDING = 8; // p-1 (4px => top + 4px => bottom)
+  const GAP = 12; // Space between items (gap-3)
+  const PADDING = 8; // Vertical padding of container (top + bottom = 4px + 4px)
 
   // Calculate total height based on number of items
-  // = (items height) + (gaps between them) + (container padding)
+  // Formula:
+  // total height = (items height) + (gaps between them) + (container padding)
   const calcHeightByItems = (itemHeight, numberOfItems) => {
-    // Safety check
+    // Guard clause to avoid invalid calculations
     if (!itemHeight || numberOfItems <= 0) return 0;
 
     return numberOfItems * itemHeight + (numberOfItems - 1) * GAP + PADDING;
   };
 
-  // Calculate container height in case of fixed Number of items (for small screens)
+  // Calculate container height for a fixed number of items (used in small screens)
   const calcHeight = (numberOfItems) => {
     const el = layoutRef.current;
 
-    // Make sure refs exist
+    // Ensure refs are available
     if (!el || !dayForecastHeight.current) return 0;
 
-    // Temporarily remove maxHeight restriction to measure correctly
+    // Temporarily remove maxHeight to measure real content height
     const prevMaxHeight = el.style.maxHeight;
     el.style.maxHeight = "none";
 
-    // Get single item height
+    // Measure single item height
     const itemHeight = dayForecastHeight.current.clientHeight;
 
-    // Calculate final height for given number of items
+    // Compute final height based on required number of items
     const finalHeight = calcHeightByItems(itemHeight, numberOfItems);
 
     // Restore previous maxHeight
@@ -44,111 +45,120 @@ export default function DaysForecast() {
     return finalHeight;
   };
 
-  // Handler for small screens (always show 3 items)
-  const SMScreenDaysForecast = () => {
-    const value = calcHeight(3);
-    if (value) setDaysForecastHeight(value);
-  };
-
-  // Listen to window resize for small screens
+  // Handle resizing behavior for small screens
   useEffect(() => {
-    // Make sure refs are ready before adding listener
+    // Ensure DOM elements exist before attaching listener
     if (!layoutRef.current || !dayForecastHeight.current) return;
 
+    const SMScreenDaysForecast = () => {
+      const value = calcHeight(3); // Show exactly 3 items
+      if (value) setDaysForecastHeight(value);
+    };
+
+    // Initial calculation
+    SMScreenDaysForecast();
+
+    // Recalculate on window resize
     window.addEventListener("resize", SMScreenDaysForecast);
 
     // Cleanup on unmount
     return () => window.removeEventListener("resize", SMScreenDaysForecast);
+
     // eslint-disable-next-line
   }, [weather]);
 
-  // Calculate dynamic height (for large screens)
+  // Calculate dynamic height based on available container space (large screens)
   const calcDynamicHeight = () => {
     const el = layoutRef.current;
 
-    // Make sure refs exist
+    // Ensure refs are available
     if (!el || !dayForecastHeight.current) return 0;
 
-    // Temporarily remove maxHeight restriction
+    // Temporarily remove maxHeight to measure full container
     const prevMaxHeight = el.style.maxHeight;
     el.style.maxHeight = "none";
 
-    // Get container height and item height
+    // Measure container and item
     const containerHeight = el.clientHeight;
     const itemHeight = dayForecastHeight.current.clientHeight;
 
-    // Available space inside container after removing padding
+    // Available height inside container (excluding padding)
     const availableHeight = containerHeight - PADDING;
 
     // Full height of one item including gap
     const itemFullHeight = itemHeight + GAP;
 
-    // Calculate how many items can fit completely
-    const numberOfItems = Math.floor((availableHeight + GAP) / itemFullHeight);
+    // Calculate how many full items fit inside container
+    const numberOfItems = Math.max(
+      1,
+      Math.floor((availableHeight + GAP) / itemFullHeight),
+    );
 
-    // Calculate final height based on fitted items
+    // Calculate final height based on number of fitted items
     const finalHeight = calcHeightByItems(itemHeight, numberOfItems);
 
-    // Restore previous maxHeight
+    // Restore original maxHeight
     el.style.maxHeight = prevMaxHeight;
 
     return finalHeight;
   };
 
-  // Handler for large screens (dynamic number of items)
-  const XLScreenDaysForecast = () => {
-    const value = calcDynamicHeight();
-    if (value) setMaxHeight(value);
-  };
-
-  // Listen to window resize for large screens
+  // Handle resizing behavior for large screens
   useEffect(() => {
     if (!layoutRef.current || !dayForecastHeight.current) return;
 
+    const XLScreenDaysForecast = () => {
+      const value = calcDynamicHeight();
+      if (value) setMaxHeight(value);
+    };
+
+    // Initial calculation
+    XLScreenDaysForecast();
+
+    // Recalculate on resize
     window.addEventListener("resize", XLScreenDaysForecast);
 
+    // Cleanup
     return () => window.removeEventListener("resize", XLScreenDaysForecast);
+
     // eslint-disable-next-line
   }, [weather]);
 
-  // Each scroll step moves exactly one item (step-based instead of pixel-based)
+  // Custom scroll behavior: move exactly one item per scroll step
   useEffect(() => {
     const el = layoutRef.current;
 
-    // Make sure the container exists
+    // Ensure container exists
     if (!el) return;
 
-    // Handle mouse wheel scroll
     const handleWheel = (e) => {
-      // Prevent default browser scrolling (pixel-based)
+      // Disable default pixel-based scrolling
       e.preventDefault();
 
       const item = dayForecastHeight.current;
 
-      // Make sure item ref exists
+      // Ensure item exists
       if (!item) return;
 
-      // Get full height of one item (including gap)
+      // Full height of one item (including gap)
       const itemHeight = item.clientHeight + GAP;
 
-      // Detect scroll direction:
+      // Determine scroll direction
       // deltaY > 0 → scroll down
       // deltaY < 0 → scroll up
       const direction = e.deltaY > 0 ? 1 : -1;
 
-      // Perform manual scroll:
-      // Move exactly one item per scroll step
+      // Scroll exactly one item per step (smooth animation)
       el.scrollBy({
         top: direction * itemHeight,
         behavior: "smooth",
       });
     };
 
-    // Attach wheel event with passive: false
-    // (required to allow preventDefault)
+    // Attach wheel listener with passive: false to allow preventDefault
     el.addEventListener("wheel", handleWheel, { passive: false });
 
-    // Cleanup: remove event on unmount
+    // Cleanup on unmount
     return () => {
       el.removeEventListener("wheel", handleWheel);
     };
@@ -204,13 +214,6 @@ export default function DaysForecast() {
       <div
         className="flex flex-col gap-3 grow hide-scrollbar overflow-auto p-1 min-h-0"
         ref={layoutRef}
-        onLoad={() => {
-          if (window.matchMedia("(min-width: 1280px)").matches) {
-            XLScreenDaysForecast();
-          } else {
-            SMScreenDaysForecast();
-          }
-        }}
         style={{
           maxHeight: !window.matchMedia("(min-width: 1280px)").matches
             ? daysForecastHeight
@@ -226,15 +229,21 @@ export default function DaysForecast() {
             <div
               key={index}
               ref={dayForecastHeight}
-              className="grid grid-cols-[1fr_1fr_1.7fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.7fr] justify-between items-center py-2 px-4 shadow-xs shadow-border rounded-3xl transition hover:bg-muted/50 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
+              className="grid grid-cols-[1fr_1fr_1.4fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.4fr] grid-rows-[60px] sm:grid-rows-[72px] xl:grid-rows-[60px] justify-between items-center py-2 px-4 shadow-xs shadow-border rounded-3xl transition hover:bg-muted/50 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
             >
-              <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
-                {day.dayName?.slice(0, 3)}
-              </h2>
+              {index === 0 ? (
+                <h2 className="text-base font-semibold leading-none">Today</h2>
+              ) : (
+                <>
+                  <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
+                    {day.dayName?.slice(0, 3)}
+                  </h2>
 
-              <h2 className="hidden sm:block xl:hidden text-base font-semibold leading-none">
-                {day.dayName}
-              </h2>
+                  <h2 className="hidden sm:block xl:hidden text-base font-semibold leading-none">
+                    {day.dayName}
+                  </h2>
+                </>
+              )}
 
               <div className="flex justify-center">
                 <img src={day.icon} alt="icon" className="h-full" />

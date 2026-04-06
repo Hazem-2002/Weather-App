@@ -11,7 +11,7 @@ export default function Layout() {
     }`;
 
   return (
-    <>
+    <div className="select-none">
       <nav className="w-screen fixed top-0 z-50">
         <div className="flex flex-row justify-center w-full h-full relative pt-4 sm:pt-7">
           <div className="flex justify-center items-center gap-2 absolute top-1/2 -translate-y-1/2 left-6 lg:left-8">
@@ -200,6 +200,6 @@ export default function Layout() {
           <Outlet />
         </div>
       </div>
-    </>
+    </div>
   );
 }

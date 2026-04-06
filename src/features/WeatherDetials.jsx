@@ -9,12 +9,13 @@ const initialState = currentWeather
       temp: "",
       feelslike: "",
       icon: "",
-      days_detials: [{}],
       desc: "",
       city: "",
       placeAddress: "",
       date: "",
       WeatherUI: {},
+      hourly_forecast: [{}],
+      days_detials: [{}],
     };
 
 export const weatherSlice = createSlice({
@@ -93,6 +94,41 @@ export const fetchWeather = createAsyncThunk(
       }
 
       console.log(days_detials);
+
+      // Array to store formatted hourly forecast data
+      const hourly_forecast = [];
+
+      // Loop through each hour in the first forecast day
+      for (let day of weatherRes.data.forecast.forecastday[0].hour) {
+        // 🕒 Format time (HH:MM AM/PM)
+        const time = new Date(day.time).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        });
+
+        // Weather condition icon (URL from API)
+        const icon = day.condition.icon;
+
+        // Round temperature to nearest integer
+        const temp = `${Math.round(day.temp_c)}°`;
+
+        // Chance of rain (already 0–100 from API)
+        const chance_of_rain = `${day.chance_of_rain}%`;
+
+        const desc = day.condition.text;
+
+        // Push formatted data into array
+        hourly_forecast.push({
+          time,
+          icon,
+          temp,
+          desc,
+          chance_of_rain,
+        });
+      }
+
+      console.log(hourly_forecast);
 
       // City
       const city =
@@ -263,6 +299,7 @@ export const fetchWeather = createAsyncThunk(
         desc,
         feelslike,
         WeatherUI,
+        hourly_forecast,
       };
       localStorage.setItem("weather", JSON.stringify(weather));
       return weather;
