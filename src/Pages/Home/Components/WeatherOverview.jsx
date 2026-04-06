@@ -5,11 +5,13 @@ import Placeholder from "./Placeholder";
 export default function WeatherOverview() {
   const weather = useSelector((state) => state.weather);
   const iconRef = useRef(null);
+  const mobileIconRef = useRef(null);
   const placeRef = useRef(null);
   const screenRef = useRef(null);
   const SmMaxTempRef = useRef(null);
   const LgMaxTempRef = useRef(null);
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
+  const [mobileIconSize, setMobileIconSize] = useState({ width: 0, height: 0 });
   const [showPlace, setShowPlace] = useState(false);
   const [smMaxTempWidth, setSmMaxTempWidth] = useState(0);
   const [lgMaxTempWidth, setLgMaxTempWidth] = useState(0);
@@ -19,6 +21,15 @@ export default function WeatherOverview() {
       setIconSize({
         width: iconRef.current.offsetWidth,
         height: iconRef.current.offsetHeight,
+      });
+    }
+  }, [weather]);
+
+  useEffect(() => {
+    if (mobileIconRef.current) {
+      setMobileIconSize({
+        width: mobileIconRef.current.clientWidth,
+        height: mobileIconRef.current.clientHeight,
       });
     }
   }, [weather]);
@@ -103,21 +114,22 @@ export default function WeatherOverview() {
         </div>
 
         {weather.icon ? (
-          <div className="flex justify-center relative grow w-full mt-1 mb-4">
+          <div className="flex justify-center relative grow w-full mt-1 mb-4 group">
             <div
-              className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[18px]`}
+              className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[32px] group-hover:blur-[20px] `}
               style={{
-                width: iconSize.width,
-                height: iconSize.height,
-                top: 0,
-                right: 0,
+                width: mobileIconSize.width,
+                height: mobileIconSize.height,
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%,-50%)",
               }}
             ></div>
             {weather.icon && (
               <img
                 src={`${weather.icon}`}
                 alt="Weather State"
-                ref={iconRef}
+                ref={mobileIconRef}
                 className="h-full object-cover"
               />
             )}
