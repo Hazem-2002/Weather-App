@@ -172,7 +172,7 @@ export default function WeatherOverview() {
           )}
 
           <div className="flex flex-row gap-6 w-fit">
-            {weather.days_detials.length > 2 ? (
+            {(weather.days_detials?.length || 0) > 2 ? (
               <div
                 className="bg-white/10 backdrop-blur-xl p-2 rounded-2xl flex items-center gap-2.5 border border-white/20 shadow-md"
                 ref={SmMaxTempRef}
@@ -211,7 +211,7 @@ export default function WeatherOverview() {
               <Placeholder width="93px" height="54px" />
             )}
 
-            {weather.days_detials.length > 2 ? (
+            {(weather.days_detials?.length || 0) > 2 ? (
               <div
                 className="bg-white/10 backdrop-blur-xl p-2  rounded-2xl flex items-center justify-center gap-2.5 border border-white/20 shadow-md"
                 style={{
@@ -297,7 +297,7 @@ export default function WeatherOverview() {
           )}
 
           <div className="flex flex-row gap-6 w-fit">
-            {weather.days_detials.length > 2 ? (
+            {(weather.days_detials?.length || 0) > 2 ? (
               <div
                 className="bg-white/10 backdrop-blur-xl px-4 py-2.5 rounded-2xl flex items-center gap-2.5 border border-white/20 shadow-md transition-all hover:bg-white/17"
                 ref={LgMaxTempRef}
@@ -335,7 +335,7 @@ export default function WeatherOverview() {
             ) : (
               <Placeholder width="105px" height="60px" />
             )}
-            {weather.days_detials.length > 2 ? (
+            {(weather.days_detials?.length || 0) > 2 ? (
               <div
                 className="bg-white/10 backdrop-blur-xl px-4 py-2.5 rounded-2xl flex items-center justify-center gap-2.5 border border-white/20 shadow-md transition-all hover:bg-white/17"
                 style={{
