@@ -401,7 +401,7 @@ export default function WeatherOverview() {
           <div className="flex flex-col justify-between items-end h-[60%] shrink-0">
             {weather.desc ? (
               <p
-                className={`font-bold capitalize text-center ${weather.desc.split(" ").length > 2 ? "text-xl lg:text-2xl" : "text-2xl lg:text-3xl"}`}
+                className={`font-bold capitalize text-center ${weather.desc.split(" ").length > 2 ? (weather.desc.split(" ").length > 3 ? "text-lg lg:text-xl" : "text-xl lg:text-2xl") : "text-2xl lg:text-3xl"}`}
               >
                 {weather.desc}
               </p>

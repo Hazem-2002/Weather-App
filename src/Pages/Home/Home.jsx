@@ -5,6 +5,7 @@ import DaysForecast from "./Components/DaysForecast";
 import WeatherOverview from "./Components/WeatherOverview";
 import HourlyForecast from "./Components/HourlyForecast";
 import CurrentDetials from "./Components/CurrentDetials";
+import Astronomy from "./Components/Astronomy";
 
 export default function Home() {
   const coords = useSelector((state) => state.city);
@@ -46,11 +47,14 @@ export default function Home() {
           <DaysForecast />
         </div>
       </main>
-      <section className="-mt-8 px-4 max-w-full overflow-hidden">
+      <section className="-mt-8">
         <HourlyForecast />
       </section>
-      <section className="mb-8">
+      <section>
         <CurrentDetials />
+      </section>
+      <section className="mb-8">
+        <Astronomy />
       </section>
     </div>
   );

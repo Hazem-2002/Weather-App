@@ -145,7 +145,7 @@ export default function HourlyForecast() {
   return (
     <>
       {(weather.days_detials?.length || 0) > 2 && (
-        <div className="flex flex-col gap-6 p-2">
+        <div className="flex flex-col gap-6">
           <div className="flex flex-row items-center gap-3 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +165,7 @@ export default function HourlyForecast() {
             <h2 className="text=lg font-semibold">Hourly Forecast</h2>
           </div>
           <div
-            className="p-6 rounded-4xl self-center md:self-start"
+            className="p-6 rounded-4xl self-center mx-2 mb-2"
             ref={containerRef}
             style={{
               width: containerWidth ? `${containerWidth}px` : "100%",
@@ -215,7 +215,7 @@ export default function HourlyForecast() {
                     slotProps={tooltipSlotProps}
                   >
                     <div
-                      className={`flex justify-center items-center px-2 py-1 rounded-2xl ${hour.time == currentTime ? "bg-white/30 text-white/80" : "bg-blue-500/20 text-blue-700"}`}
+                      className={`flex justify-center items-center px-2 py-1 rounded-2xl ${hour.time == currentTime ? "bg-white/20 text-white/80" : "bg-blue-500/20 text-blue-700"}`}
                     >
                       <h2 className="text-xs font-bold w-fit leading-none">
                         {hour.chance_of_rain}

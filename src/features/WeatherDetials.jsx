@@ -17,6 +17,7 @@ const initialState = currentWeather
       hourly_forecast: [{}],
       days_detials: [{}],
       current_detials: {},
+      astronomy: {},
     };
 
 export const weatherSlice = createSlice({
@@ -305,6 +306,24 @@ export const fetchWeather = createAsyncThunk(
         vis_km,
       };
 
+      // Astronomy
+      const sunrise = weatherRes.data.forecast.forecastday[0].astro.sunrise;
+      const sunset = weatherRes.data.forecast.forecastday[0].astro.sunset;
+      const moonrise = weatherRes.data.forecast.forecastday[0].astro.moonrise;
+      const moonset = weatherRes.data.forecast.forecastday[0].astro.moonset;
+      const moon_phase =
+        weatherRes.data.forecast.forecastday[0].astro.moon_phase;
+      const moon_illumination = `${weatherRes.data.forecast.forecastday[0].astro.moon_illumination}%`;
+
+      const astronomy = {
+        sunrise,
+        sunset,
+        moonrise,
+        moonset,
+        moon_phase,
+        moon_illumination,
+      };
+
       const weather = {
         temp,
         days_detials,
@@ -317,6 +336,7 @@ export const fetchWeather = createAsyncThunk(
         WeatherUI,
         hourly_forecast,
         current_detials,
+        astronomy,
       };
       localStorage.setItem("weather", JSON.stringify(weather));
       return weather;
