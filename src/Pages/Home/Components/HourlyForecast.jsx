@@ -112,10 +112,40 @@ export default function HourlyForecast() {
     };
   }, []);
 
+  const dateStr = weather.date.replace(" at", "");
+  const date = new Date(dateStr);
+  date.setMinutes(0);
+  const currentTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  const tooltipSlotProps = {
+    popper: {
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, -4],
+          },
+        },
+      ],
+      sx: {
+        "&.MuiPopper-root .MuiTooltip-tooltip": {
+          background: "color-mix(in srgb, var(--background) 90%, transparent)",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+          willChange: "transform",
+          fontSize: "11px",
+        },
+      },
+    },
+  };
+
   return (
     <>
-      {weather.hourly_forecast.length > 2 && (
-        <div className="flex flex-col gap-6">
+      {(weather.days_detials?.length || 0) > 2 && (
+        <div className="flex flex-col gap-6 p-2">
           <div className="flex flex-row items-center gap-3 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +165,7 @@ export default function HourlyForecast() {
             <h2 className="text=lg font-semibold">Hourly Forecast</h2>
           </div>
           <div
-            className="p-6 rounded-4xl self-center sm:self-start"
+            className="p-6 rounded-4xl self-center md:self-start"
             ref={containerRef}
             style={{
               width: containerWidth ? `${containerWidth}px` : "100%",
@@ -151,38 +181,20 @@ export default function HourlyForecast() {
                 <div
                   key={hour.time + index}
                   ref={index === 0 ? itemRef : null}
-                  className="w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center bg-card/80 border border-border/80 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
+                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80"} border border-border/80 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
                 >
-                  <p className="text-base font-bold text-xs text-white/50 w-fit">
+                  <p
+                    className={`text-base font-bold text-xs ${hour.time == currentTime ? "text-white/80" : "text-white/50"} w-fit`}
+                  >
                     {hour.time}
                   </p>
 
                   <Tooltip
                     title={hour.desc}
                     placement="top"
-                    slotProps={{
-                      popper: {
-                        modifiers: [
-                          {
-                            name: "offset",
-                            options: {
-                              offset: [0, -8],
-                            },
-                          },
-                        ],
-                        sx: {
-                          "&.MuiPopper-root .MuiTooltip-tooltip": {
-                            background:
-                              "color-mix(in srgb, var(--background) 80%, transparent)",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                            willChange: "transform",
-                            fontSize: "11px",
-                          },
-                        },
-                      },
-                    }}
+                    slotProps={tooltipSlotProps}
                   >
-                    <div className="flex justify-center items-center size-14 p-2 rounded-full bg-muted/30 transition duration-200 group-hover:bg-primary/4">
+                    <div className="flex justify-center items-center size-14 p-2 rounded-full bg-white/2 transition duration-200 group-hover:bg-white/3">
                       <img
                         src={hour.icon}
                         alt="Icon"
@@ -196,31 +208,15 @@ export default function HourlyForecast() {
                   </h2>
 
                   <Tooltip
-                    title={<p className="capitalize">chance of rain</p>}
+                    title={
+                      <p className="uppercase text-[10px]">chance of rain</p>
+                    }
                     placement="top"
-                    slotProps={{
-                      popper: {
-                        modifiers: [
-                          {
-                            name: "offset",
-                            options: {
-                              offset: [0, -4],
-                            },
-                          },
-                        ],
-                        sx: {
-                          "&.MuiPopper-root .MuiTooltip-tooltip": {
-                            background:
-                              "color-mix(in srgb, var(--background) 90%, transparent)",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                            willChange: "transform",
-                            fontSize: "11px",
-                          },
-                        },
-                      },
-                    }}
+                    slotProps={tooltipSlotProps}
                   >
-                    <div className="flex justify-center items-center px-2 py-1 rounded-2xl bg-blue-500/20 text-blue-700">
+                    <div
+                      className={`flex justify-center items-center px-2 py-1 rounded-2xl ${hour.time == currentTime ? "bg-white/30 text-white/80" : "bg-blue-500/20 text-blue-700"}`}
+                    >
                       <h2 className="text-xs font-bold w-fit leading-none">
                         {hour.chance_of_rain}
                       </h2>

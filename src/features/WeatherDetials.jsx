@@ -16,6 +16,7 @@ const initialState = currentWeather
       WeatherUI: {},
       hourly_forecast: [{}],
       days_detials: [{}],
+      current_detials: {},
     };
 
 export const weatherSlice = createSlice({
@@ -289,6 +290,21 @@ export const fetchWeather = createAsyncThunk(
       // Feels Like Of Temperature
       const feelslike = `${Math.round(weatherRes.data.current.feelslike_c)}°`;
 
+      // Current Detials
+      const wind_kph = `${weatherRes.data.current.wind_kph}Km/h`;
+      const humidity = `${weatherRes.data.current.humidity}%`;
+      const pressure_mb = `${weatherRes.data.current.pressure_mb}mb`;
+      const uv = weatherRes.data.current.uv;
+      const vis_km = `${weatherRes.data.current.vis_km}Km`;
+      const current_detials = {
+        wind_kph,
+        humidity,
+        pressure_mb,
+        uv,
+        feelslike,
+        vis_km,
+      };
+
       const weather = {
         temp,
         days_detials,
@@ -300,6 +316,7 @@ export const fetchWeather = createAsyncThunk(
         feelslike,
         WeatherUI,
         hourly_forecast,
+        current_detials,
       };
       localStorage.setItem("weather", JSON.stringify(weather));
       return weather;
