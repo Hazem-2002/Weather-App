@@ -4,7 +4,7 @@ export default function CurrentDetials() {
   const weather = useSelector((state) => state.weather);
   return (
     <>
-      {weather.current_detials.wind_kph && (
+      {weather?.current_detials?.wind_kph != null && (
         <div className="flex flex-col gap-6">
           <div className="flex flex-row gap-3">
             <svg
