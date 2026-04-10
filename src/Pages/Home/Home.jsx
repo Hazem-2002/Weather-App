@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchWeather } from "../../features/WeatherDetials";
+import { useSelector } from "react-redux";
 import DaysForecast from "./Components/DaysForecast";
 import WeatherOverview from "./Components/WeatherOverview";
 import HourlyForecast from "./Components/HourlyForecast";
@@ -8,20 +7,10 @@ import CurrentDetials from "./Components/CurrentDetials";
 import Astronomy from "./Components/Astronomy";
 
 export default function Home() {
-  const coords = useSelector((state) => state.city);
   const weather = useSelector((state) => state.weather);
-  const weatherDispatch = useDispatch();
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const isSm = window.matchMedia("(max-width: 640px)").matches;
   const isShortScreen = window.matchMedia("(max-height: 700px)").matches;
-
-  // Fetch Current Temperature
-  useEffect(() => {
-    const request = weatherDispatch(fetchWeather());
-
-    return () => request.abort();
-    // eslint-disable-next-line
-  }, [coords]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -39,7 +28,7 @@ export default function Home() {
     >
       <main className="flex flex-col xl:flex-row justify-between gap-y-6 pb-6 xl:pb-0 min-h-screen xl:h-screen shrink-0">
         <div
-          className={`shrink-0 grow-0 ${isShortScreen && isSm ? "h-[650px]" : windowHeight < 535 || window.matchMedia("(max-height: 525px)").matches ? "h-[580px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in animate-duration-1000`}
+          className={`shrink-0 grow-0 ${isShortScreen && isSm ? "h-[650px]" : windowHeight < 535 || window.matchMedia("(max-height: 525px)").matches ? "h-[580px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in animate-duration-500`}
         >
           <WeatherOverview />
         </div>
@@ -48,13 +37,13 @@ export default function Home() {
         </div>
       </main>
       <section className="-mt-8">
-        <HourlyForecast />
+        <HourlyForecast Home="1" />
       </section>
       <section>
         <CurrentDetials />
       </section>
       <section className="mb-8">
-        <Astronomy />
+        <Astronomy Home="1" />
       </section>
     </div>
   );

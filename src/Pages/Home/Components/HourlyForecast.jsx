@@ -2,8 +2,10 @@ import Tooltip from "@mui/material/Tooltip";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
 
-export default function HourlyForecast() {
-  const weather = useSelector((state) => state.weather);
+export default function HourlyForecast({ Home }) {
+  const weather = useSelector((state) =>
+    Home == 0 ? state.history : state.weather,
+  );
   const containerRef = useRef(null);
   const scrollContainer = useRef(null);
   const itemRef = useRef(null);
@@ -144,9 +146,9 @@ export default function HourlyForecast() {
 
   return (
     <>
-      {(weather.days_detials?.length || 0) > 2 && (
+      {(weather.hourly_forecast?.length || 0) > 2 && (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-row items-center gap-3 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">
+          <div className="flex flex-row items-center gap-3 animate-in text-foreground/90 animate-delay-100 fade-in zoom-in animate-duration-1000">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -165,7 +167,7 @@ export default function HourlyForecast() {
             <h2 className="text=lg font-semibold">Hourly Forecast</h2>
           </div>
           <div
-            className="p-6 rounded-4xl self-center mx-2 mb-2"
+            className={`p-6 rounded-4xl ${Home == 1 ? "self-center" : "self-center sm:self-start"} ${containerWidth ? "mx-auto" : ""} mx-2 mb-2`}
             ref={containerRef}
             style={{
               width: containerWidth ? `${containerWidth}px` : "100%",
@@ -181,10 +183,10 @@ export default function HourlyForecast() {
                 <div
                   key={hour.time + index}
                   ref={index === 0 ? itemRef : null}
-                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80"} border border-border/80 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
+                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80") : "bg-card/80"} border border-border/80 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
                 >
                   <p
-                    className={`text-base font-bold text-xs ${hour.time == currentTime ? "text-white/80" : "text-white/50"} w-fit`}
+                    className={`text-base font-bold text-xs ${Home == 1 ? (hour.time == currentTime ? "text-white/80" : "text-white/50") : "text-white/50"} w-fit`}
                   >
                     {hour.time}
                   </p>
@@ -215,7 +217,7 @@ export default function HourlyForecast() {
                     slotProps={tooltipSlotProps}
                   >
                     <div
-                      className={`flex justify-center items-center px-2 py-1 rounded-2xl ${hour.time == currentTime ? "bg-white/20 text-white/80" : "bg-blue-500/20 text-blue-700"}`}
+                      className={`flex justify-center items-center px-2 py-1 rounded-2xl ${Home == 1 ? (hour.time == currentTime ? "bg-white/20 text-white/80" : "bg-blue-500/20 text-blue-700") : "bg-blue-500/20 text-blue-700"}`}
                     >
                       <h2 className="text-xs font-bold w-fit leading-none">
                         {hour.chance_of_rain}

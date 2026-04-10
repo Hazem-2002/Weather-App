@@ -26,9 +26,7 @@ export default function Wrapper() {
 
   return (
     <CacheProvider value={cache} key={direction}>
-      <StrictMode>
-        <App />
-      </StrictMode>
+      <App />
     </CacheProvider>
   );
 }

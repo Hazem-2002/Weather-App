@@ -1,8 +1,21 @@
 import { Outlet } from "react-router-dom";
 import AutoCompleteComponent from "../AutoCompleteComponent";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWeather } from "../features/WeatherDetials";
+import { useEffect } from "react";
 
 export default function Layout() {
+  const coords = useSelector((state) => state.city);
+  const weatherDispatch = useDispatch();
+
+  // Fetch Current Temperature
+  useEffect(() => {
+    const request = weatherDispatch(fetchWeather());
+    return () => request.abort();
+    // eslint-disable-next-line
+  }, [coords]);
+
   const navLinkStyle = ({ isActive }) =>
     `px-2.5 py-2 md:px-4 md:py-2 rounded-2xl font-semibold transition duration-200 ${
       isActive

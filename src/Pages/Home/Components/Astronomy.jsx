@@ -1,12 +1,15 @@
 import { useSelector } from "react-redux";
 
-export default function Astronomy() {
-  const weather = useSelector((state) => state.weather);
+export default function Astronomy({ Home }) {
+  const weather = useSelector((state) =>
+    Home == 1 ? state.weather : state.history,
+  );
+  
   return (
     <>
       {weather?.astronomy?.sunrise != null && (
         <div className="flex flex-col gap-6 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row gap-3 text-foreground/90">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -29,7 +32,9 @@ export default function Astronomy() {
             </svg>
             <h2 className="text=lg font-semibold">Astronomy</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px] gap-6 p-2">
+          <div
+            className={`grid ${Home == 0 ? "grid-cols-2 sm:grid-cols-3 grid-rows-[repeat(3,140px)] sm:grid-rows-[repeat(2,140px)]" : "grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px]"} gap-6 p-2 text-foreground/70`}
+          >
             {/* Sunrise */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
@@ -191,7 +196,7 @@ export default function Astronomy() {
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
                 Moon phase
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-center">
                 {weather.astronomy.moon_phase}
               </p>
             </div>

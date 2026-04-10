@@ -95,8 +95,6 @@ export const fetchWeather = createAsyncThunk(
         });
       }
 
-      console.log(days_detials);
-
       // Array to store formatted hourly forecast data
       const hourly_forecast = [];
 
@@ -129,8 +127,6 @@ export const fetchWeather = createAsyncThunk(
           chance_of_rain,
         });
       }
-
-      console.log(hourly_forecast);
 
       // City
       const city =
