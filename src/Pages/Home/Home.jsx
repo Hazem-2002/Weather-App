@@ -42,7 +42,7 @@ export default function Home() {
       <section>
         <CurrentDetials />
       </section>
-      <section className="mb-8">
+      <section>
         <Astronomy Home="1" />
       </section>
     </div>

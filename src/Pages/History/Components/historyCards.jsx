@@ -80,6 +80,7 @@ export default function HistoryCards() {
 
   // Memoized array of past days based on itemsNumber and weather.date
   const days = useMemo(() => {
+    if (!weather.date) return [];
     // Clean the date string (remove "at")
     const dateStr = weather.date.replace(" at", "");
 
@@ -173,39 +174,42 @@ export default function HistoryCards() {
       ref={containerRef}
       style={{ width: containerWidth ? `${containerWidth}px` : "auto" }}
     >
-      {days.map((day, i) => {
-        const baseDate = new Date(weather.date.replace(" at", ""));
-        baseDate.setDate(baseDate.getDate() - i);
-        const dateString = formatDate(baseDate);
-        const isCurrentDay = dateString === history.date;
+      {days.length > 1 &&
+        days.map((day, i) => {
+          const baseDate = new Date(weather.date.replace(" at", ""));
+          baseDate.setDate(baseDate.getDate() - i);
+          const dateString = formatDate(baseDate);
+          const isCurrentDay = dateString === history.date;
 
-        return (
-          <div
-            key={day.day + i}
-            ref={i === 0 ? itemRef : null}
-            className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/50"}`}
-            style={{
-              boxShadow: isCurrentDay
-                ? "0 0 8px color-mix(in srgb, var(--primary) 70%, transparent)"
-                : "0 0 4px color-mix(in srgb, var(--primary) 35%, transparent)",
-            }}
-            onClick={() => {
-              const date = new Date(weather.date.replace(" at", ""));
-              date.setDate(date.getDate() - i);
-              const dateString = formatDate(date);
-              historyDispatch(editDate(dateString));
-              historyDispatch(fetchHistory(dateString));
-            }}
-          >
-            <p className="text-xs font-semibold text-muted-foreground uppercase">
-              {day.weekday}
-            </p>
-            <p className="text-xl font-bold text-foreground/90">{day.day}</p>
-            <p className="text-xs text-muted-foreground">{day.month}</p>
-            <p className="text-[10px] text-muted-foreground/65">{day.label}</p>
-          </div>
-        );
-      })}
+          return (
+            <div
+              key={day.day + i}
+              ref={i === 0 ? itemRef : null}
+              className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/50"}`}
+              style={{
+                boxShadow: isCurrentDay
+                  ? "0 0 8px color-mix(in srgb, var(--primary) 70%, transparent)"
+                  : "0 0 4px color-mix(in srgb, var(--primary) 35%, transparent)",
+              }}
+              onClick={() => {
+                const date = new Date(weather.date.replace(" at", ""));
+                date.setDate(date.getDate() - i);
+                const dateString = formatDate(date);
+                historyDispatch(editDate(dateString));
+                historyDispatch(fetchHistory(dateString));
+              }}
+            >
+              <p className="text-xs font-semibold text-muted-foreground uppercase">
+                {day.weekday}
+              </p>
+              <p className="text-xl font-bold text-foreground/90">{day.day}</p>
+              <p className="text-xs text-muted-foreground">{day.month}</p>
+              <p className="text-[10px] text-muted-foreground/65">
+                {day.label}
+              </p>
+            </div>
+          );
+        })}
     </div>
   );
 }

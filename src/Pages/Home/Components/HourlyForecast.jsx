@@ -148,7 +148,9 @@ export default function HourlyForecast({ Home }) {
     <>
       {(weather.hourly_forecast?.length || 0) > 2 && (
         <div className="flex flex-col gap-6">
-          <div className="flex flex-row items-center gap-3 animate-in text-foreground/90 animate-delay-100 fade-in zoom-in animate-duration-1000">
+          <div
+            className={`flex flex-row items-center gap-3 text-foreground/90 ${Home == 1 && "animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"}`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

@@ -9,7 +9,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { changeCoords } from "./features/CityCoords";
+import { changeCoords } from "../../../features/CityCoords";
 
 function AutoCompleteComponent() {
   const [open, setOpen] = useState(false);
