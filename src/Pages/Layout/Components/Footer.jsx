@@ -1,21 +1,33 @@
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+
 const Footer = () => {
+  const { t, i18n } = useTranslation();
+  const direction = useSelector((state) => state.direction);
+
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
+
   return (
     <div
       className="px-8 py-6 bg-white/5 rounded-2xl"
       style={{
-        boxShadow:
-          "0 0 4px color-mix(in srgb, var(--primary) 50%, transparent)",
+        boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)",
       }}
     >
       <div className="flex flex-col md:flex-row justify-center items-center md:justify-between md:items-center gap-4">
         <div className="flex flex-col w-fit items-center md:items-start">
           <p className="text-sm text-muted-foreground font-semibold">
-            © 2026 <span className="text-foreground font-bold">Weatherly</span>.
-            All rights reserved.
+            © 2026 <span className="text-foreground font-bold">Weatherly</span>.{" "}
+            {t("All_rights_reserved")}.
           </p>
           <p className="text-xs text-muted-foreground/80 font-semibold">
-            Crafted by{" "}
-            <span className="text-primary/85 font-bold">Hazem Mahmoud</span>
+            {t("Crafted by")}
+            <span className="text-primary/85 font-bold">
+              {t("Hazem_Mahmoud")}
+            </span>
           </p>
         </div>
 

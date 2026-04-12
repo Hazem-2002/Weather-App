@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import DaysForecast from "./Components/DaysForecast";
 import WeatherOverview from "./Components/WeatherOverview";
 import HourlyForecast from "./Components/HourlyForecast";
-import CurrentDetials from "./Components/CurrentDetials";
+import CurrentDetials from "./Components/CurrentDetails";
 import Astronomy from "./Components/Astronomy";
 
 export default function Home() {
@@ -28,7 +28,7 @@ export default function Home() {
     >
       <main className="flex flex-col xl:flex-row justify-between gap-y-6 pb-6 xl:pb-0 min-h-screen xl:h-screen shrink-0">
         <div
-          className={`shrink-0 grow-0 ${isShortScreen && isSm ? "h-[650px]" : windowHeight < 535 || window.matchMedia("(max-height: 525px)").matches ? "h-[580px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in animate-duration-500`}
+          className={`shrink-0 grow-0 ${isShortScreen && isSm ? "h-[650px]" : windowHeight < 535 || window.matchMedia("(max-height: 525px)").matches ? "h-[600px]" : "h-screen"} pt-10 sm:pt-28 pb-8 w-full xl:w-[67%] animate-in fade-in zoom-in animate-duration-500`}
         >
           <WeatherOverview />
         </div>

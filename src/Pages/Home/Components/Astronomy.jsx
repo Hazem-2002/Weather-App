@@ -1,10 +1,18 @@
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 export default function Astronomy({ Home }) {
+  const { t, i18n } = useTranslation();
+  const direction = useSelector((state) => state.direction);
   const weather = useSelector((state) =>
     Home == 1 ? state.weather : state.history,
   );
-  
+
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
+
   return (
     <>
       {weather?.astronomy?.sunrise != null && (
@@ -30,7 +38,7 @@ export default function Astronomy({ Home }) {
               <path d="m8 21 3.105-6.21" />
               <circle cx="12" cy="13" r="2" />
             </svg>
-            <h2 className="text=lg font-semibold">Astronomy</h2>
+            <h2 className="text=lg font-semibold">{t("Astronomy")}</h2>
           </div>
           <div
             className={`grid ${Home == 0 ? "grid-cols-2 sm:grid-cols-3 grid-rows-[repeat(3,140px)] sm:grid-rows-[repeat(2,140px)]" : "grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px]"} gap-6 p-2 text-foreground/70`}
@@ -40,7 +48,7 @@ export default function Astronomy({ Home }) {
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-amber-500/10">
@@ -67,16 +75,16 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Sunrise
+                {t("Sunrise")}
               </h2>
-              <p className="text-sm font-bold">{weather.astronomy.sunrise}</p>
+              <p className="text-sm font-bold text-foreground/80">{weather.astronomy.sunrise}</p>
             </div>
             {/* Sunset */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-orange-500/10">
@@ -103,16 +111,16 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Sunset
+                {t("Sunset")}
               </h2>
-              <p className="text-sm font-bold">{weather.astronomy.sunset}</p>
+              <p className="text-sm font-bold text-foreground/80">{weather.astronomy.sunset}</p>
             </div>
             {/* Moonrise */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-blue-500/10">
@@ -132,16 +140,16 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Moonrise
+                {t("Moonrise")}
               </h2>
-              <p className="text-sm font-bold">{weather.astronomy.moonrise}</p>
+              <p className="text-sm font-bold text-foreground/80">{weather.astronomy.moonrise}</p>
             </div>
             {/* Moonset */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-indigo-500/10">
@@ -161,16 +169,16 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Moonset
+                {t("Moonset")}
               </h2>
-              <p className="text-sm font-bold">{weather.astronomy.moonset}</p>
+              <p className="text-sm font-bold text-foreground/80">{weather.astronomy.moonset}</p>
             </div>
             {/* Moon Phase */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-purple-500/10">
@@ -194,10 +202,10 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Moon phase
+                {t("Moon_phase")}
               </h2>
-              <p className="text-sm font-bold text-center">
-                {weather.astronomy.moon_phase}
+              <p className="text-sm font-bold text-center text-foreground/80">
+                {t(`${weather.astronomy.moon_phase.replace(" ","_")}`)}
               </p>
             </div>
             {/* Moon Illumination */}
@@ -205,7 +213,7 @@ export default function Astronomy({ Home }) {
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-yellow-500/10">
@@ -228,9 +236,9 @@ export default function Astronomy({ Home }) {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold uppercase">
-                Illumination
+                {t("Illumination")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.astronomy.moon_illumination}
               </p>
             </div>

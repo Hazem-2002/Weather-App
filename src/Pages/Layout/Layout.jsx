@@ -18,11 +18,12 @@ export default function Layout() {
   }, [coords]);
 
   return (
-    <div className="select-none">
+    <div className="select-non">
       <Navbar />
       <div className="flex flex-row gap-4 sm:gap-8 bg-background">
-        <div className="w-0 md:w-22 lg:w-64 h-0 md:h-full lg:w-64 flex-shrink-0"></div>
-        <Sidebar />
+        <div className="w-0 md:w-22 lg:w-64 h-0 md:h-full lg:w-64 flex-shrink-0 bg-green-500">
+          <Sidebar />
+        </div>
         <div className="flex-grow min-h-screen bg-background pb-15 md:pb-0 max-w-screen overflow-hidden">
           <Outlet />
           {/* Footer */}

@@ -7,10 +7,13 @@ import { fetchHistory } from "../../features/HistorySlice";
 import { useSelector, useDispatch } from "react-redux";
 import HourlyForecast from "../Home/Components/HourlyForecast";
 import Astronomy from "../Home/Components/Astronomy";
+import { useTranslation } from "react-i18next";
 
 export default function History() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
+  const direction = useSelector((state) => state.direction);
+  const { t, i18n } = useTranslation();
   const historyDispatch = useDispatch();
 
   // Popover
@@ -33,13 +36,17 @@ export default function History() {
   };
 
   useEffect(() => {
-    const currentDate = new Date(weather.date.replace(" at", ""));
+    const currentDate = new Date(weather.currentDate);
     currentDate.setDate(currentDate.getDate() - 1);
 
     const dateString = formatDate(currentDate);
     historyDispatch(fetchHistory(dateString));
     // eslint-disable-next-line
   }, [weather.city]);
+
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
 
   return (
     <div className="flex flex-col gap-12 pt-26 pe-4 sm:pt-32 sm:pe-8">
@@ -76,9 +83,14 @@ export default function History() {
               open={open}
               anchorEl={anchorEl}
               onClose={handleClose}
+              disableScrollLock
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left",
+                horizontal: direction === "ltr" ? "left" : "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: direction === "ltr" ? "left" : "right",
               }}
               slotProps={{
                 paper: {
@@ -95,10 +107,10 @@ export default function History() {
           </div>
           <div className="flex flex-col gap-1">
             <h2 className="text-xl sm:text-2xl font-bold text-foreground/90 capitalize">
-              Weather History
+              {t("Weather_History")}
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-semibold">
-              Select a day to view weather details
+              {t("Select_a_day_to_view_weather_details")}
             </p>
           </div>
         </div>
@@ -145,7 +157,7 @@ export default function History() {
               className="flex flex-col w-full xl:w-[34%] rounded-2xl shrink-0 overflow-hidden"
               style={{
                 boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 50%, transparent)",
+                  "0 0 4px rgb(var(--primary-rgb)/0.5)",
               }}
             >
               {/* Title => "Detials" */}
@@ -153,7 +165,7 @@ export default function History() {
                 className="flex flex-row px-6 py-8 items-center gap-2 text-foreground/85"
                 style={{
                   boxShadow:
-                    "0 0 4px color-mix(in srgb, var(--primary) 50%, transparent)",
+                    "0 0 4px rgb(var(--primary-rgb)/0.5)",
                 }}
               >
                 <svg
@@ -173,7 +185,7 @@ export default function History() {
                   <rect width="18" height="18" x="3" y="4" rx="2" />
                   <path d="M3 10h18" />
                 </svg>
-                <p className="text-xl font-semibold ">Detials</p>
+                <p className="text-xl font-semibold ">{t("Detials")}</p>
               </div>
 
               <div className="px-8">
@@ -203,7 +215,7 @@ export default function History() {
                     {/* Max Temperature */}
                     <div className="flex flex-col gap-1 grow-2 sm:grow-0 xl:grow-2 w-fit sm:w-[126px] xl:w-fit items-start sm:items-center xl:items-start">
                       <p className="text-xs text-foreground/55 uppercase w-fit">
-                        max temp
+                        {t("max_temp")}
                       </p>
                       <p className="text-xl font-semibold text-orange-500 w-fit">
                         {history.maxtemp_c}
@@ -213,7 +225,7 @@ export default function History() {
                     {/* Min Temperature */}
                     <div className="flex flex-col gap-1 grow-1 sm:grow-0 xl:grow-1 w-fit sm:w-[126px] xl:w-fit items-start sm:items-center xl:items-start">
                       <p className="text-xs text-foreground/55 uppercase w-fit">
-                        Min temp
+                        {t("Min_temp")}
                       </p>
                       <p className="text-xl font-semibold text-blue-500 w-fit">
                         {history.mintemp_c}
@@ -246,7 +258,9 @@ export default function History() {
                             <path d="M17.5 8a2.5 2.5 0 1 1 2 4H2" />
                             <path d="M9.8 4.4A2 2 0 1 1 11 8H2" />
                           </svg>
-                          <p className="text-xs uppercase w-fit">wind speed</p>
+                          <p className="text-xs uppercase w-fit">
+                            {t("wind_speed")}
+                          </p>
                         </div>
                         <p className="font-semibold text-foreground/90">
                           {history.windSpeed}
@@ -272,7 +286,9 @@ export default function History() {
                             <path d="M12 2v2" />
                             <path d="M20.992 13a1 1 0 0 0 .97-1.274 10.284 10.284 0 0 0-19.923 0A1 1 0 0 0 3 13z" />
                           </svg>
-                          <p className="text-xs uppercase">chance of rain</p>
+                          <p className="text-xs uppercase">
+                            {t("chance_of_rain")}
+                          </p>
                         </div>
                         <p className="font-semibold text-foreground/90">
                           {history.daily_chance_of_rain}
@@ -302,7 +318,7 @@ export default function History() {
                             <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
                           </svg>
                           <p className="text-xs uppercase w-fit">
-                            Avg Humidity
+                            {t("Avg_Humidity")}
                           </p>
                         </div>
                         <p className="font-semibold text-foreground/90">
@@ -335,7 +351,7 @@ export default function History() {
                             <path d="m6.34 17.66-1.41 1.41" />
                             <path d="m19.07 4.93-1.41 1.41" />
                           </svg>
-                          <p className="text-xs uppercase">uv index</p>
+                          <p className="text-xs uppercase">{t("UV_Index")}</p>
                         </div>
                         <p className="font-semibold text-foreground/90">
                           {history.uv}

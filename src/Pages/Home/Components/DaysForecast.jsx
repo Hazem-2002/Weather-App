@@ -4,6 +4,7 @@ import Placeholder from "./Placeholder";
 
 export default function DaysForecast() {
   const weather = useSelector((state) => state.weather);
+  const direction = useSelector((state) => state.direction);
   const layoutRef = useRef(null);
   const dayForecastHeight = useRef(null);
   const [maxHeight, setMaxHeight] = useState(0);
@@ -168,15 +169,13 @@ export default function DaysForecast() {
     <div
       className={`flex flex-col gap-4 w-full ${!maxHeight || !dayForecastHeight ? "xl:h-full" : "xl:h-auto"} max-h-full pb-4 px-6 rounded-4xl overflow-hidden`}
       style={{
-        boxShadow:
-          "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+        boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)",
       }}
     >
       <div
         className="flex flex-row items-center gap-2 px-3 py-6 shadow-md shadow-border"
         style={{
-          boxShadow:
-            "0 5px 6px -4px color-mix(in srgb, var(--primary) 15%, transparent)",
+          boxShadow: "0 5px 6px -4px rgb(var(--primary-rgb)/0.25)",
         }}
       >
         {weather.days_detials[0]?.icon ? (
@@ -205,7 +204,7 @@ export default function DaysForecast() {
           <Placeholder width="20px" height="20px" />
         )}
         {weather.days_detials[0]?.icon ? (
-          <h2 className="text-lg font-bold animate-in fade-in zoom-in animate-duration-1000 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">{`${weather.days_detials.length}-Day Forecast`}</h2>
+          <h2 className="text-lg font-bold animate-in fade-in zoom-in animate-duration-1000 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">{`${direction === "ltr" ? `${weather.days_detials.length}-Day Forecast` : `توقعات ${weather.days_detials.length.toLocaleString("ar-EG")} أيام`}`}</h2>
         ) : (
           <Placeholder width="134px" height="28px" />
         )}
@@ -229,14 +228,21 @@ export default function DaysForecast() {
             <div
               key={index}
               ref={dayForecastHeight}
-              className="grid grid-cols-[1fr_1fr_1.4fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.4fr] grid-rows-[60px] sm:grid-rows-[72px] xl:grid-rows-[60px] justify-between items-center py-2 px-4 shadow-xs shadow-border rounded-3xl transition hover:bg-muted/50 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
+              className="grid grid-cols-[1fr_1fr_1.4fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.4fr] grid-rows-[60px] sm:grid-rows-[72px] xl:grid-rows-[60px] justify-between items-center py-2 px-4 rounded-3xl transition hover:bg-muted/50 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
+              style={{
+                boxShadow: "0 0 8px rgb(var(--primary-rgb)/0.2)",
+              }}
             >
               {index === 0 ? (
-                <h2 className="text-base font-semibold leading-none">Today</h2>
+                <h2 className="text-base font-semibold leading-none">
+                  {direction == "ltr" ? "Today" : "اليوم"}
+                </h2>
               ) : (
                 <>
                   <h2 className="block sm:hidden xl:block text-base font-semibold leading-none">
-                    {day.dayName?.slice(0, 3)}
+                    {direction === "ltr"
+                      ? day.dayName?.slice(0, 3)
+                      : day.dayName}
                   </h2>
 
                   <h2 className="hidden sm:block xl:hidden text-base font-semibold leading-none">

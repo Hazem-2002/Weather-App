@@ -1,21 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Placeholder from "./Placeholder";
+import { useTranslation } from "react-i18next";
 
 export default function WeatherOverview() {
+  const { t, i18n } = useTranslation();
   const weather = useSelector((state) => state.weather);
+  const direction = useSelector((state) => state.direction);
   const iconRef = useRef(null);
   const mobileIconRef = useRef(null);
-  const placeRef = useRef(null);
-  const screenRef = useRef(null);
+
+  const SmScreenRef = useRef(null);
+  const SmMeasureRef = useRef(null);
+
+  const LgScreenRef = useRef(null);
+  const LgMeasureRef = useRef(null);
+
   const SmMaxTempRef = useRef(null);
   const LgMaxTempRef = useRef(null);
   const [iconSize, setIconSize] = useState({ width: 0, height: 0 });
   const [mobileIconSize, setMobileIconSize] = useState({ width: 0, height: 0 });
-  const [showPlace, setShowPlace] = useState(false);
   const [smMaxTempWidth, setSmMaxTempWidth] = useState(0);
   const [lgMaxTempWidth, setLgMaxTempWidth] = useState(0);
 
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
+
+  // Get size if weather Icon in Large screen
   useEffect(() => {
     if (iconRef.current) {
       setIconSize({
@@ -25,6 +37,7 @@ export default function WeatherOverview() {
     }
   }, [weather]);
 
+  // Get size if weather Icon in mobile screen
   useEffect(() => {
     if (mobileIconRef.current) {
       setMobileIconSize({
@@ -34,19 +47,119 @@ export default function WeatherOverview() {
     }
   }, [weather]);
 
+  // Function to split placeAddress into two lines based on max width
+  const splitPlaceText = (text, measureEl, maxWidth) => {
+    // Split text into parts based on separators
+    const parts = text.split(/,\s|،\s|\s-\s/);
+
+    let firstLine = ""; // Will hold the first line text
+    let secondLine = []; // Will hold remaining parts for second line
+
+    for (let i = 0; i < parts.length; i++) {
+      // Build a test string by adding the next part with proper separator based on direction
+      const testLine = firstLine
+        ? firstLine + `${parts[i]}${direction === "ltr" ? ", " : "، "}`
+        : `${parts[i]}${direction === "ltr" ? ", " : "، "}`;
+
+      // Temporarily set the text in a hidden element to measure its width
+      measureEl.innerText = testLine;
+
+      // If the width exceeds the allowed max width, stop and move remaining parts to second line
+      if (measureEl.offsetWidth > maxWidth) {
+        secondLine = parts.slice(i);
+        break;
+      }
+
+      // Otherwise, accept this part into the first line
+      firstLine = testLine;
+    }
+
+    // Remove the last separator from the first line
+    firstLine = firstLine.slice(0, -2);
+
+    // Return both lines, joining second line parts with correct separator
+    return [firstLine, secondLine.join(direction === "ltr" ? ", " : "، ")];
+  };
+
+  const [lines, setLines] = useState(["", ""]);
+
+  // handle placeAddress text in mobile screen
   useEffect(() => {
-    if (!screenRef.current || !placeRef.current) return;
+    // Ensure required DOM elements exist before running logic
+    if (!SmMeasureRef.current || !SmScreenRef.current) return;
 
-    const ratio = placeRef.current.offsetWidth / screenRef.current.offsetWidth;
+    // Function to recalculate text splitting on resize or data change
+    const handleResize = () => {
+      // Calculate 80% of container width as max allowed width for first line
+      const maxWidth = SmScreenRef.current.offsetWidth * 0.8;
 
-    setShowPlace(ratio < 0.85);
-  }, [weather]);
+      // Split the text based on calculated width
+      const [line1, line2] = splitPlaceText(
+        weather.placeAddress,
+        SmMeasureRef.current,
+        maxWidth,
+      );
 
+      // Update state with new lines
+      setLines([line1, line2]);
+    };
+
+    // Initial calculation on mount or when dependencies change
+    handleResize();
+
+    // Recalculate on window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
+    // eslint-disable-next-line
+  }, [weather, direction]);
+
+  // handle placeAddress text in large screen
+  useEffect(() => {
+    // Ensure required DOM elements exist before running logic
+    if (!LgMeasureRef.current || !LgScreenRef.current) return;
+
+    // Function to recalculate text splitting on resize or data change
+    const handleResize = () => {
+      // Calculate 80% of container width as max allowed width for first line
+      const maxWidth = LgScreenRef.current.offsetWidth * 0.8;
+
+      // Split the text based on calculated width
+      const [line1, line2] = splitPlaceText(
+        weather.placeAddress,
+        LgMeasureRef.current,
+        maxWidth,
+      );
+
+      // Update state with new lines
+      setLines([line1, line2]);
+    };
+
+    // Initial calculation on mount or when dependencies change
+    handleResize();
+
+    // Recalculate on window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+
+    // eslint-disable-next-line
+  }, [weather, direction]);
+
+  // Get width of Max TEMP Layout in mobile screen
   useEffect(() => {
     if (!SmMaxTempRef.current) return;
     setSmMaxTempWidth(SmMaxTempRef.current.offsetWidth);
   }, []);
 
+  // Get width of Max TEMP Layout in large screen
   useEffect(() => {
     if (!LgMaxTempRef.current) return;
     setLgMaxTempWidth(LgMaxTempRef.current.offsetWidth);
@@ -59,7 +172,7 @@ export default function WeatherOverview() {
       {/* ----------- Mobile ----------- */}
       <div
         className="flex sm:hidden flex-col items-center justify-center px-2 w-full overflow-hidden"
-        ref={screenRef}
+        ref={SmScreenRef}
       >
         <div className="flex flex-col items-center grow justify-center gap-1">
           {weather.city ? (
@@ -85,29 +198,23 @@ export default function WeatherOverview() {
             <Placeholder width="215px" height="36px" />
           )}
           {weather.placeAddress ? (
-            showPlace ? (
-              <p
-                className="text-white/60 font-semibold text-center text-base"
-                ref={placeRef}
-              >
-                {weather.placeAddress}
+            <>
+              {/* hidden measure */}
+              <span
+                ref={SmMeasureRef}
+                className="absolute invisible whitespace-nowrap text-base"
+              ></span>
+
+              <p className="text-white/60 font-semibold text-center text-base">
+                {lines[0]}
+                {lines[1] && (
+                  <>
+                    <br />
+                    {lines[1]}
+                  </>
+                )}
               </p>
-            ) : (
-              <div className="flex flex-col mb-4">
-                <p
-                  className="text-white/60 font-semibold text-center text-base"
-                  ref={placeRef}
-                >
-                  {weather.placeAddress.split(/,\s|،\s/)[0]}
-                </p>
-                <p
-                  className="text-white/60 font-semibold text-center text-base"
-                  ref={placeRef}
-                >
-                  {weather.placeAddress.split(/,\s|،\s/)[1]}
-                </p>
-              </div>
-            )
+            </>
           ) : (
             <Placeholder width="165px" height="24px" />
           )}
@@ -198,11 +305,11 @@ export default function WeatherOverview() {
                     <path d="M12 19V5"></path>
                   </svg>
                 </div>
-                <div className="flex flex-col leading-none">
-                  <span className="text-[7px] uppercase font-bold opacity-60">
-                    High
+                <div className="flex flex-col gap-1">
+                  <span className="text-[8px] uppercase font-bold opacity-60">
+                    {t("High")}
                   </span>
-                  <span className="text-sm font-bold">
+                  <span className="text-sm font-bold leading-none">
                     {weather.days_detials[0].max_temp}
                   </span>
                 </div>
@@ -236,11 +343,11 @@ export default function WeatherOverview() {
                     <path d="m19 12-7 7-7-7"></path>
                   </svg>
                 </div>
-                <div className="flex flex-col leading-none">
-                  <span className="text-[7px] uppercase font-bold opacity-60">
-                    Low
+                <div className="flex flex-col gap-1">
+                  <span className="text-[8px] uppercase font-bold opacity-60">
+                    {t("Low")}
                   </span>
-                  <span className="text-sm font-bold">
+                  <span className="text-sm font-bold leading-none">
                     {weather.days_detials[0].min_temp}
                   </span>
                 </div>
@@ -255,8 +362,10 @@ export default function WeatherOverview() {
 
       {/* ----------- Large Screen ----------- */}
       <div className="hidden sm:flex flex-row gap-1 justify-between flex-grow">
-        <div className="flex flex-col justify-center gap-6 grow max-w-[60%] overflow-hidden animate-in animate-delay-200 slide-in-from-left animate-duration-400">
-          <div className="flex flex-col gap-3">
+        <div
+          className={`flex flex-col justify-center gap-6 grow max-w-[60%] overflow-hidden animate-in animate-delay-200 ${direction === "ltr" ? "slide-in-from-left" : "slide-in-from-right"} animate-duration-400`}
+        >
+          <div className="flex flex-col gap-3" ref={LgScreenRef}>
             {weather.city ? (
               <div className="flex flex-row items-center gap-3 group">
                 <svg
@@ -280,9 +389,23 @@ export default function WeatherOverview() {
               <Placeholder width="275px" height="48px" />
             )}
             {weather.placeAddress ? (
-              <p className="text-white/60 font-semibold text-lg">
-                {weather.placeAddress}
-              </p>
+              <>
+                {/* hidden measure */}
+                <span
+                  ref={LgMeasureRef}
+                  className="absolute invisible whitespace-nowrap text-base"
+                ></span>
+
+                <p className="text-white/60 font-semibold text-lg">
+                  {lines[0]}
+                  {lines[1] && (
+                    <>
+                      <br />
+                      {lines[1]}
+                    </>
+                  )}
+                </p>
+              </>
             ) : (
               <Placeholder width="235px" height="28px" />
             )}
@@ -323,11 +446,11 @@ export default function WeatherOverview() {
                     <path d="M12 19V5"></path>
                   </svg>
                 </div>
-                <div className="flex flex-col leading-none">
+                <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase font-bold opacity-60">
-                    High
+                    {t("High")}
                   </span>
-                  <span className="text-lg font-bold">
+                  <span className="text-lg font-bold leading-none">
                     {weather.days_detials[0].max_temp}
                   </span>
                 </div>
@@ -360,11 +483,11 @@ export default function WeatherOverview() {
                     <path d="m19 12-7 7-7-7"></path>
                   </svg>
                 </div>
-                <div className="flex flex-col leading-none">
+                <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase font-bold opacity-60">
-                    Low
+                    {t("Low")}
                   </span>
-                  <p className="text-lg font-bold">
+                  <p className="text-lg font-bold leading-none">
                     {weather.days_detials[0].min_temp}
                   </p>
                 </div>
@@ -375,15 +498,18 @@ export default function WeatherOverview() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 grow max-w-[40%] animate-in animate-delay-200 slide-in-from-right animate-duration-400">
+        <div
+          className={`flex flex-col gap-4 grow max-w-[40%] animate-in animate-delay-200 ${direction === "ltr" ? "slide-in-from-right" : "slide-in-from-left"} animate-duration-400`}
+        >
           <div className="flex justify-end flex-grow shrink relative group h-[40%]">
             <div
-              className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[38px] group-hover:blur-[30px] `}
+              className={`absolute ${weather.WeatherUI.glow} rounded-full animate-pulse blur-[38px] group-hover:blur-[30px]`}
               style={{
                 width: iconSize.width * 1.15,
                 height: iconSize.height * 1.15,
                 top: -iconSize.height * 0.075,
-                right: -iconSize.width * 0.075,
+                [direction === "ltr" ? "right" : "left"]:
+                  -iconSize.width * 0.075,
               }}
             />
             {weather.icon ? (
@@ -419,7 +545,8 @@ export default function WeatherOverview() {
 
             {weather.feelslike !== "" ? (
               <p className="w-fit bg-white/10 backdrop-blur-xl px-4 py-1.5 rounded-xl border border-white/10 text-sm lg:text-base font-semibold shadow-md capitalize hover:bg-white/17">
-                {`feels like: ${weather.feelslike}`}
+                <span>{`${t("Feels_Like")} : `}</span>
+                {weather.feelslike}
               </p>
             ) : (
               <Placeholder width="130px" height="34px" />

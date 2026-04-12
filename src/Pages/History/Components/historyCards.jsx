@@ -7,6 +7,9 @@ export default function HistoryCards() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
   const historyDispatch = useDispatch();
+  const direction = useSelector((state) => state.direction);
+  const lang = direction === "rtl" ? "ar" : "en";
+  const locale = `${lang}-EG`;
 
   const numberOfItems = 30;
 
@@ -81,14 +84,12 @@ export default function HistoryCards() {
   // Memoized array of past days based on itemsNumber and weather.date
   const days = useMemo(() => {
     if (!weather.date) return [];
-    // Clean the date string (remove "at")
-    const dateStr = weather.date.replace(" at", "");
 
     // Convert string to Date object (represents "today")
-    const today = new Date(dateStr);
+    const today = new Date(weather.currentDate);
 
     // Formatter to extract readable date parts (e.g. Tue, 21, Jul)
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const formatter = new Intl.DateTimeFormat(locale, {
       weekday: "short", // e.g. "Tue"
       day: "numeric", // e.g. "21"
       month: "short", // e.g. "Jul"
@@ -110,6 +111,13 @@ export default function HistoryCards() {
         formatter.formatToParts(date).map(({ type, value }) => [type, value]),
       );
 
+      const getArabicDays = (num) => {
+        if (num === 1) return "يوم";
+        if (num >= 3 && num <= 10) return "أيام";
+        return "يوم"; // 11+
+      };
+      const daysAgo = i + 1;
+
       // Return structured object for each day
       return {
         weekday: parts.weekday, // e.g. "Tue"
@@ -117,10 +125,19 @@ export default function HistoryCards() {
         month: parts.month, // e.g. "Jul"
 
         // Human-readable label
-        label: i === 0 ? "TODAY" : i === 1 ? "YESTERDAY" : `${i} DAYS AGO`,
+        label:
+          i === 0
+            ? direction === "ltr"
+              ? "YESTERDAY"
+              : "أمس"
+            : direction === "ltr"
+              ? `${daysAgo} DAYS AGO`
+              : daysAgo === 2
+                ? "منذ يومين"
+                : `منذ ${daysAgo} ${getArabicDays(daysAgo)}`,
       };
     });
-  }, [weather]); // Re-run only when these values change
+  }, [weather, direction, locale]); // Re-run only when these values change
 
   // Custom horizontal scroll: move exactly one item per wheel step
   useEffect(() => {
@@ -176,35 +193,39 @@ export default function HistoryCards() {
     >
       {days.length > 1 &&
         days.map((day, i) => {
-          const baseDate = new Date(weather.date.replace(" at", ""));
+          const baseDate = new Date(weather.currentDate);
           baseDate.setDate(baseDate.getDate() - i);
           const dateString = formatDate(baseDate);
           const isCurrentDay = dateString === history.date;
 
           return (
             <div
-              key={day.day + i}
+              key={day.day}
               ref={i === 0 ? itemRef : null}
               className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/50"}`}
               style={{
                 boxShadow: isCurrentDay
-                  ? "0 0 8px color-mix(in srgb, var(--primary) 70%, transparent)"
-                  : "0 0 4px color-mix(in srgb, var(--primary) 35%, transparent)",
+                  ? "0 0 8px rgb(var(--primary-rgb)/0.7)"
+                  : "0 0 4px rgb(var(--primary-rgb)/0.35)",
               }}
               onClick={() => {
-                const date = new Date(weather.date.replace(" at", ""));
+                const date = new Date(weather.currentDate);
                 date.setDate(date.getDate() - i);
                 const dateString = formatDate(date);
                 historyDispatch(editDate(dateString));
                 historyDispatch(fetchHistory(dateString));
               }}
             >
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
+              <p className="text-[15px] font-semibold text-muted-foreground uppercase">
                 {day.weekday}
               </p>
-              <p className="text-xl font-bold text-foreground/90">{day.day}</p>
-              <p className="text-xs text-muted-foreground">{day.month}</p>
-              <p className="text-[10px] text-muted-foreground/65">
+              <p className="text-2xl font-bold text-foreground/90">{day.day}</p>
+              <p className="text-sm font-black text-muted-foreground">
+                {day.month}
+              </p>
+              <p
+                className={`${direction === "ltr" ? "text-[10px]" : "text-[11px]"} text-muted-foreground/65`}
+              >
                 {day.label}
               </p>
             </div>

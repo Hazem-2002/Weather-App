@@ -1,15 +1,20 @@
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function HourlyForecast({ Home }) {
+  const { t, i18n } = useTranslation();
   const weather = useSelector((state) =>
     Home == 0 ? state.history : state.weather,
   );
+  const direction = useSelector((state) => state.direction);
   const containerRef = useRef(null);
   const scrollContainer = useRef(null);
   const itemRef = useRef(null);
   const [containerWidth, setContainerWidth] = useState(0);
+  const lang = direction === "rtl" ? "ar" : "en";
+  const locale = `${lang}-EG`;
 
   const GAP = 24; // Space between items (gap-6)
   const PADDING = 48; // Horizontal padding of container (left + right = p-6)
@@ -114,10 +119,13 @@ export default function HourlyForecast({ Home }) {
     };
   }, []);
 
-  const dateStr = weather.date.replace(" at", "");
-  const date = new Date(dateStr);
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
+
+  const date = new Date(weather.currentDate);
   date.setMinutes(0);
-  const currentTime = date.toLocaleTimeString("en-US", {
+  const currentTime = date.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
@@ -135,7 +143,7 @@ export default function HourlyForecast({ Home }) {
       ],
       sx: {
         "&.MuiPopper-root .MuiTooltip-tooltip": {
-          background: "color-mix(in srgb, var(--background) 90%, transparent)",
+          background: "rgb(var(--background-rgb)/0.9)",
           boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
           willChange: "transform",
           fontSize: "11px",
@@ -166,7 +174,7 @@ export default function HourlyForecast({ Home }) {
               <circle cx="12" cy="12" r="10" />
               <path d="M12 6v6l4 2" />
             </svg>
-            <h2 className="text=lg font-semibold">Hourly Forecast</h2>
+            <h2 className="text=lg font-semibold">{t("Hourly_Forecast")}</h2>
           </div>
           <div
             className={`p-6 rounded-4xl ${Home == 1 ? "self-center" : "self-center sm:self-start"} ${containerWidth ? "mx-auto" : ""} mx-2 mb-2`}
@@ -174,7 +182,7 @@ export default function HourlyForecast({ Home }) {
             style={{
               width: containerWidth ? `${containerWidth}px` : "100%",
               boxShadow:
-                "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                "0 0 6px rgb(var(--primary-rgb)/0.3)",
             }}
           >
             <div
@@ -185,7 +193,7 @@ export default function HourlyForecast({ Home }) {
                 <div
                   key={hour.time + index}
                   ref={index === 0 ? itemRef : null}
-                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80") : "bg-card/80"} border border-border/80 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
+                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80") : "bg-card/80"} border-2 border-border/40 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
                 >
                   <p
                     className={`text-base font-bold text-xs ${Home == 1 ? (hour.time == currentTime ? "text-white/80" : "text-white/50") : "text-white/50"} w-fit`}

@@ -7,60 +7,6 @@
    🌞 LIGHT THEME (Default)
 ================================ */
 :root {
-  /* ---------- Background & Text ---------- */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.14 0 0);
-
-  /* ---------- Surface ---------- */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.14 0 0);
-
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.14 0 0);
-
-  /* ---------- Brand ---------- */
-  --primary: oklch(0.2 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-
-  /* ---------- Secondary ---------- */
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.2 0 0);
-
-  /* ---------- Muted ---------- */
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.5 0 0);
-
-  /* ---------- Accent ---------- */
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.2 0 0);
-
-  /* ---------- UI ---------- */
-  --border: oklch(0.9 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: oklch(0.6 0.15 240);
-
-  /* ---------- Status ---------- */
-  --success: oklch(0.7 0.15 140);
-  --success-foreground: oklch(0.98 0 0);
-
-  --warning: oklch(0.84 0.16 84);
-  --warning-foreground: oklch(0.28 0.07 46);
-
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.98 0 0);
-
-  /* ---------- Components ---------- */
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.14 0 0);
-  --sidebar-active: oklch(0.95 0 0);
-
-  --button-hover: oklch(0.9 0 0);
-}
-
-/* ================================
-   🌙 DARK THEME
-================================ */
-.dark {
   --background: #0a0a0a;
   --foreground: #fafafa;
 
@@ -92,6 +38,104 @@
   --sidebar: #171717;
   --sidebar-foreground: #fafafa;
   --sidebar-active: #262626;
+}
+
+/* ================================
+   🌙 DARK THEME
+================================ */
+.dark {
+  /* ================================
+   🌑 BACKGROUND
+================================ */
+  --background: #0a0a0a;
+  --background-rgb: 10 10 10;
+
+  --foreground: #fafafa;
+  --foreground-rgb: 250 250 250;
+
+  /* ================================
+   🧱 CARD
+================================ */
+  --card: #171717;
+  --card-rgb: 23 23 23;
+
+  --card-foreground: #fafafa;
+  --card-foreground-rgb: 250 250 250;
+
+  /* ================================
+   📦 POPOVER
+================================ */
+  --popover: #171717;
+  --popover-rgb: 23 23 23;
+
+  --popover-foreground: #fafafa;
+  --popover-foreground-rgb: 250 250 250;
+
+  /* ================================
+   🎯 PRIMARY
+================================ */
+  --primary: #d4d4d4;
+  --primary-rgb: 212 212 212;
+
+  --primary-foreground: #171717;
+  --primary-foreground-rgb: 23 23 23;
+
+  /* ================================
+   🧊 SECONDARY
+================================ */
+  --secondary: #262626;
+  --secondary-rgb: 38 38 38;
+
+  --secondary-foreground: #fafafa;
+  --secondary-foreground-rgb: 250 250 250;
+
+  /* ================================
+   🌫 MUTED
+================================ */
+  --muted: #262626;
+  --muted-rgb: 38 38 38;
+
+  --muted-foreground: #a1a1a1;
+  --muted-foreground-rgb: 161 161 161;
+
+  /* ================================
+   ✨ ACCENT
+================================ */
+  --accent: #404040;
+  --accent-rgb: 64 64 64;
+
+  --accent-foreground: #fafafa;
+  --accent-foreground-rgb: 250 250 250;
+
+  /* ================================
+   ❌ DESTRUCTIVE
+================================ */
+  --destructive: #ff6568;
+  --destructive-rgb: 255 101 104;
+
+  /* ================================
+   🧩 SYSTEM COLORS
+================================ */
+  --border: #ffffff1a;
+  --border-rgb: 255 255 255 / 0.1;
+
+  --input: #ffffff26;
+  --input-rgb: 255 255 255 / 0.15;
+
+  --ring: #737373;
+  --ring-rgb: 115 115 115;
+
+  /* ================================
+   📁 SIDEBAR
+================================ */
+  --sidebar: #171717;
+  --sidebar-rgb: 23 23 23;
+
+  --sidebar-foreground: #fafafa;
+  --sidebar-foreground-rgb: 250 250 250;
+
+  --sidebar-active: #262626;
+  --sidebar-active-rgb: 38 38 38;
 }
 
 /* ================================

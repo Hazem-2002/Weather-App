@@ -8,10 +8,11 @@ import InputAdornment from "@mui/material/InputAdornment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { changeCoords } from "../../../features/CityCoords";
 
 function AutoCompleteComponent() {
+  const dir = useSelector((state) => state.direction);
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const choosenCityRef = useRef(false);
@@ -41,7 +42,7 @@ function AutoCompleteComponent() {
             await AutocompleteSuggestion.fetchAutocompleteSuggestions({
               input: inputSearchCity,
               includedPrimaryTypes: ["locality"], // Cities
-              language: "en",
+              language: dir === "ltr" ? "en" : "ar",
             });
 
           // GET CITIES COORDINATES
@@ -90,7 +91,7 @@ function AutoCompleteComponent() {
       isActive = false;
       clearTimeout(timeout);
     };
-  }, [inputSearchCity]);
+  }, [inputSearchCity, dir]);
 
   // GET CURRENT LOCATION COORDINATES
   useEffect(() => {
@@ -223,7 +224,7 @@ function AutoCompleteComponent() {
               key={`${option.lat}-${option.lng}`}
               className="whitespace-nowrap"
             >
-              <div className="flex items-center gap-2 px-4 hover:bg-[color-mix(in_srgb,_var(--primary)_10%,_transparent)]">
+              <div className="flex items-center gap-2 px-4 hover:bg-[rgb(var(--primary-rgb)/0.1)]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -254,8 +255,8 @@ function AutoCompleteComponent() {
           width: "100%",
           flexShrink: 1,
           border:
-            "1px solid color-mix(in srgb, var(--primary) 20%, transparent)",
-          background: "color-mix(in srgb, var(--background) 65%, transparent)",
+            "1px solid rgb(var(--primary-rgb)/0.2)",
+          background: "rgb(var(--background-rgb)/0.65)",
           backdropFilter: "blur(3px)",
           borderRadius: "999px",
           overflow: "hidden",
@@ -277,7 +278,7 @@ function AutoCompleteComponent() {
             sx: {
               "& .MuiAutocomplete-paper": {
                 background:
-                  "color-mix(in srgb, var(--background) 80%, transparent)",
+                  "rgb(var(--background-rgb)/0.8)",
                 backdropFilter: "blur(3px)",
                 color: "var(--primary)",
                 borderRadius: "10px",
@@ -297,14 +298,7 @@ function AutoCompleteComponent() {
                 ...params.InputProps,
                 endAdornment: (
                   <InputAdornment position="end" sx={{ width: "12px" }}>
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        right: 0,
-                      }}
-                    >
+                    <div className="absolute top-1/2 -translate-y-1/2 end-0">
                       <Tooltip
                         title="Use Current Location"
                         leaveDelay={50}
@@ -313,13 +307,13 @@ function AutoCompleteComponent() {
                             sx: {
                               "&.MuiPopper-root .MuiTooltip-tooltip": {
                                 background:
-                                  "color-mix(in srgb, var(--muted) 90%, transparent)",
+                                  "rgb(var(--muted-rgb)/0.9)",
                                 boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                               },
                               "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
                                 {
                                   color:
-                                    "color-mix(in srgb, var(--muted) 80%, transparent)",
+                                    "rgb(var(--muted-rgb)/0.8)",
                                 },
                             },
                           },
@@ -357,7 +351,7 @@ function AutoCompleteComponent() {
               padding: "0 10px",
               "& .MuiFilledInput-root": {
                 "&:after": {
-                  borderBottom: `2px solid color-mix(in srgb, var(--primary) 90%, transparent)`,
+                  borderBottom: `2px solid rgb(var(--primary-rgb)/0.9)`,
                 },
               },
               "& .MuiInputLabel-root": {

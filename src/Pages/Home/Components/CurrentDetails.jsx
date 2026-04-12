@@ -1,3 +1,4 @@
+import { t } from "i18next";
 import { useSelector } from "react-redux";
 
 export default function CurrentDetials() {
@@ -22,16 +23,14 @@ export default function CurrentDetials() {
               <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" />
               <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
             </svg>
-            <h2 className="text=lg font-semibold">Current Detials</h2>
+            <h2 className="text=lg font-semibold">{t("Current_Details")}</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px] gap-6 p-2"
-          >
+          <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px] gap-6 p-2">
             {/* Feels Like */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -51,9 +50,9 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                Feels Like
+                {t("Feels_Like")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.current_detials.feelslike}
               </p>
             </div>
@@ -62,8 +61,7 @@ export default function CurrentDetials() {
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -85,9 +83,9 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                Wind
+                {t("Wind")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.current_detials.wind_kph}
               </p>
             </div>
@@ -96,8 +94,7 @@ export default function CurrentDetials() {
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -118,9 +115,9 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                Humidity
+                {t("Humidity")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.current_detials.humidity}
               </p>
             </div>
@@ -129,8 +126,7 @@ export default function CurrentDetials() {
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -158,17 +154,18 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                UV Index
+                {t("UV_Index")}
               </h2>
-              <p className="text-sm font-bold">{weather.current_detials.uv}</p>
+              <p className="text-sm font-bold text-foreground/80">
+                {weather.current_detials.uv}
+              </p>
             </div>
 
             {/* Visibility */}
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -190,9 +187,9 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                Visibility
+                {t("Visibility")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.current_detials.vis_km}
               </p>
             </div>
@@ -201,8 +198,7 @@ export default function CurrentDetials() {
             <div
               className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
               style={{
-                boxShadow:
-                  "0 0 4px color-mix(in srgb, var(--primary) 27%, transparent)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
@@ -223,9 +219,9 @@ export default function CurrentDetials() {
                 </svg>
               </div>
               <h2 className="text-xs text-muted-foreground font-bold capitalize">
-                Pressure
+                {t("Pressure")}
               </h2>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold text-foreground/80">
                 {weather.current_detials.pressure_mb}
               </p>
             </div>

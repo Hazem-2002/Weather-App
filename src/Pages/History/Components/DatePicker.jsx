@@ -4,12 +4,18 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHistory } from "../../../features/HistorySlice";
+import "dayjs/locale/ar";
 
 export default function DatePicker() {
   const date = useSelector((state) => state.history.date);
+  const direction = useSelector((state) => state.direction);
+  dayjs.locale(direction === "rtl" ? "ar" : "en");
   const historyDispatch = useDispatch();
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider
+      dateAdapter={AdapterDayjs}
+      adapterLocale={direction === "rtl" ? "ar" : "en"}
+    >
       <StaticDatePicker
         disableFuture
         disableHighlightToday
@@ -27,17 +33,17 @@ export default function DatePicker() {
           height: "315px",
           borderRadius: "20px",
           background: "var(--background)",
-          color: "color-mix(in srgb, var(--foreground) 80%, transparent)",
-          boxShadow:
-            "0 0 8px color-mix(in srgb, var(--primary) 50%, transparent)",
+          color: "rgb(var(--foreground-rgb)/0.8)",
+          boxShadow: "0 0 8px rgb(var(--primary-rgb)/0.5)",
 
           /* ================= HEADER ================= */
+
           "& .MuiPickersCalendarHeader-root": {
             margin: "0",
             padding: "30px 24px",
             color: "var(--foreground) !important",
-            boxShadow:
-              "0 0px 8px color-mix(in srgb, var(--primary) 50%, transparent)",
+            boxShadow: "0 0px 8px rgb(var(--primary-rgb)/0.5)",
+            flexShrink: 0,
           },
 
           /* ================= NAVIGATION (ARROWS) ================= */
@@ -50,18 +56,16 @@ export default function DatePicker() {
           },
 
           "& .MuiIconButton-root.Mui-disabled .MuiSvgIcon-root": {
-            color:
-              "color-mix(in srgb, var(--muted-foreground) 70%, transparent) !important",
+            color: "rgb(var(--muted-foreground-rgb)/0.7) !important",
           },
 
           /* ================= YEAR VIEW ================= */
-          "& .MuiYearCalendar-root.mui-ltr-su1ucx-MuiYearCalendar-root": {
-            height: "245px",
-            marginTop: "5px",
-            overflow: "auto",
-          },
 
           "& .MuiYearCalendar-root": {
+            height: "245px",
+            marginTop: "5px",
+            overflowY: "auto",
+
             scrollbarWidth: "none",
             msOverflowStyle: "none",
 
@@ -71,8 +75,7 @@ export default function DatePicker() {
           },
 
           "& .MuiYearCalendar-button.Mui-selected": {
-            background:
-              "color-mix(in srgb, var(--primary) 80%, transparent) !important",
+            background: "rgb(var(--primary-rgb)/0.8) !important",
             color: "var(--primary-foreground) !important",
             fontWeight: "semibold",
           },
@@ -84,8 +87,7 @@ export default function DatePicker() {
 
           "& .MuiDayCalendar-weekDayLabel": {
             fontWeight: "bold",
-            color:
-              "color-mix(in srgb, var(--foreground) 60%, transparent) !important",
+            color: "rgb(var(--foreground-rgb)/0.6) !important",
           },
 
           /* ================= MONTH CONTAINER ================= */
@@ -105,8 +107,7 @@ export default function DatePicker() {
           "& .MuiPickersDay-root": {
             borderRadius: "10px !important",
             transition: "all 0.2s ease !important",
-            color:
-              "color-mix(in srgb, var(--foreground) 90%, transparent) !important",
+            color: "rgb(var(--foreground-rgb)/0.9) !important",
           },
 
           "& .MuiPickersDay-root:hover": {
@@ -117,20 +118,24 @@ export default function DatePicker() {
             borderRadius: "10px !important",
             transition: "all 0.2s ease !important",
             color:
-              "color-mix(in srgb, var(--muted-foreground) 70%, transparent) !important",
+              "rgb(var(--muted-foreground-rgb)/0.7) !important",
           },
 
           /* ================= SELECTED STATES ================= */
           "& .MuiPickersDay-root.Mui-selected": {
             background:
-              "color-mix(in srgb, var(--primary) 80%, transparent) !important",
+              "rgb(var(--primary-rgb)/0.8) !important",
             color: "var(--primary-foreground) !important",
           },
 
           "& .MuiPickersDay-root.Mui-selected:hover": {
             background:
-              "color-mix(in srgb, var(--primary) 80%, transparent) !important",
+              "rgb(var(--primary-rgb)/0.8) !important",
             color: "var(--primary-foreground) !important",
+          },
+
+          "& .MuiPickersArrowSwitcher-root svg": {
+            transform: direction === "rtl" ? "rotate(180deg)" : "none",
           },
         }}
         slots={{
