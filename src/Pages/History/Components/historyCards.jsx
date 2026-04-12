@@ -202,7 +202,7 @@ export default function HistoryCards() {
             <div
               key={day.day}
               ref={i === 0 ? itemRef : null}
-              className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/50"}`}
+              className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/60"} cursor-pointer`}
               style={{
                 boxShadow: isCurrentDay
                   ? "0 0 8px rgb(var(--primary-rgb)/0.7)"

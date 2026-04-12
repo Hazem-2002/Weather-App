@@ -254,8 +254,7 @@ function AutoCompleteComponent() {
         sx={{
           width: "100%",
           flexShrink: 1,
-          border:
-            "1px solid rgb(var(--primary-rgb)/0.2)",
+          boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)",
           background: "rgb(var(--background-rgb)/0.65)",
           backdropFilter: "blur(3px)",
           borderRadius: "999px",
@@ -277,8 +276,7 @@ function AutoCompleteComponent() {
             placement: "bottom",
             sx: {
               "& .MuiAutocomplete-paper": {
-                background:
-                  "rgb(var(--background-rgb)/0.8)",
+                background: "rgb(var(--background-rgb)/0.8)",
                 backdropFilter: "blur(3px)",
                 color: "var(--primary)",
                 borderRadius: "10px",
@@ -306,14 +304,12 @@ function AutoCompleteComponent() {
                           popper: {
                             sx: {
                               "&.MuiPopper-root .MuiTooltip-tooltip": {
-                                background:
-                                  "rgb(var(--muted-rgb)/0.9)",
+                                background: "rgb(var(--muted-rgb)/0.9)",
                                 boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                               },
                               "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
                                 {
-                                  color:
-                                    "rgb(var(--muted-rgb)/0.8)",
+                                  color: "rgb(var(--muted-rgb)/0.8)",
                                 },
                             },
                           },

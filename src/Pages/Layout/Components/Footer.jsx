@@ -12,7 +12,7 @@ const Footer = () => {
 
   return (
     <div
-      className="px-8 py-6 bg-white/5 rounded-2xl"
+      className="px-6 py-4 bg-white/5 rounded-3xl"
       style={{
         boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)",
       }}
@@ -21,7 +21,7 @@ const Footer = () => {
         <div className="flex flex-col w-fit items-center md:items-start">
           <p className="text-sm text-muted-foreground font-semibold">
             © 2026 <span className="text-foreground font-bold">Weatherly</span>.{" "}
-            {t("All_rights_reserved")}.
+            <span className="text-xs">{t("All_rights_reserved")}</span>.
           </p>
           <p className="text-xs text-muted-foreground/80 font-semibold">
             {t("Crafted by")}
@@ -35,7 +35,7 @@ const Footer = () => {
           <a
             href="https://github.com/Hazem-2002"
             target="_blank"
-            className="flex justify-center items-center border border-white/5 rounded-2xl size-12 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
+            className="flex justify-center items-center border border-white/5 rounded-2xl size-10 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +58,7 @@ const Footer = () => {
           <a
             href="https://www.linkedin.com/in/-hazemmahmoud"
             target="_blank"
-            className="flex justify-center items-center border border-white/5 rounded-2xl size-12 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
+            className="flex justify-center items-center border border-white/5 rounded-2xl size-10 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +82,7 @@ const Footer = () => {
           <a
             href="https://wa.me/201023612348"
             target="_blank"
-            className="flex justify-center items-center border border-white/5 rounded-2xl size-12 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
+            className="flex justify-center items-center border border-white/5 rounded-2xl size-10 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const Footer = () => {
           <a
             href="mailto:hazem.mahmoud.dev@gmail.com"
             target="_blank"
-            className="flex justify-center items-center border border-white/5 rounded-2xl size-12 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
+            className="flex justify-center items-center border border-white/5 rounded-2xl size-10 bg-white/5 transition text-foreground/60 hover:bg-white/10 hover:scale-110 hover:text-foreground/80"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

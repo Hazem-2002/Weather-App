@@ -37,20 +37,20 @@ export default function Settings() {
   });
 
   return (
-    <div className="flex justify-center pt-32 me-4 sm:me-8">
-      <div className="flex flex-col w-[70%] gap-8">
-        <h2 className="text-4xl font-bold text-foreground/95 leading-none">
+    <div className="flex justify-center pt-32 px-1 me-4 sm:me-8">
+      <div className="flex flex-col w-full sm:w-[85%] md:w-[70%] gap-8">
+        <h2 className="text-2xl sm:text-4xl font-bold text-foreground/95 leading-none">
           {t("Settings")}
         </h2>
         <div
           className="flex flex-col gap-6 p-4"
           style={{ boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)" }}
         >
-          <h2 className="text-base font-semibold text-foreground/85 leading-none">
+          <h2 className="text-sm sm:text-base font-semibold text-foreground/85 leading-none">
             {t("Theme_Language")}
           </h2>
           <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold text-foreground/70 leading-none">
+            <p className="text-xs sm:text-sm font-semibold text-foreground/70 leading-none">
               {t("language")}
             </p>
             <div className="flex flex-row gap-4">
