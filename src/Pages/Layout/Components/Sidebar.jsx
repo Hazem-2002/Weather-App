@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const Sidebar = () => {
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   const { t, i18n } = useTranslation();
 
   useEffect(() => {

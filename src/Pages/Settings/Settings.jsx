@@ -1,20 +1,20 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { changeDirection } from "../../features/DirectionSlice";
+import { changeLanguage } from "../../features/LanguageSlice";
 import { changeTheme } from "../../features/ThemeSlice";
 import Button from "@mui/material/Button";
 
 export default function Settings() {
-  const direction = useSelector((state) => state.direction);
-  const mode = useSelector((state) => state.theme);
+  const language = useSelector((state) => state.language);
+  const mode = useSelector((state) => state.theme.theme);
   const { t, i18n } = useTranslation();
   const languageDispatch = useDispatch();
   const themeDispatch = useDispatch();
 
   useEffect(() => {
-    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
-  }, [i18n, direction]);
+    i18n.changeLanguage(language.direction === "ltr" ? "en" : "ar");
+  }, [i18n, language.direction]);
 
   const style = (comparator, state) => ({
     color:
@@ -41,7 +41,7 @@ export default function Settings() {
 
   return (
     <div className="flex justify-center pt-32 px-1 me-4 sm:me-8">
-      <div className="flex flex-col w-full sm:w-[85%] md:w-[70%] gap-8">
+      <div className="flex flex-col w-full  lg:w-[76%] gap-8">
         <h2 className="text-2xl sm:text-4xl font-bold text-foreground/95 leading-none">
           {t("Settings")}
         </h2>
@@ -59,30 +59,49 @@ export default function Settings() {
             <div className="flex flex-row gap-4">
               <Button
                 variant="contained"
-                sx={style(direction, "ltr")}
+                sx={style(language.lang, "en")}
                 onClick={() => {
-                  if (direction !== "ltr") {
-                    languageDispatch(changeDirection("ltr"));
+                  if (language.lang !== "en") {
+                    languageDispatch(changeLanguage("en"));
                   }
                 }}
               >
-                {t("english")}
+                <span className="block w-full text-center">{t("english")}</span>
               </Button>
 
               <Button
                 variant="contained"
-                sx={style(direction, "rtl")}
+                sx={style(language.lang, "ar")}
                 onClick={() => {
-                  if (direction !== "rtl") {
-                    languageDispatch(changeDirection("rtl"));
+                  if (language.lang !== "ar") {
+                    languageDispatch(changeLanguage("ar"));
                   }
                 }}
               >
-                {t("arabic")}
+                <span className="block w-full text-center">{t("arabic")}</span>
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={style(language.lang, "systemLanguage")}
+                onClick={() => {
+                  if (language.lang !== "systemLanguage") {
+                    languageDispatch(changeLanguage("systemLanguage"));
+                  }
+                }}
+              >
+                <span className="hidden sm:block w-full text-center">
+                  {t("systemLanguage")}
+                </span>
+                <span className="block sm:hidden w-full text-center">
+                  {language.lang === "en"
+                    ? t("systemLanguage").split(" ")[0]
+                    : t("systemLanguage").split(" ")[1]}
+                </span>
               </Button>
             </div>
           </div>
-
+          
           <div className="flex flex-col gap-2">
             <p className="text-xs sm:text-sm font-semibold text-foreground/70 leading-none">
               {t("theme")}
@@ -93,11 +112,18 @@ export default function Settings() {
                 sx={style(mode, "light")}
                 onClick={() => {
                   if (mode !== "light") {
-                    themeDispatch(changeTheme());
+                    themeDispatch(changeTheme("light"));
                   }
                 }}
               >
-                {t("light_mode")}
+                <span className="hidden sm:block w-full text-center">
+                  {t("light_mode")}
+                </span>
+                <span className="block sm:hidden w-full text-center">
+                  {language.lang === "en"
+                    ? t("light_mode").split(" ")[0]
+                    : t("light_mode").split(" ")[1]}
+                </span>
               </Button>
 
               <Button
@@ -105,11 +131,37 @@ export default function Settings() {
                 sx={style(mode, "dark")}
                 onClick={() => {
                   if (mode !== "dark") {
-                    themeDispatch(changeTheme());
+                    themeDispatch(changeTheme("dark"));
                   }
                 }}
               >
-                {t("dark_mode")}
+                <span className="hidden sm:block w-full text-center">
+                  {t("dark_mode")}
+                </span>
+                <span className="block sm:hidden w-full text-center">
+                  {language.lang === "en"
+                    ? t("dark_mode").split(" ")[0]
+                    : t("dark_mode").split(" ")[1]}
+                </span>
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={style(mode, "systemTheme")}
+                onClick={() => {
+                  if (mode !== "systemTheme") {
+                    themeDispatch(changeTheme("systemTheme"));
+                  }
+                }}
+              >
+                <span className="hidden sm:block w-full text-center">
+                  {t("system_theme")}
+                </span>
+                <span className="block sm:hidden w-full text-center">
+                  {language.lang === "en"
+                    ? t("system_theme").split(" ")[0]
+                    : t("system_theme").split(" ")[1]}
+                </span>
               </Button>
             </div>
           </div>

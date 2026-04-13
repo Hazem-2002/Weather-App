@@ -8,7 +8,8 @@ export default function HourlyForecast({ Home }) {
   const weather = useSelector((state) =>
     Home == 0 ? state.history : state.weather,
   );
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
+  const theme = useSelector((state) => state.theme.actualTheme);
   const containerRef = useRef(null);
   const scrollContainer = useRef(null);
   const itemRef = useRef(null);
@@ -149,6 +150,9 @@ export default function HourlyForecast({ Home }) {
           boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
           willChange: "transform",
           fontSize: "11px",
+          "& .MuiTooltip-arrow": {
+            color: "rgb(var(--background-rgb))",
+          },
         },
       },
     },
@@ -194,7 +198,7 @@ export default function HourlyForecast({ Home }) {
                 <div
                   key={hour.time + index}
                   ref={index === 0 ? itemRef : null}
-                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80") : "bg-card/80"} border-2 border-border/40 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
+                  className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/3 hover:bg-primary/5") : theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/3 hover:bg-primary/5"} border-2 border-border/40 rounded-3xl group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
                 >
                   <p
                     className={`text-base font-bold ${direction === "ltr" ? "text-xs" : "text-sm"} ${Home == 1 ? (hour.time == currentTime ? "text-white/90" : "text-foreground/60") : "text-foreground/50"} w-fit`}
@@ -205,6 +209,7 @@ export default function HourlyForecast({ Home }) {
                   <Tooltip
                     title={hour.desc}
                     placement="top"
+                    arrow
                     slotProps={tooltipSlotProps}
                   >
                     <div className="flex justify-center items-center size-14 p-2 rounded-full bg-foreground/2 transition duration-200 group-hover:bg-foreground/3">
@@ -230,6 +235,7 @@ export default function HourlyForecast({ Home }) {
                         {t("chance_of_rain")}
                       </p>
                     }
+                    arrow
                     placement="top"
                     slotProps={tooltipSlotProps}
                   >

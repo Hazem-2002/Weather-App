@@ -1,26 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const storedTheme = localStorage.getItem("theme");
+const getSystemTheme = () => {
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-const initialState = storedTheme ? storedTheme : "dark";
+  return prefersDark ? "dark" : "light";
+};
+
+const storedTheme = JSON.parse(localStorage.getItem("theme")) || {
+  theme: "systemTheme",
+  actualTheme: getSystemTheme(),
+};
+
+const initialState = storedTheme;
 
 export const themeSlice = createSlice({
   name: "theme",
   initialState,
 
   reducers: {
-    changeTheme: (state) => {
-      const newState = state === "dark" ? "light" : "dark";
+    changeTheme: (state, action) => {
+      const theme = action.payload;
+      let actualTheme;
 
-      if (newState === "dark") {
+      if (theme === "dark") {
         document.documentElement.classList.add("dark");
-      } else {
+        actualTheme = "dark";
+      } else if (theme === "light") {
         document.documentElement.classList.remove("dark");
+        actualTheme = "light";
+      } else if (theme === "systemTheme") {
+        const theme = getSystemTheme();
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+          actualTheme = "dark";
+        } else {
+          document.documentElement.classList.remove("dark");
+          actualTheme = "light";
+        }
       }
 
-      localStorage.setItem("theme", newState);
+      const finalTheme = { theme, actualTheme };
 
-      return newState;
+      localStorage.setItem("theme", JSON.stringify(finalTheme));
+
+      return finalTheme;
     },
   },
 });

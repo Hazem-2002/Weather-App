@@ -10,20 +10,26 @@ import Box from "@mui/material/Box";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeCoords } from "../../../features/CityCoords";
+import { useTranslation } from "react-i18next";
 
 function AutoCompleteComponent() {
-  const dir = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const choosenCityRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [locationIsLoading, setLocationIsLoading] = useState(false);
+  const { t, i18n } = useTranslation();
   const [inputSearchCity, setInputSearchCity] = useState(
     localStorage.getItem("inputSearchCity") || "",
   );
 
   // THIS DISPATCH TO CHANGE CITIES COORDINATES
   const coords_dispatch = useDispatch();
+
+  useEffect(() => {
+    i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
+  }, [i18n, direction]);
 
   // GENERATE CITIES SUGGESIONS AND GET THESE COORDINATES
   useEffect(() => {
@@ -42,7 +48,7 @@ function AutoCompleteComponent() {
             await AutocompleteSuggestion.fetchAutocompleteSuggestions({
               input: inputSearchCity,
               includedPrimaryTypes: ["locality"], // Cities
-              language: dir === "ltr" ? "en" : "ar",
+              language: direction === "ltr" ? "en" : "ar",
             });
 
           // GET CITIES COORDINATES
@@ -91,7 +97,7 @@ function AutoCompleteComponent() {
       isActive = false;
       clearTimeout(timeout);
     };
-  }, [inputSearchCity, dir]);
+  }, [inputSearchCity, direction]);
 
   // GET CURRENT LOCATION COORDINATES
   useEffect(() => {
@@ -261,6 +267,33 @@ function AutoCompleteComponent() {
           backdropFilter: "blur(3px)",
           borderRadius: "999px",
           overflow: "hidden",
+
+          "& .MuiFilledInput-root": {
+            backgroundColor: "transparent !important",
+
+            "&:before": {
+              borderBottom: "none",
+            },
+            "&:after": {
+              borderBottom: "2px solid rgb(var(--primary-rgb)/0.9)",
+            },
+
+            "&:hover:not(.Mui-disabled):before": {
+              borderBottom: "none",
+            },
+
+            "&.Mui-focused": {
+              backgroundColor: "transparent !important",
+            },
+
+            "&.MuiFilledInput-root.Mui-focused": {
+              backgroundColor: "transparent !important",
+            },
+
+            "&.MuiFilledInput-root:hover": {
+              backgroundColor: "transparent !important",
+            },
+          },
         }}
         slotProps={{
           listbox: {
@@ -300,13 +333,14 @@ function AutoCompleteComponent() {
                   <InputAdornment position="end" sx={{ width: "12px" }}>
                     <div className="absolute top-1/2 -translate-y-1/2 end-0">
                       <Tooltip
-                        title="Use Current Location"
+                        title={t("Use_Current_Location")}
                         leaveDelay={50}
                         slotProps={{
                           popper: {
                             sx: {
                               "&.MuiPopper-root .MuiTooltip-tooltip": {
-                                background: "rgb(var(--muted-rgb)/0.9)",
+                                color: "rgb(var(--foreground-rgb))",
+                                background: "rgb(var(--primary-rgb)/0.1)",
                                 boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                               },
                               "&.MuiPopper-root .MuiTooltip-tooltip .MuiTooltip-arrow":
@@ -347,14 +381,6 @@ function AutoCompleteComponent() {
             }}
             sx={{
               padding: "0 10px",
-              "& .MuiFilledInput-root": {
-                backgroundColor: "transparent",
-                "&:*": { backgroundColor: "transparent" },
-                borderBottom: `0`,
-                "&:after": {
-                  borderBottom: `2px solid rgb(var(--primary-rgb)/0.9)`,
-                },
-              },
               "& .MuiInputLabel-root": {
                 color: "var(--primary)",
                 transition: "all 0.17s",

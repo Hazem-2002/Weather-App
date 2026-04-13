@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 const Footer = () => {
   const { t, i18n } = useTranslation();
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
 
   useEffect(() => {
     i18n.changeLanguage(direction === "ltr" ? "en" : "ar");

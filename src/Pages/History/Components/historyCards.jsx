@@ -6,8 +6,9 @@ import { editDate } from "../../../features/HistorySlice";
 export default function HistoryCards() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
+  const theme = useSelector((state) => state.theme.actualTheme);
   const historyDispatch = useDispatch();
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   const lang = direction === "rtl" ? "ar" : "en";
   const locale = `${lang}-EG`;
 
@@ -202,7 +203,7 @@ export default function HistoryCards() {
             <div
               key={day.day}
               ref={i === 0 ? itemRef : null}
-              className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? "bg-muted/70" : "bg-muted/30 hover:bg-muted/60"} cursor-pointer`}
+              className={`flex flex-col items-center justify-between h-32 w-23 p-3 rounded-2xl shrink-0 transition ${isCurrentDay ? (theme === "dark" ? "bg-primary/12" : "bg-primary/7") : theme === "dark" ? "bg-primary/6 hover:bg-primary/9" : "bg-primary/3 hover:bg-primary/5"} cursor-pointer`}
               style={{
                 boxShadow: isCurrentDay
                   ? "0 0 8px rgb(var(--primary-rgb)/0.7)"

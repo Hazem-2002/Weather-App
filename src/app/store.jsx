@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import coordsReducer from "../features/CityCoords";
 import weatherReducer from "../features/WeatherDetials";
 import historyReducer from "../features/HistorySlice";
-import directionReducer from "../features/DirectionSlice";
+import languageReducer from "../features/LanguageSlice";
 import themeReducer from "../features/ThemeSlice";
 
 export default configureStore({
@@ -10,7 +10,7 @@ export default configureStore({
     city: coordsReducer,
     weather: weatherReducer,
     history: historyReducer,
-    direction: directionReducer,
+    language: languageReducer,
     theme: themeReducer,
   },
 });

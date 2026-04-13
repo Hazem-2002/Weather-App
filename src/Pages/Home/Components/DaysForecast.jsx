@@ -4,7 +4,8 @@ import Placeholder from "./Placeholder";
 
 export default function DaysForecast() {
   const weather = useSelector((state) => state.weather);
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
+  const theme = useSelector(state => state.theme.actualTheme)
   const layoutRef = useRef(null);
   const dayForecastHeight = useRef(null);
   const [maxHeight, setMaxHeight] = useState(0);
@@ -228,9 +229,9 @@ export default function DaysForecast() {
             <div
               key={index}
               ref={dayForecastHeight}
-              className="grid grid-cols-[1fr_1fr_1.4fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.4fr] grid-rows-[60px] sm:grid-rows-[72px] xl:grid-rows-[60px] justify-between items-center py-2 px-4 rounded-3xl transition hover:bg-muted/50 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000"
+              className={`grid grid-cols-[1fr_1fr_1.4fr] sm:grid-cols-3 xl:grid-cols-[1fr_1fr_1.4fr] grid-rows-[60px] sm:grid-rows-[72px] xl:grid-rows-[60px] justify-between items-center py-2 px-4 rounded-3xl transition ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"} animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
               style={{
-                boxShadow: "0 0 8px rgb(var(--primary-rgb)/0.2)",
+                boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.2)",
               }}
             >
               {index === 0 ? (

@@ -4,11 +4,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHistory } from "../../../features/HistorySlice";
+import { editDate } from "../../../features/HistorySlice";
 import "dayjs/locale/ar";
 
 export default function DatePicker() {
   const date = useSelector((state) => state.history.date);
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   dayjs.locale(direction === "rtl" ? "ar" : "en");
   const historyDispatch = useDispatch();
   return (
@@ -25,6 +26,7 @@ export default function DatePicker() {
         onChange={(val) => {
           if (!val) return;
           const formatted = val.format("YYYY-MM-DD");
+          historyDispatch(editDate(formatted));
           historyDispatch(fetchHistory(formatted));
         }}
         sx={{

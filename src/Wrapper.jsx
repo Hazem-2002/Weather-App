@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { StrictMode } from "react";
 
 export default function Wrapper() {
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
 
   const cache = useMemo(() => {
     return createCache({

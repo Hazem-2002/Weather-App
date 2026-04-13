@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 export default function CurrentDetials() {
   const weather = useSelector((state) => state.weather);
-  const theme = useSelector((state) => state.theme);
+  const theme = useSelector((state) => state.theme.actualTheme);
   return (
     <>
       {weather?.current_detials?.wind_kph != null && (
@@ -29,13 +29,13 @@ export default function CurrentDetials() {
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 grid-rows-[repeat(2,140px)] sm:grid-rows-[repeat(2,140px)] xl:grid-rows-[140px] gap-6 p-2">
             {/* Feels Like */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-orange-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-orange-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -62,13 +62,13 @@ export default function CurrentDetials() {
 
             {/* Wind */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -97,13 +97,13 @@ export default function CurrentDetials() {
 
             {/* Humidity */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -131,13 +131,13 @@ export default function CurrentDetials() {
 
             {/* UV Index */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-amber-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-amber-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -172,13 +172,13 @@ export default function CurrentDetials() {
 
             {/* Visibility */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-cyan-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-cyan-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -207,13 +207,13 @@ export default function CurrentDetials() {
 
             {/* Pressure */}
             <div
-              className="flex flex-col items-center justify-center gap-2 bg-card/80 rounded-4xl p-4 transition duration-100 hover:bg-primary/8"
+              className={`flex flex-col items-center justify-center gap-2 rounded-4xl p-4 transition duration-100 ${theme === "dark" ? "bg-primary/6 hover:bg-primary/8" : "bg-primary/2 hover:bg-primary/4"}`}
               style={{
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
               <div
-                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-purple-50"}`}
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-purple-100"}`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

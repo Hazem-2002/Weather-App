@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 export default function WeatherOverview() {
   const { t, i18n } = useTranslation();
   const weather = useSelector((state) => state.weather);
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   const iconRef = useRef(null);
   const mobileIconRef = useRef(null);
 

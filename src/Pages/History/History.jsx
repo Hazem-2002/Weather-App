@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 export default function History() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
-  const direction = useSelector((state) => state.direction);
+  const direction = useSelector((state) => state.language.direction);
   const { t, i18n } = useTranslation();
   const historyDispatch = useDispatch();
 
@@ -95,9 +95,11 @@ export default function History() {
               slotProps={{
                 paper: {
                   sx: {
-                    backgroundColor: "var(--background)",
-                    padding: "2px",
+                    marginTop: "15px",
+                    backgroundColor: "transparent",
+                    borderRadius: "20px",
                     overflow: "hidden",
+                    boxShadow: "0 0 14px rgb(var(--primary-rgb)/.3)",
                   },
                 },
               }}
@@ -156,16 +158,14 @@ export default function History() {
             <div
               className="flex flex-col w-full xl:w-[34%] rounded-2xl shrink-0 overflow-hidden"
               style={{
-                boxShadow:
-                  "0 0 4px rgb(var(--primary-rgb)/0.5)",
+                boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.5)",
               }}
             >
               {/* Title => "Detials" */}
               <div
                 className="flex flex-row px-6 py-8 items-center gap-2 text-foreground/85"
                 style={{
-                  boxShadow:
-                    "0 0 4px rgb(var(--primary-rgb)/0.5)",
+                  boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.5)",
                 }}
               >
                 <svg
@@ -208,7 +208,7 @@ export default function History() {
                     </div>
                   </div>
 
-                  <hr className="shadow shadow-primary/40" />
+                  <hr className="shadow shadow-primary/40 border-primary/22" />
 
                   {/* Min && Max Temperature */}
                   <div className="flex justify-start sm:justify-around xl:justify-start items-center py-7">
@@ -233,7 +233,7 @@ export default function History() {
                     </div>
                   </div>
 
-                  <hr className="shadow shadow-primary/40" />
+                  <hr className="shadow shadow-primary/40 border-primary/22" />
 
                   {/* Other Detials e.g. [wind - humidity - rain - uv] */}
                   <div className="flex justify-between sm:justify-around xl:justify-between items-center py-6">

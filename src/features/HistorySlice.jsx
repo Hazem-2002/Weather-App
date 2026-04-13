@@ -26,7 +26,7 @@ export const fetchHistory = createAsyncThunk(
     const coords = getState().city;
     if (coords.lon == null || coords.lat == null) return;
 
-    const direction = getState().direction;
+    const direction = getState().language.direction;
     const lang = direction === "rtl" ? "ar" : "en";
     const locale = `${lang}-EG`;
     try {
