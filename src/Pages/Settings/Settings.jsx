@@ -94,7 +94,7 @@ export default function Settings() {
                   {t("systemLanguage")}
                 </span>
                 <span className="block sm:hidden w-full text-center">
-                  {language.lang === "en"
+                  {language.direction === "ltr"
                     ? t("systemLanguage").split(" ")[0]
                     : t("systemLanguage").split(" ")[1]}
                 </span>
@@ -120,7 +120,7 @@ export default function Settings() {
                   {t("light_mode")}
                 </span>
                 <span className="block sm:hidden w-full text-center">
-                  {language.lang === "en"
+                  {language.direction === "ltr"
                     ? t("light_mode").split(" ")[0]
                     : t("light_mode").split(" ")[1]}
                 </span>
@@ -139,7 +139,7 @@ export default function Settings() {
                   {t("dark_mode")}
                 </span>
                 <span className="block sm:hidden w-full text-center">
-                  {language.lang === "en"
+                  {language.direction === "ltr"
                     ? t("dark_mode").split(" ")[0]
                     : t("dark_mode").split(" ")[1]}
                 </span>
@@ -158,7 +158,7 @@ export default function Settings() {
                   {t("system_theme")}
                 </span>
                 <span className="block sm:hidden w-full text-center">
-                  {language.lang === "en"
+                  {language.direction === "ltr"
                     ? t("system_theme").split(" ")[0]
                     : t("system_theme").split(" ")[1]}
                 </span>
