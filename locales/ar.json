@@ -49,5 +49,8 @@
   "arabic": "العربية",
   "theme": "المظهر",
   "light_mode": "الوضع الفاتح",
-  "dark_mode": "الوضع الغامق"
+  "dark_mode": "الوضع الغامق",
+  "system_theme": "مظهر النظام",
+  "systemLanguage": "لغة النظام",
+  "Use_Current_Location": "تحديد الموقع الحالي"
 }

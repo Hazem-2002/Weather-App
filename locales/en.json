@@ -48,6 +48,9 @@
   "english": "English",
   "arabic": "Arabic",
   "theme": "Theme",
-  "light_mode":"Light Mode",
-  "dark_mode":"Dark Mode"
+  "light_mode": "Light Mode",
+  "dark_mode": "Dark Mode",
+  "system_theme": "System Theme",
+  "systemLanguage": "System Language",
+  "Use_Current_Location": "Use Current Location"
 }
