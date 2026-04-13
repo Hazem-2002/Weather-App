@@ -15,15 +15,16 @@ const Sidebar = () => {
     `px-2.5 py-2 md:px-4 md:py-2 rounded-2xl font-semibold transition duration-200 ${
       isActive
         ? "text-primary-foreground bg-primary"
-        : "text-muted-foreground hover:text-foreground hover:bg-muted/70 group"
+        : "text-foreground/70 hover:text-foreground hover:bg-muted/70 group"
     }`;
-    
+
   return (
-    <div className="fixed z-40 bottom-4 inset-x-0 flex justify-center md:justify-start md:top-0 md:w-fit">
+    <div
+      className="fixed z-40 bottom-4 inset-x-0 flex justify-center md:justify-start md:top-0 md:bottom-0 md:w-fit md:shadow-lg shadow-[rgb(var(--primary-rgb)/0.2)]">
       <aside className="flex flex-col justify-between md:h-screen w-[55%] sm:w-[70%] md:w-22 lg:w-64 bg-background/40 border border-primary/20 md:border-0 text-foreground p-2 md:p-4 md:pt-28 md:pb-8 rounded-full md:rounded-none">
-        <nav className="flex flex-row md:flex-col gap-5 justify-around md:justify-start">
+        <nav className="flex flex-row md:flex-col gap-3 justify-around md:justify-start">
           <NavLink to="/" className={navLinkStyle}>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 py-0.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -44,7 +45,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink to="history" className={navLinkStyle}>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 py-0.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -66,7 +67,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink to="settings" className={navLinkStyle}>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 py-0.5">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"

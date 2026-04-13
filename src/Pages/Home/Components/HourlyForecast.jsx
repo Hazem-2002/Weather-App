@@ -143,7 +143,9 @@ export default function HourlyForecast({ Home }) {
       ],
       sx: {
         "&.MuiPopper-root .MuiTooltip-tooltip": {
-          background: "rgb(var(--background-rgb)/0.9)",
+          color: "rgb(var(--foreground-rgb))",
+          fontWeight: "bold",
+          background: "rgb(var(--background-rgb))",
           boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
           willChange: "transform",
           fontSize: "11px",
@@ -181,8 +183,7 @@ export default function HourlyForecast({ Home }) {
             ref={containerRef}
             style={{
               width: containerWidth ? `${containerWidth}px` : "100%",
-              boxShadow:
-                "0 0 6px rgb(var(--primary-rgb)/0.3)",
+              boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)",
             }}
           >
             <div
@@ -196,7 +197,7 @@ export default function HourlyForecast({ Home }) {
                   className={`w-28 flex flex-col px-6 py-4 gap-2 shrink-0 items-center ${Home == 1 ? (hour.time == currentTime ? weather.WeatherUI.bg : "bg-card/80") : "bg-card/80"} border-2 border-border/40 rounded-3xl hover:bg-primary/8 group animate-in animate-delay-100 fade-in zoom-in animate-duration-1000`}
                 >
                   <p
-                    className={`text-base font-bold text-xs ${Home == 1 ? (hour.time == currentTime ? "text-white/80" : "text-white/50") : "text-white/50"} w-fit`}
+                    className={`text-base font-bold ${direction === "ltr" ? "text-xs" : "text-sm"} ${Home == 1 ? (hour.time == currentTime ? "text-white/90" : "text-foreground/60") : "text-foreground/50"} w-fit`}
                   >
                     {hour.time}
                   </p>
@@ -206,7 +207,7 @@ export default function HourlyForecast({ Home }) {
                     placement="top"
                     slotProps={tooltipSlotProps}
                   >
-                    <div className="flex justify-center items-center size-14 p-2 rounded-full bg-white/2 transition duration-200 group-hover:bg-white/3">
+                    <div className="flex justify-center items-center size-14 p-2 rounded-full bg-foreground/2 transition duration-200 group-hover:bg-foreground/3">
                       <img
                         src={hour.icon}
                         alt="Icon"
@@ -215,13 +216,19 @@ export default function HourlyForecast({ Home }) {
                     </div>
                   </Tooltip>
 
-                  <h2 className="text-xl font-bold text-white w-fit">
+                  <h2
+                    className={`text-xl font-bold ${Home == 1 ? (hour.time == currentTime ? "text-white" : "text-foreground") : "text-foreground"} w-fit`}
+                  >
                     {hour.temp}
                   </h2>
 
                   <Tooltip
                     title={
-                      <p className="uppercase text-[10px]">chance of rain</p>
+                      <p
+                        className={`uppercase text-[${direction === "rtl" ? "11px" : "10px"}]`}
+                      >
+                        {t("chance_of_rain")}
+                      </p>
                     }
                     placement="top"
                     slotProps={tooltipSlotProps}

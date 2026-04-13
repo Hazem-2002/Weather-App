@@ -167,7 +167,7 @@ export default function WeatherOverview() {
 
   return (
     <div
-      className={`flex flex-row justify-between gap-4 w-full h-full p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg ? weather.WeatherUI.bg : "bg-muted/50"}`}
+      className={`flex flex-row justify-between gap-4 w-full h-full text-white p-4 pt-10 sm:p-10 overflow-hidden rounded-4xl ${weather.WeatherUI.bg ? weather.WeatherUI.bg : "bg-muted/50"}`}
     >
       {/* ----------- Mobile ----------- */}
       <div

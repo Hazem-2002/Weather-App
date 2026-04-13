@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 export default function CurrentDetials() {
   const weather = useSelector((state) => state.weather);
+  const theme = useSelector((state) => state.theme);
   return (
     <>
       {weather?.current_detials?.wind_kph != null && (
@@ -33,7 +34,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-orange-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -64,7 +67,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -97,7 +102,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-blue-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -129,7 +136,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-amber-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -168,7 +177,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-cyan-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -201,7 +212,9 @@ export default function CurrentDetials() {
                 boxShadow: "0 0 4px rgb(var(--primary-rgb)/0.27)",
               }}
             >
-              <div className="size-11 flex items-center justify-center rounded-full bg-white/6">
+              <div
+                className={`size-11 flex items-center justify-center rounded-full ${theme === "dark" ? "bg-white/6" : "bg-purple-50"}`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

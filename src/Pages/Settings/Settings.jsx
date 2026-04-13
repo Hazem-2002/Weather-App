@@ -2,24 +2,27 @@ import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeDirection } from "../../features/DirectionSlice";
+import { changeTheme } from "../../features/ThemeSlice";
 import Button from "@mui/material/Button";
 
 export default function Settings() {
   const direction = useSelector((state) => state.direction);
+  const mode = useSelector((state) => state.theme);
   const { t, i18n } = useTranslation();
   const languageDispatch = useDispatch();
+  const themeDispatch = useDispatch();
 
   useEffect(() => {
     i18n.changeLanguage(direction === "ltr" ? "en" : "ar");
   }, [i18n, direction]);
 
-  const style = (dir) => ({
+  const style = (comparator, state) => ({
     color:
-      direction !== dir
+      comparator !== state
         ? "rgb(var(--foreground-rgb)/0.8)"
         : "rgb(var(--primary-foreground-rgb))",
     background:
-      direction !== dir
+      comparator !== state
         ? "rgb(var(--muted-rgb)/0.75)"
         : "rgb(var(--primary-rgb)/0.85)",
     display: "flex",
@@ -33,7 +36,7 @@ export default function Settings() {
     borderRadius: "12px",
     cursor: "pointer",
     flex: 1,
-    "&:hover": { background: direction !== dir && "rgb(var(--muted-rgb))" },
+    "&:hover": { background: comparator !== state && "rgb(var(--muted-rgb))" },
   });
 
   return (
@@ -43,7 +46,7 @@ export default function Settings() {
           {t("Settings")}
         </h2>
         <div
-          className="flex flex-col gap-6 p-4"
+          className="flex flex-col gap-6 p-4 rounded-2xl"
           style={{ boxShadow: "0 0 6px rgb(var(--primary-rgb)/0.3)" }}
         >
           <h2 className="text-sm sm:text-base font-semibold text-foreground/85 leading-none">
@@ -56,7 +59,7 @@ export default function Settings() {
             <div className="flex flex-row gap-4">
               <Button
                 variant="contained"
-                sx={style("ltr")}
+                sx={style(direction, "ltr")}
                 onClick={() => {
                   if (direction !== "ltr") {
                     languageDispatch(changeDirection("ltr"));
@@ -68,7 +71,7 @@ export default function Settings() {
 
               <Button
                 variant="contained"
-                sx={style("rtl")}
+                sx={style(direction, "rtl")}
                 onClick={() => {
                   if (direction !== "rtl") {
                     languageDispatch(changeDirection("rtl"));
@@ -76,6 +79,37 @@ export default function Settings() {
                 }}
               >
                 {t("arabic")}
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <p className="text-xs sm:text-sm font-semibold text-foreground/70 leading-none">
+              {t("theme")}
+            </p>
+            <div className="flex flex-row gap-4">
+              <Button
+                variant="contained"
+                sx={style(mode, "light")}
+                onClick={() => {
+                  if (mode !== "light") {
+                    themeDispatch(changeTheme());
+                  }
+                }}
+              >
+                {t("light_mode")}
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={style(mode, "dark")}
+                onClick={() => {
+                  if (mode !== "dark") {
+                    themeDispatch(changeTheme());
+                  }
+                }}
+              >
+                {t("dark_mode")}
               </Button>
             </div>
           </div>

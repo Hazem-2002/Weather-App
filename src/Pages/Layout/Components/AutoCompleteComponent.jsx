@@ -241,8 +241,10 @@ function AutoCompleteComponent() {
                   <circle cx="12" cy="10" r="3" />
                 </svg>
                 <div className="flex flex-col justify-center leading-tight h-10 w-full px-2 overflow-hidden">
-                  <p className="text-sm">{mainText}</p>
-                  <p className="text-xs truncate text-white/50">{subText}</p>
+                  <p className="text-sm text-foreground">{mainText}</p>
+                  <p className="text-xs truncate text-foreground/50 ">
+                    {subText}
+                  </p>
                 </div>
               </div>
             </li>
@@ -346,6 +348,9 @@ function AutoCompleteComponent() {
             sx={{
               padding: "0 10px",
               "& .MuiFilledInput-root": {
+                backgroundColor: "transparent",
+                "&:*": { backgroundColor: "transparent" },
+                borderBottom: `0`,
                 "&:after": {
                   borderBottom: `2px solid rgb(var(--primary-rgb)/0.9)`,
                 },

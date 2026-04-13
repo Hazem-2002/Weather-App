@@ -7,7 +7,7 @@ export default function Placeholder( props ) {
       variant="rounded"
       sx={{
         ...props,
-        bgcolor: "rgba(255,255,255,0.15)",
+        bgcolor: "rgb(var(--foreground-rgb)/.15)",
         backdropFilter: "blur(10px)",
         borderRadius: "20px",
       }}
