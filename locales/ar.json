@@ -46,5 +46,8 @@
   "Theme_Language": "المظهر & اللغة",
   "language": "اللغة",
   "english": "الإنجليزية",
-  "arabic": "العربية"
+  "arabic": "العربية",
+  "theme": "المظهر",
+  "light_mode": "الوضع الفاتح",
+  "dark_mode": "الوضع الغامق"
 }
