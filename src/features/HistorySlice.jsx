@@ -27,6 +27,9 @@ export const fetchHistory = createAsyncThunk(
     if (coords.lon == null || coords.lat == null) return;
 
     const direction = getState().language.direction;
+    const temperatureUnit = getState().temperatureUnit;
+    const windUnit = getState().windUnit;
+    const timeFormat = getState().timeFormat;
     const lang = direction === "rtl" ? "ar" : "en";
     const locale = `${lang}-EG`;
     try {
@@ -82,9 +85,11 @@ export const fetchHistory = createAsyncThunk(
       const address = `${locationInfo.city} (${locationInfo.country})`;
 
       // Weather
-      const temp = `${Math.round(
-        weatherHistory.data.forecast.forecastday[0].day.avgtemp_c,
-      ).toLocaleString(locale)}°`;
+      const t =
+        temperatureUnit === "Celsius"
+          ? weatherHistory.data.forecast.forecastday[0].day.avgtemp_c
+          : weatherHistory.data.forecast.forecastday[0].day.avgtemp_f;
+      const temp = `${Math.round(t).toLocaleString(locale)}°`;
 
       // Min && Max Temperature
       const hours = weatherHistory.data.forecast.forecastday[0].hour;
@@ -92,19 +97,29 @@ export const fetchHistory = createAsyncThunk(
 
       const mintemp_c = `${normalize(
         Math.round(
-          hours.reduce(
-            (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
-            hours[0].temp_c,
-          ),
+          temperatureUnit === "Celsius"
+            ? hours.reduce(
+                (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
+                hours[0].temp_c,
+              )
+            : hours.reduce(
+                (acc, ele) => (ele.temp_f < acc ? ele.temp_f : acc),
+                hours[0].temp_f,
+              ),
         ),
       ).toLocaleString(locale)}°`;
 
       const maxtemp_c = `${normalize(
         Math.round(
-          hours.reduce(
-            (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
-            hours[0].temp_c,
-          ),
+          temperatureUnit === "Celsius"
+            ? hours.reduce(
+                (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
+                hours[0].temp_c,
+              )
+            : hours.reduce(
+                (acc, ele) => (ele.temp_f > acc ? ele.temp_f : acc),
+                hours[0].temp_f,
+              ),
         ),
       ).toLocaleString(locale)}°`;
 
@@ -117,14 +132,15 @@ export const fetchHistory = createAsyncThunk(
         const time = new Date(day.time).toLocaleTimeString(locale, {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: timeFormat === "12-hour" ? true : false,
         });
 
         // Weather condition icon (URL from API)
         const icon = day.condition.icon;
 
         // Round temperature to nearest integer
-        const temp = `${Math.round(day.temp_c).toLocaleString(locale)}°`;
+        const t = temperatureUnit === "Celsius" ? day.temp_c : day.temp_f;
+        const temp = `${Math.round(t).toLocaleString(locale)}°`;
 
         // Chance of rain (already 0–100 from API)
         const chance_of_rain = `${day.chance_of_rain.toLocaleString(locale)}%`;
@@ -147,13 +163,19 @@ export const fetchHistory = createAsyncThunk(
       const desc =
         weatherHistory.data.forecast.forecastday[0].day.condition.text;
 
-      const windSpeed = `${Math.round(weatherHistory.data.forecast.forecastday[0].day.maxwind_kph).toLocaleString(locale)} ${direction === "ltr" ? "Km/h" : "كم/ساعة"}`;
+      const windSpeed =
+        windUnit === "Kph"
+          ? `${Math.round(weatherHistory.data.forecast.forecastday[0].day.maxwind_kph).toLocaleString(locale)} ${direction === "ltr" ? "Km/h" : "كم/ساعة"}`
+          : `${Math.round(weatherHistory.data.forecast.forecastday[0].day.maxwind_mph).toLocaleString(locale)} ${direction === "ltr" ? "mph" : "ميل/ساعة"}`;
 
       const avghumidity = `${weatherHistory.data.forecast.forecastday[0].day.avghumidity.toLocaleString(locale)}%`;
 
       const daily_chance_of_rain = `${weatherHistory.data.forecast.forecastday[0].day.daily_chance_of_rain.toLocaleString(locale)}%`;
 
-      const uv = weatherHistory.data.forecast.forecastday[0].day.uv.toLocaleString(locale);
+      const uv =
+        weatherHistory.data.forecast.forecastday[0].day.uv.toLocaleString(
+          locale,
+        );
 
       const formatArabicTime = (timeStr) => {
         const [time, period] = timeStr.split(" "); // "05:32", "AM"
@@ -169,7 +191,7 @@ export const fetchHistory = createAsyncThunk(
         return date.toLocaleTimeString(locale, {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: timeFormat === "12-hour" ? true : false,
         });
       };
 

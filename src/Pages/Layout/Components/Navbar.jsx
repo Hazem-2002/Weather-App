@@ -1,3 +1,4 @@
+import React from "react";
 import AutoCompleteComponent from "./AutoCompleteComponent";
 
 const Navbar = () => {
@@ -41,4 +42,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default React.memo(Navbar);

@@ -1,12 +1,13 @@
+import React from "react";
 import { t } from "i18next";
 import { useSelector } from "react-redux";
 
-export default function CurrentDetials() {
+function CurrentDetials() {
   const weather = useSelector((state) => state.weather);
   const theme = useSelector((state) => state.theme.actualTheme);
   return (
     <>
-      {weather?.current_detials?.wind_kph != null && (
+      {weather?.current_detials?.wind != null && (
         <div className="flex flex-col gap-6 animate-in animate-delay-100 fade-in zoom-in animate-duration-1000">
           <div className="flex flex-row gap-3">
             <svg
@@ -91,7 +92,7 @@ export default function CurrentDetials() {
                 {t("Wind")}
               </h2>
               <p className="text-sm font-bold text-foreground/80">
-                {weather.current_detials.wind_kph}
+                {weather.current_detials.wind}
               </p>
             </div>
 
@@ -201,7 +202,7 @@ export default function CurrentDetials() {
                 {t("Visibility")}
               </h2>
               <p className="text-sm font-bold text-foreground/80">
-                {weather.current_detials.vis_km}
+                {weather.current_detials.vis}
               </p>
             </div>
 
@@ -235,7 +236,7 @@ export default function CurrentDetials() {
                 {t("Pressure")}
               </h2>
               <p className="text-sm font-bold text-foreground/80">
-                {weather.current_detials.pressure_mb}
+                {weather.current_detials.pressure}
               </p>
             </div>
           </div>
@@ -244,3 +245,5 @@ export default function CurrentDetials() {
     </>
   );
 }
+
+export default React.memo(CurrentDetials);

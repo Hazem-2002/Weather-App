@@ -1,11 +1,12 @@
+import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Placeholder from "./Placeholder";
 
-export default function DaysForecast() {
+function DaysForecast() {
   const weather = useSelector((state) => state.weather);
   const direction = useSelector((state) => state.language.direction);
-  const theme = useSelector(state => state.theme.actualTheme)
+  const theme = useSelector((state) => state.theme.actualTheme);
   const layoutRef = useRef(null);
   const dayForecastHeight = useRef(null);
   const [maxHeight, setMaxHeight] = useState(0);
@@ -294,3 +295,5 @@ export default function DaysForecast() {
     </div>
   );
 }
+
+export default React.memo(DaysForecast);

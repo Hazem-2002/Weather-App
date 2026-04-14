@@ -1,9 +1,10 @@
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef, useMemo, useEffect } from "react";
 import { fetchHistory } from "../../../features/HistorySlice";
 import { editDate } from "../../../features/HistorySlice";
 
-export default function HistoryCards() {
+function HistoryCards() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
   const theme = useSelector((state) => state.theme.actualTheme);
@@ -235,3 +236,4 @@ export default function HistoryCards() {
     </div>
   );
 }
+export default React.memo(HistoryCards)

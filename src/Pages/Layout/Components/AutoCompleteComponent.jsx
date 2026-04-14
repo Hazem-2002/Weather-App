@@ -324,7 +324,7 @@ function AutoCompleteComponent() {
           <TextField
             {...params}
             variant="filled"
-            label="City"
+            label={direction === "ltr" ? "City" : "المدينة"}
             slotProps={{
               input: {
                 sx: { color: "var(--primary)" },

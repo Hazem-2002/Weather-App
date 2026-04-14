@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -129,4 +130,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default React.memo(Footer);

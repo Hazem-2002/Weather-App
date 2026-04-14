@@ -1,3 +1,4 @@
+import React from "react";
 import HistoryCards from "./Components/historyCards";
 import { useState, useEffect } from "react";
 import DatePicker from "./Components/DatePicker";
@@ -9,7 +10,7 @@ import HourlyForecast from "../Home/Components/HourlyForecast";
 import Astronomy from "../Home/Components/Astronomy";
 import { useTranslation } from "react-i18next";
 
-export default function History() {
+function History() {
   const weather = useSelector((state) => state.weather);
   const history = useSelector((state) => state.history);
   const direction = useSelector((state) => state.language.direction);
@@ -405,3 +406,5 @@ export default function History() {
     </div>
   );
 }
+
+export default React.memo(History);

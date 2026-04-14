@@ -1,8 +1,9 @@
+import React from "react";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 
-export default function Astronomy({ Home }) {
+function Astronomy({ Home }) {
   const { t, i18n } = useTranslation();
   const direction = useSelector((state) => state.language.direction);
   const theme = useSelector((state) => state.theme.actualTheme);
@@ -251,3 +252,5 @@ export default function Astronomy({ Home }) {
     </>
   );
 }
+
+export default React.memo(Astronomy);

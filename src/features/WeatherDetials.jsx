@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getWeatherUI } from "./WeatherUI";
 import axios from "axios";
 
 const currentWeather = localStorage.getItem("weather");
@@ -38,8 +39,13 @@ export const fetchWeather = createAsyncThunk(
     if (coords.lon == null || coords.lat == null) return;
 
     const direction = getState().language.direction;
+    const windUnit = getState().windUnit;
+    const pressureUnit = getState().pressureUnit;
+    const visibilityUnit = getState().visibilityUnit;
+    const timeFormat = getState().timeFormat;
     const lang = direction === "rtl" ? "ar" : "en";
     const locale = `${lang}-EG`;
+    const temperatureUnit = getState().temperatureUnit;
 
     try {
       const [weatherRes, geoRes] = await Promise.all([
@@ -57,9 +63,11 @@ export const fetchWeather = createAsyncThunk(
       console.log(geoRes.data);
 
       // Weather
-      const temp = `${Math.round(weatherRes.data.current.temp_c).toLocaleString(
-        locale,
-      )}°`;
+      const t =
+        temperatureUnit === "Celsius"
+          ? weatherRes.data.current.temp_c
+          : weatherRes.data.current.temp_f;
+      const temp = `${Math.round(t).toLocaleString(locale)}°`;
 
       let min_temp;
       let max_temp;
@@ -72,19 +80,29 @@ export const fetchWeather = createAsyncThunk(
 
         min_temp = normalize(
           Math.round(
-            hours.reduce(
-              (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
-              hours[0].temp_c,
-            ),
+            temperatureUnit === "Celsius"
+              ? hours.reduce(
+                  (acc, ele) => (ele.temp_c < acc ? ele.temp_c : acc),
+                  hours[0].temp_c,
+                )
+              : hours.reduce(
+                  (acc, ele) => (ele.temp_f < acc ? ele.temp_f : acc),
+                  hours[0].temp_f,
+                ),
           ),
         ).toLocaleString(locale);
 
         max_temp = normalize(
           Math.round(
-            hours.reduce(
-              (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
-              hours[0].temp_c,
-            ),
+            temperatureUnit === "Celsius"
+              ? hours.reduce(
+                  (acc, ele) => (ele.temp_c > acc ? ele.temp_c : acc),
+                  hours[0].temp_c,
+                )
+              : hours.reduce(
+                  (acc, ele) => (ele.temp_f > acc ? ele.temp_f : acc),
+                  hours[0].temp_f,
+                ),
           ),
         ).toLocaleString(locale);
 
@@ -112,14 +130,15 @@ export const fetchWeather = createAsyncThunk(
         const time = new Date(day.time).toLocaleTimeString(locale, {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: timeFormat === "12-hour" ? true : false,
         });
 
         // Weather condition icon (URL from API)
         const icon = day.condition.icon;
 
         // Round temperature to nearest integer
-        const temp = `${Math.round(day.temp_c).toLocaleString(locale)}°`;
+        const t = temperatureUnit === "Celsius" ? day.temp_c : day.temp_f;
+        const temp = `${Math.round(t).toLocaleString(locale)}°`;
 
         // Chance of rain (already 0–100 from API)
         const chance_of_rain = `${day.chance_of_rain.toLocaleString(locale)}%`;
@@ -194,7 +213,7 @@ export const fetchWeather = createAsyncThunk(
           day: "numeric",
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: timeFormat === "12-hour" ? true : false,
         });
       };
 
@@ -209,534 +228,43 @@ export const fetchWeather = createAsyncThunk(
       const desc = weatherRes.data.current.condition.text;
 
       // Weather UI Theme
-      // const getWeatherUI = (desc, isDay) => {
-      //   const weather = desc.toLowerCase();
-
-      //   const isMatch = (keywords) => keywords.some((k) => weather.includes(k));
-
-      //   const dayNight = (dayClasses, nightClasses) =>
-      //     isDay ? dayClasses : nightClasses;
-
-      //   const getGradientDirection = (() =>
-      //     direction === "ltr" ? "bg-gradient-to-br" : "bg-gradient-to-bl")();
-
-      //   // 🔥 Weather Conditions Map (FULL COVERAGE)
-      //   const conditions = [
-      //     // ☀️ Clear / Sunny
-      //     {
-      //       match: ["sunny", "clear", "مشمس", "صافي"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-amber-400 via-orange-400 to-yellow-500`,
-      //           `${getGradientDirection} from-slate-900 via-indigo-950 to-black`,
-      //         ),
-      //         glow: dayNight("bg-yellow-300/30", "bg-indigo-500/30"),
-      //       },
-      //     },
-
-      //     // ⛅ Partly Cloudy
-      //     {
-      //       match: ["partly cloudy", "غائم جزئياً"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-sky-400 via-blue-400 to-yellow-300`,
-      //           `${getGradientDirection} from-slate-800 via-gray-800 to-slate-900`,
-      //         ),
-      //         glow: dayNight("bg-yellow-300/25", "bg-gray-400/25"),
-      //       },
-      //     },
-
-      //     // ☁️ Cloudy / Overcast
-      //     {
-      //       match: ["cloudy", "overcast", "غائم", "غائم كليًا"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-400 to-gray-600`,
-      //           `${getGradientDirection} from-gray-800 to-gray-950`,
-      //         ),
-      //         glow: dayNight("bg-gray-300/25", "bg-gray-500/25"),
-      //       },
-      //     },
-
-      //     // 🌫 Fog / Mist / Haze
-      //     {
-      //       match: [
-      //         "mist",
-      //         "fog",
-      //         "freezing fog",
-      //         "haze",
-      //         "شبورة",
-      //         "ضباب",
-      //         "ضباب متجمد",
-      //         "غشاوة",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-300 to-gray-400`,
-      //           `${getGradientDirection} from-gray-700 to-gray-900`,
-      //         ),
-      //         glow: dayNight("bg-gray-200/40", "bg-gray-400/25"),
-      //       },
-      //     },
-
-      //     // 🌧 Rain (ALL TYPES)
-      //     {
-      //       match: [
-      //         "rain",
-      //         "drizzle",
-      //         "shower",
-      //         "patchy rain",
-      //         "light rain",
-      //         "moderate rain",
-      //         "heavy rain",
-      //         "زخات",
-      //         "رذاذ",
-      //         "أمطار",
-      //         "امطار",
-      //         "خفيفة",
-      //         "متوسطة",
-      //         "غزيرة",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-blue-500 via-blue-600 to-indigo-700`,
-      //           `${getGradientDirection} from-slate-900 via-blue-950 to-black`,
-      //         ),
-      //         glow: dayNight("bg-blue-300/25", "bg-blue-500/25"),
-      //       },
-      //     },
-
-      //     // ⛈ Thunderstorms
-      //     {
-      //       match: ["thunder", "storm", "رعد", "عاصفة رعدية"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-600 via-purple-700 to-gray-800`,
-      //           `${getGradientDirection} from-black via-purple-950 to-slate-950`,
-      //         ),
-      //         glow: dayNight("bg-purple-400/25", "bg-purple-600/25"),
-      //       },
-      //     },
-
-      //     // ❄️ Snow
-      //     {
-      //       match: ["snow", "blizzard", "ثلوج", "ثلج", "عاصفة ثلجية"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-slate-300 via-gray-300 to-slate-400`,
-      //           `${getGradientDirection} from-gray-600 to-gray-900`,
-      //         ),
-      //         glow: dayNight("bg-white/40", "bg-gray-400/25"),
-      //       },
-      //     },
-
-      //     // 🧊 Ice / Freezing
-      //     {
-      //       match: ["ice", "freezing rain", "ice pellets", "جليد", "متجمدة"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-cyan-300 via-blue-300 to-slate-400`,
-      //           `${getGradientDirection} from-slate-700 via-blue-900 to-black`,
-      //         ),
-      //         glow: dayNight("bg-cyan-200/40", "bg-blue-400/25"),
-      //       },
-      //     },
-
-      //     // 🌪 Wind / Dust / Sand
-      //     {
-      //       match: [
-      //         "wind",
-      //         "dust",
-      //         "sand",
-      //         "sandstorm",
-      //         "dust storm",
-      //         "blowing",
-      //         "رياح",
-      //         "رمال",
-      //         "عاصفة ترابية",
-      //         "عاصفة رملية",
-      //         "غبار",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-amber-400 to-orange-500`,
-      //           `${getGradientDirection} from-slate-800 to-gray-900`,
-      //         ),
-      //         glow: dayNight("bg-orange-300/25", "bg-orange-500/25"),
-      //       },
-      //     },
-      //   ];
-
-      //   // 🔍 Find Match
-      //   for (const condition of conditions) {
-      //     if (isMatch(condition.match)) {
-      //       return condition.ui;
-      //     }
-      //   }
-
-      //   // 🌈 Default
-      //   return {
-      //     bg: dayNight(
-      //       `${getGradientDirection} from-sky-500 via-blue-500 to-indigo-600`,
-      //       `${getGradientDirection} from-slate-900 via-indigo-950 to-black`,
-      //     ),
-      //     glow: dayNight("bg-blue-300/25", "bg-indigo-500/25"),
-      //   };
-      // };
-
-      const getWeatherUI = (desc, isDay) => {
-        const weather = desc.toLowerCase();
-
-        const isMatch = (keywords) => keywords.some((k) => weather.includes(k));
-
-        const dayNight = (dayClasses, nightClasses) =>
-          isDay ? dayClasses : nightClasses;
-
-        const getGradientDirection =
-          direction === "ltr" ? "bg-gradient-to-br" : "bg-gradient-to-bl";
-
-        const conditions = [
-          // ☀️ Sunny
-          {
-            match: ["sunny", "clear", "مشمس", "صافي"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-amber-400 via-orange-400 to-yellow-500`,
-                `${getGradientDirection} from-slate-800 via-indigo-900 to-slate-950`,
-              ),
-              glow: dayNight("bg-yellow-300/30", "bg-indigo-400/30"),
-            },
-          },
-
-          // ⛅ Partly Cloudy
-          {
-            match: ["partly cloudy", "غائم جزئياً"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-sky-400 via-blue-400 to-yellow-300`,
-                `${getGradientDirection} from-slate-700 via-gray-700 to-slate-800`,
-              ),
-              glow: dayNight("bg-yellow-300/25", "bg-gray-400/30"),
-            },
-          },
-
-          // ☁️ Cloudy
-          {
-            match: ["cloudy", "overcast", "غائم", "غائم كليًا"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-gray-400 to-gray-600`,
-                `${getGradientDirection} from-gray-700 to-gray-900`,
-              ),
-              glow: dayNight("bg-gray-300/25", "bg-gray-400/30"),
-            },
-          },
-
-          // 🌫 Fog
-          {
-            match: [
-              "mist",
-              "fog",
-              "freezing fog",
-              "haze",
-              "شبورة",
-              "ضباب",
-              "ضباب متجمد",
-              "غشاوة",
-            ],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-gray-300 to-gray-400`,
-                `${getGradientDirection} from-gray-600 to-gray-800`,
-              ),
-              glow: dayNight("bg-gray-200/40", "bg-gray-400/30"),
-            },
-          },
-
-          // 🌧 Rain
-          {
-            match: [
-              "rain",
-              "drizzle",
-              "shower",
-              "patchy rain",
-              "light rain",
-              "moderate rain",
-              "heavy rain",
-              "زخات",
-              "رذاذ",
-              "أمطار",
-              "امطار",
-            ],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-blue-500 via-blue-600 to-indigo-700`,
-                `${getGradientDirection} from-slate-800 via-blue-900 to-slate-950`,
-              ),
-              glow: dayNight("bg-blue-300/25", "bg-blue-400/30"),
-            },
-          },
-
-          // ⛈ Thunder
-          {
-            match: ["thunder", "storm", "رعد", "عاصفة رعدية"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-gray-600 via-purple-700 to-gray-800`,
-                `${getGradientDirection} from-slate-900 via-purple-900 to-slate-950`,
-              ),
-              glow: dayNight("bg-purple-400/25", "bg-purple-500/30"),
-            },
-          },
-
-          // ❄️ Snow
-          {
-            match: ["snow", "blizzard", "ثلوج", "ثلج"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-slate-300 via-gray-300 to-slate-400`,
-                `${getGradientDirection} from-gray-600 to-gray-800`,
-              ),
-              glow: dayNight("bg-white/40", "bg-gray-400/30"),
-            },
-          },
-
-          // 🧊 Ice
-          {
-            match: ["ice", "freezing rain", "جليد"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-cyan-300 via-blue-300 to-slate-400`,
-                `${getGradientDirection} from-slate-700 via-blue-800 to-slate-900`,
-              ),
-              glow: dayNight("bg-cyan-200/40", "bg-blue-400/30"),
-            },
-          },
-
-          // 🌪 Dust
-          {
-            match: ["wind", "dust", "sand", "رياح", "رمال", "غبار"],
-            ui: {
-              bg: dayNight(
-                `${getGradientDirection} from-amber-400 to-orange-500`,
-                `${getGradientDirection} from-slate-700 to-gray-800`,
-              ),
-              glow: dayNight("bg-orange-300/25", "bg-orange-400/30"),
-            },
-          },
-        ];
-
-        for (const condition of conditions) {
-          if (isMatch(condition.match)) {
-            return condition.ui;
-          }
-        }
-
-        return {
-          bg: dayNight(
-            `${getGradientDirection} from-sky-500 via-blue-500 to-indigo-600`,
-            `${getGradientDirection} from-slate-800 via-indigo-900 to-slate-950`,
-          ),
-          glow: dayNight("bg-blue-300/25", "bg-indigo-400/30"),
-        };
-      };
-
-      // const getWeatherUI = (desc, isDay) => {
-      //   const weather = desc.toLowerCase();
-
-      //   const isMatch = (keywords) => keywords.some((k) => weather.includes(k));
-
-      //   const dayNight = (dayClasses, nightClasses) =>
-      //     isDay ? dayClasses : nightClasses;
-
-      //   const getGradientDirection =
-      //     direction === "ltr" ? "bg-gradient-to-br" : "bg-gradient-to-bl";
-
-      //   // 🔥 Weather Conditions Map (LIGHT MODE - ENHANCED)
-      //   const conditions = [
-      //     // ☀️ Clear / Sunny
-      //     {
-      //       match: ["sunny", "clear", "مشمس", "صافي"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-amber-400 via-orange-400 to-yellow-500`,
-      //           `${getGradientDirection} from-indigo-300 via-purple-300 to-slate-400`,
-      //         ),
-      //         glow: dayNight("bg-yellow-500/30", "bg-indigo-400/30"),
-      //       },
-      //     },
-
-      //     // ⛅ Partly Cloudy
-      //     {
-      //       match: ["partly cloudy", "غائم جزئياً"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-sky-400 via-blue-400 to-yellow-300`,
-      //           `${getGradientDirection} from-slate-300 via-gray-300 to-slate-400`,
-      //         ),
-      //         glow: dayNight("bg-yellow-400/30", "bg-gray-400/30"),
-      //       },
-      //     },
-
-      //     // ☁️ Cloudy / Overcast
-      //     {
-      //       match: ["cloudy", "overcast", "غائم", "غائم كليًا"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-400 to-gray-600`,
-      //           `${getGradientDirection} from-gray-300 to-gray-500`,
-      //         ),
-      //         glow: dayNight("bg-gray-500/30", "bg-gray-400/30"),
-      //       },
-      //     },
-
-      //     // 🌫 Fog / Mist / Haze
-      //     {
-      //       match: [
-      //         "mist",
-      //         "fog",
-      //         "freezing fog",
-      //         "haze",
-      //         "شبورة",
-      //         "ضباب",
-      //         "ضباب متجمد",
-      //         "غشاوة",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-300 to-gray-400`,
-      //           `${getGradientDirection} from-gray-200 to-gray-300`,
-      //         ),
-      //         glow: dayNight("bg-gray-400/30", "bg-gray-300/30"),
-      //       },
-      //     },
-
-      //     // 🌧 Rain (ALL TYPES)
-      //     {
-      //       match: [
-      //         "rain",
-      //         "drizzle",
-      //         "shower",
-      //         "patchy rain",
-      //         "light rain",
-      //         "moderate rain",
-      //         "heavy rain",
-      //         "زخات",
-      //         "رذاذ",
-      //         "أمطار",
-      //         "امطار",
-      //         "خفيفة",
-      //         "متوسطة",
-      //         "غزيرة",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-blue-500 via-blue-600 to-indigo-600`,
-      //           `${getGradientDirection} from-blue-300 via-blue-400 to-indigo-400`,
-      //         ),
-      //         glow: dayNight("bg-blue-500/30", "bg-blue-400/30"),
-      //       },
-      //     },
-
-      //     // ⛈ Thunderstorms
-      //     {
-      //       match: ["thunder", "storm", "رعد", "عاصفة رعدية"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-gray-600 via-purple-600 to-gray-700`,
-      //           `${getGradientDirection} from-gray-400 via-purple-300 to-gray-500`,
-      //         ),
-      //         glow: dayNight("bg-purple-500/30", "bg-purple-400/30"),
-      //       },
-      //     },
-
-      //     // ❄️ Snow
-      //     {
-      //       match: ["snow", "blizzard", "ثلوج", "ثلج", "عاصفة ثلجية"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-slate-300 via-gray-300 to-slate-400`,
-      //           `${getGradientDirection} from-gray-200 to-gray-300`,
-      //         ),
-      //         glow: dayNight("bg-white/60", "bg-gray-400/30"),
-      //       },
-      //     },
-
-      //     // 🧊 Ice / Freezing
-      //     {
-      //       match: ["ice", "freezing rain", "ice pellets", "جليد", "متجمدة"],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-cyan-300 via-blue-300 to-slate-400`,
-      //           `${getGradientDirection} from-cyan-200 via-blue-200 to-gray-300`,
-      //         ),
-      //         glow: dayNight("bg-cyan-300/40", "bg-blue-400/30"),
-      //       },
-      //     },
-
-      //     // 🌪 Wind / Dust / Sand
-      //     {
-      //       match: [
-      //         "wind",
-      //         "dust",
-      //         "sand",
-      //         "sandstorm",
-      //         "dust storm",
-      //         "blowing",
-      //         "رياح",
-      //         "رمال",
-      //         "عاصفة ترابية",
-      //         "عاصفة رملية",
-      //         "غبار",
-      //       ],
-      //       ui: {
-      //         bg: dayNight(
-      //           `${getGradientDirection} from-amber-400 to-orange-500`,
-      //           `${getGradientDirection} from-gray-300 to-amber-300`,
-      //         ),
-      //         glow: dayNight("bg-orange-400/30", "bg-orange-300/30"),
-      //       },
-      //     },
-      //   ];
-
-      //   // 🔍 Find Match
-      //   for (const condition of conditions) {
-      //     if (isMatch(condition.match)) {
-      //       return condition.ui;
-      //     }
-      //   }
-
-      //   // 🌈 Default
-      //   return {
-      //     bg: dayNight(
-      //       `${getGradientDirection} from-sky-400 via-blue-500 to-indigo-500`,
-      //       `${getGradientDirection} from-slate-300 via-indigo-300 to-slate-400`,
-      //     ),
-      //     glow: dayNight("bg-blue-500/30", "bg-indigo-400/30"),
-      //   };
-      // };
-
       const WeatherUI = getWeatherUI(
         weatherRes.data.current.condition.text,
         weatherRes.data.current.is_day,
+        direction,
       );
 
       // Feels Like Of Temperature
-      const feelslike = `${Math.round(weatherRes.data.current.feelslike_c).toLocaleString(locale)}°`;
+      const ft =
+        temperatureUnit === "Celsius"
+          ? weatherRes.data.current.feelslike_c
+          : weatherRes.data.current.feelslike_f;
+      const feelslike = `${Math.round(ft).toLocaleString(locale)}°`;
 
       // Current Detials
-      const wind_kph = `${weatherRes.data.current.wind_kph.toLocaleString(locale)} ${direction === "ltr" ? "Km/h" : "كم/ساعة"}`;
+      const wind =
+        windUnit === "Kph"
+          ? `${weatherRes.data.current.wind_kph.toLocaleString(locale)} ${direction === "ltr" ? "Km/h" : "كم/ساعة"}`
+          : `${weatherRes.data.current.wind_mph.toLocaleString(locale)} ${direction === "ltr" ? "mph" : "ميل/ساعة"}`;
+
       const humidity = `${weatherRes.data.current.humidity.toLocaleString(locale)}%`;
-      const pressure_mb = `${weatherRes.data.current.pressure_mb.toLocaleString(locale)} ${direction === "ltr" ? "mb" : "ملليبار"}`;
+      const pressure =
+        pressureUnit === "Millibars"
+          ? `${weatherRes.data.current.pressure_mb.toLocaleString(locale)} ${direction === "ltr" ? "mb" : "ملليبار"}`
+          : `${weatherRes.data.current.pressure_in.toLocaleString(locale)} ${direction === "ltr" ? "inHg" : "بوصة زئبق"}`;
+
       const uv = weatherRes.data.current.uv.toLocaleString(locale);
-      const vis_km = `${weatherRes.data.current.vis_km.toLocaleString(locale)} ${direction === "ltr" ? "Km" : "كم"}`;
+      const vis =
+        visibilityUnit === "Kilometers"
+          ? `${weatherRes.data.current.vis_km.toLocaleString(locale)} ${direction === "ltr" ? "Km" : "كم"}`
+          : `${weatherRes.data.current.vis_miles.toLocaleString(locale)} ${direction === "ltr" ? "mi" : "ميل"}`;
       const current_detials = {
-        wind_kph,
+        wind,
         humidity,
-        pressure_mb,
+        pressure,
         uv,
         feelslike,
-        vis_km,
+        vis,
       };
 
       // Astronomy
@@ -754,7 +282,7 @@ export const fetchWeather = createAsyncThunk(
         return date.toLocaleTimeString(locale, {
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true,
+          hour12: timeFormat === "12-hour" ? true : false,
         });
       };
 

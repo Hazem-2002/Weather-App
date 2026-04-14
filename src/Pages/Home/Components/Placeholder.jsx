@@ -1,6 +1,7 @@
+import React from "react";
 import Skeleton from "@mui/material/Skeleton";
 
-export default function Placeholder( props ) {
+function Placeholder(props) {
   console.log(props);
   return (
     <Skeleton
@@ -14,3 +15,5 @@ export default function Placeholder( props ) {
     />
   );
 }
+
+export default React.memo(Placeholder);

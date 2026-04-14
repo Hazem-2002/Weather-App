@@ -1,9 +1,10 @@
+import React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import Placeholder from "./Placeholder";
 import { useTranslation } from "react-i18next";
 
-export default function WeatherOverview() {
+function WeatherOverview() {
   const { t, i18n } = useTranslation();
   const weather = useSelector((state) => state.weather);
   const direction = useSelector((state) => state.language.direction);
@@ -558,3 +559,5 @@ export default function WeatherOverview() {
     </div>
   );
 }
+
+export default React.memo(WeatherOverview);

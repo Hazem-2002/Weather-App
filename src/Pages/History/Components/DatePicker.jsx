@@ -1,3 +1,4 @@
+import React from "react";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -7,7 +8,7 @@ import { fetchHistory } from "../../../features/HistorySlice";
 import { editDate } from "../../../features/HistorySlice";
 import "dayjs/locale/ar";
 
-export default function DatePicker() {
+function DatePicker() {
   const date = useSelector((state) => state.history.date);
   const direction = useSelector((state) => state.language.direction);
   dayjs.locale(direction === "rtl" ? "ar" : "en");
@@ -119,20 +120,17 @@ export default function DatePicker() {
           "& .MuiPickersDay-root.Mui-disabled": {
             borderRadius: "10px !important",
             transition: "all 0.2s ease !important",
-            color:
-              "rgb(var(--muted-foreground-rgb)/0.7) !important",
+            color: "rgb(var(--muted-foreground-rgb)/0.7) !important",
           },
 
           /* ================= SELECTED STATES ================= */
           "& .MuiPickersDay-root.Mui-selected": {
-            background:
-              "rgb(var(--primary-rgb)/0.8) !important",
+            background: "rgb(var(--primary-rgb)/0.8) !important",
             color: "var(--primary-foreground) !important",
           },
 
           "& .MuiPickersDay-root.Mui-selected:hover": {
-            background:
-              "rgb(var(--primary-rgb)/0.8) !important",
+            background: "rgb(var(--primary-rgb)/0.8) !important",
             color: "var(--primary-foreground) !important",
           },
 
@@ -152,3 +150,5 @@ export default function DatePicker() {
     </LocalizationProvider>
   );
 }
+
+export default React.memo(DatePicker);

@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DaysForecast from "./Components/DaysForecast";
@@ -6,7 +7,7 @@ import HourlyForecast from "./Components/HourlyForecast";
 import CurrentDetials from "./Components/CurrentDetails";
 import Astronomy from "./Components/Astronomy";
 
-export default function Home() {
+function Home() {
   const weather = useSelector((state) => state.weather);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const isSm = window.matchMedia("(max-width: 640px)").matches;
@@ -48,3 +49,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default React.memo(Home);

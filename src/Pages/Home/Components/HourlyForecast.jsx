@@ -1,9 +1,10 @@
+import React from "react";
 import Tooltip from "@mui/material/Tooltip";
 import { useSelector } from "react-redux";
 import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function HourlyForecast({ Home }) {
+function HourlyForecast({ Home }) {
   const { t, i18n } = useTranslation();
   const weather = useSelector((state) =>
     Home == 0 ? state.history : state.weather,
@@ -256,3 +257,5 @@ export default function HourlyForecast({ Home }) {
     </>
   );
 }
+
+export default React.memo(HourlyForecast);
