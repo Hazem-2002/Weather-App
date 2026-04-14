@@ -282,7 +282,7 @@ function WeatherOverview() {
           <div className="flex flex-row gap-6 w-fit">
             {(weather.days_detials?.length || 0) > 2 ? (
               <div
-                className="bg-white/10 backdrop-blur-xl p-2 rounded-2xl flex items-center gap-2.5 border border-white/20 shadow-md"
+                className="bg-white/10 backdrop-blur-xl px-3 py-2 rounded-2xl flex items-center gap-2.5 border border-white/20 shadow-md"
                 ref={SmMaxTempRef}
                 style={{
                   width: smMaxTempWidth ? `${smMaxTempWidth}px` : "auto",
