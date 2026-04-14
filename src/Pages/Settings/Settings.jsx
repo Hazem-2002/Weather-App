@@ -255,7 +255,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Celsius")}
+                 <span className="inline sx:hidden">
+                  { t("Celsius").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sx:inline">{t("Celsius")}</span>
               </Button>
 
               <Button
@@ -269,7 +272,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Fahrenheit")}
+                 <span className="inline sx:hidden">
+                  { t("Fahrenheit").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sx:inline">{t("Fahrenheit")}</span>
               </Button>
             </div>
           </div>
@@ -290,7 +296,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Kilometers_per_hour")}
+                <span className="inline sm:hidden">
+                  { t("Kilometers_per_hour").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Kilometers_per_hour")}</span>
               </Button>
 
               <Button
@@ -302,7 +311,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Miles_per_hour")}
+                 <span className="inline sm:hidden">
+                  { t("Miles_per_hour").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Miles_per_hour")}</span>
               </Button>
             </div>
           </div>
@@ -323,7 +335,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Millibars")}
+                 <span className="inline sm:hidden">
+                  { t("Millibars").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Millibars")}</span>
               </Button>
 
               <Button
@@ -337,7 +352,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Inches_of_Mercury")}
+                 <span className="inline sm:hidden">
+                  { t("Inches_of_Mercury").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Inches_of_Mercury")}</span>
               </Button>
             </div>
           </div>
@@ -358,7 +376,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Kilometers")}
+                 <span className="inline sm:hidden">
+                  { t("Kilometers").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Kilometers")}</span>
               </Button>
 
               <Button
@@ -370,7 +391,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("Miles")}
+                 <span className="inline sm:hidden">
+                  { t("Miles").split(" ").slice(-1)}
+                </span>
+                <span className="hidden sm:inline">{t("Miles")}</span>
               </Button>
             </div>
           </div>
@@ -391,7 +415,10 @@ function Settings() {
                   }
                 }}
               >
-                {t("12-hour")}
+                 <span className="inline sm:hidden">
+                  { t("12-hour").split(" ").slice(0,-1).join(" ")}
+                </span>
+                <span className="hidden sm:inline">{t("12-hour")}</span>
               </Button>
 
               <Button
