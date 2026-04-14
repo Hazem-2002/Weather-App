@@ -30,16 +30,18 @@ export const fetchHistory = createAsyncThunk(
     const temperatureUnit = getState().temperatureUnit;
     const windUnit = getState().windUnit;
     const timeFormat = getState().timeFormat;
+    const Weather_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+    const Google_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const lang = direction === "rtl" ? "ar" : "en";
     const locale = `${lang}-EG`;
     try {
       const [weatherHistory, geoRes] = await Promise.all([
         axios.get(
-          `https://api.weatherapi.com/v1/history.json?key=94add4e12f5d432fa03145025260204&q=${coords.lat},${coords.lon}&dt=${date}&lang=${lang}`,
+          `https://api.weatherapi.com/v1/history.json?key=${Weather_KEY}&q=${coords.lat},${coords.lon}&dt=${date}&lang=${lang}`,
           { signal },
         ),
         axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=${lang}&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=${lang}&key=${Google_KEY}`,
           { signal },
         ),
       ]);
@@ -225,7 +227,7 @@ export const fetchHistory = createAsyncThunk(
         moon_illumination,
       };
 
-      return {
+      const weather = {
         date,
         fullDate,
         address,
@@ -241,6 +243,10 @@ export const fetchHistory = createAsyncThunk(
         hourly_forecast,
         astronomy,
       };
+
+      localStorage.setItem("weather", JSON.stringify(weather));
+      
+      return weather;
     } catch (err) {
       if (err.name !== "CanceledError") {
         console.error("Error fetching data:", err);

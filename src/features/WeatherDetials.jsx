@@ -43,18 +43,20 @@ export const fetchWeather = createAsyncThunk(
     const pressureUnit = getState().pressureUnit;
     const visibilityUnit = getState().visibilityUnit;
     const timeFormat = getState().timeFormat;
+    const temperatureUnit = getState().temperatureUnit;
+    const Weather_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+    const Google_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
     const lang = direction === "rtl" ? "ar" : "en";
     const locale = `${lang}-EG`;
-    const temperatureUnit = getState().temperatureUnit;
 
     try {
       const [weatherRes, geoRes] = await Promise.all([
         axios.get(
-          `https://api.weatherapi.com/v1/forecast.json?key=94add4e12f5d432fa03145025260204&q=${coords.lat},${coords.lon}&days=7&lang=${lang}`,
+          `https://api.weatherapi.com/v1/forecast.json?key=${Weather_KEY}&q=${coords.lat},${coords.lon}&days=7&lang=${lang}`,
           { signal },
         ),
         axios.get(
-          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=${lang}&key=AIzaSyA7mjeWIhlZJ-lexyNDNGlYSTHFoUrCs2g`,
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lon}&language=${lang}&key=${Google_KEY}`,
           { signal },
         ),
       ]);
