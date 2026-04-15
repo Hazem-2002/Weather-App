@@ -11,6 +11,19 @@ import { StrictMode } from "react";
 export default function Wrapper() {
   const direction = useSelector((state) => state.language.direction);
 
+  const loadGoogleMaps = () => {
+    const script = document.createElement("script");
+
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&v=weekly`;
+
+    script.async = true;
+    document.head.appendChild(script);
+  };
+
+  useEffect(() => {
+    loadGoogleMaps();
+  }, []);
+
   const cache = useMemo(() => {
     return createCache({
       key: direction === "rtl" ? "mui-rtl" : "mui-ltr",
